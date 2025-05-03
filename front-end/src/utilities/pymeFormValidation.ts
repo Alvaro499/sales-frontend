@@ -1,7 +1,5 @@
-import { RegisterPymeFormData } from '../pages/registerPyme/types';
-export const validateRegisterPymeForm = (
-	formData: RegisterPymeFormData,
-): string | null => {
+import { Pyme } from '../models/Pymes.models';
+export const validateRegisterPymeForm = (formData: Pyme): string | null => {
 	if (!formData.companyName) {
 		return 'El nombre de la empresa es obligatorio';
 	}
@@ -14,5 +12,5 @@ export const validateRegisterPymeForm = (
 	if (!formData.address) {
 		return 'La dirección es obligatoria';
 	}
-	return null; // Si no hay errores
+	return null;
 };

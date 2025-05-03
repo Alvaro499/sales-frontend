@@ -1,14 +1,7 @@
-// src/pages/register/types.ts
-export interface RegisterPymeFormData {
-	companyName: string;
-	email: string;
-	password: string;
-	phone?: string;
-	address: string;
-}
+import { Pyme } from '../../models/Pymes.models';
 
 export interface RegisterPymeHook {
-	formData: RegisterPymeFormData;
+	formData: Pyme;
 	error: string;
 	isSubmitting: boolean;
 	setError: (error: string) => void;

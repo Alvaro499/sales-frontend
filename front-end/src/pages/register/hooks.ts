@@ -1,11 +1,12 @@
 // src/pages/register/hooks.ts
 import { useState } from 'react';
-import { RegisterPymeFormData } from './types';
+import { Pyme } from '../../models/Pymes.models';
 import { useApiHandler } from '../../hooks/useApiHandler';
-import { doPost } from '../../services/http.service';
+import { pymeRegistrationService } from '../../services/request.service';
+import { ErrorResponse } from '../../models/Api.models';
 
 export const useRegisterPymeForm = () => {
-	const [formData, setFormData] = useState<RegisterPymeFormData>({
+	const [formData, setFormData] = useState<Pyme>({
 		companyName: '',
 		email: '',
 		password: '',
@@ -15,6 +16,7 @@ export const useRegisterPymeForm = () => {
 
 	const [error, setError] = useState<string>('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [verificationRequired] = useState(false);
 	const { handleMutation } = useApiHandler();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,23 +40,28 @@ export const useRegisterPymeForm = () => {
 
 	const registerPyme = async () => {
 		setIsSubmitting(true);
+		setError('');
+
 		try {
-			const { isError, message } = await handleMutation(
-				data => doPost(data, '/pymes/register'),
+			const response = await handleMutation(
+				pymeRegistrationService.register,
 				formData,
 			);
 
-			if (isError) {
-				setError(message || 'Error al registrar la pyme');
-				return false;
+			if ('code' in response) {
+				// Manejo de error
+				setError(response.message || 'Error al registrar la pyme');
+				return { success: false, requiresVerification: false };
 			}
 
+			// Éxito en registro
 			resetForm();
-			return true;
+			return { success: true, requiresVerification: true };
 		} catch (err) {
-			setError('Error inesperado al registrar');
+			const error = err as ErrorResponse;
+			setError(error.message || 'Error inesperado al registrar');
 			console.error('Registration error:', err);
-			return false;
+			return { success: false, requiresVerification: false };
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -64,8 +71,10 @@ export const useRegisterPymeForm = () => {
 		formData,
 		error,
 		isSubmitting,
+		verificationRequired,
 		setError,
 		handleChange,
 		registerPyme,
+		resetForm,
 	};
 };

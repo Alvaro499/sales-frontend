@@ -1,4 +1,4 @@
-import RegisterPymeForm from '../../components/register/RegisterPymeForm.tsx';
+import RegisterPymeForm from '../../components/register/RegisterForm.tsx';
 import styles from './RegisterPymePage.module.css';
 
 const RegisterPymePage = () => {

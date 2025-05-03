@@ -1,8 +1,8 @@
 // src/components/register/RegisterPymeForm.tsx
 import React from 'react';
-import useRegisterPymeForm from '../../hooks/useRegisterPymeForm';
-import { validateRegisterPymeForm } from '../../utilities/registerPymeValidation';
-import './StylesPymeForm.css';
+import useRegisterPymeForm from '../../hooks/useRegisterForm.ts';
+import { validateRegisterPymeForm } from '../../utilities/pymeFormValidation.ts';
+import './RegisterForm.module.css';
 
 const RegisterPymeForm = () => {
 	const {

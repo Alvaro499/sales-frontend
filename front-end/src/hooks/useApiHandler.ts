@@ -3,8 +3,6 @@ import { AxiosError } from 'axios';
 import { ErrorResponse } from '../models/Api.models';
 
 export const useApiHandler = () => {
-	//	const { clearSession } = useSessionHandler();
-
 	// Para actualizaciones o escrituras
 	const handleMutation = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
@@ -23,9 +21,6 @@ export const useApiHandler = () => {
 				result = axiosError.response;
 				const error = result?.data as ErrorResponse;
 				if (error !== null) {
-					if (error.code === 40103) {
-						//	clearSession();
-					}
 					message = error.message;
 					isError = true;
 					isSuccess = !isError;
@@ -52,9 +47,6 @@ export const useApiHandler = () => {
 				result = axiosError.response;
 				const error = result?.data as ErrorResponse;
 				if (error !== null) {
-					if (error.code === 40103) {
-						//	clearSession();
-					}
 					message = error.message;
 					isError = true;
 					return { result, isError, message };

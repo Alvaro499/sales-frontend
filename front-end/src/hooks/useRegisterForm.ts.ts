@@ -1,6 +1,6 @@
 // src/hooks/useRegisterPymeForm.ts
 import { useState } from 'react';
-import { RegisterPymeFormData } from '../models/RegisterPymeFormData.models';
+import { RegisterPymeFormData } from '../models/PymeFormData.models';
 import { useApiHandler } from './useApiHandler';
 import { doPost } from '../services/http.service';
 const useRegisterPymeForm = () => {
@@ -39,7 +39,7 @@ const useRegisterPymeForm = () => {
 		setIsSubmitting(true);
 		try {
 			const { isError, message } = await handleMutation(
-				data => doPost(data, '/pymes/register'), // Ajusta la ruta según tu API
+				data => doPost(data, '/pymes/register'),
 				formData,
 			);
 

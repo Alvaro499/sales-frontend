@@ -1,4 +1,4 @@
-import { RegisterPymeFormData } from '../models/RegisterPymeFormData.models';
+import { RegisterPymeFormData } from '../models/PymeFormData.models';
 export const validateRegisterPymeForm = (
 	formData: RegisterPymeFormData,
 ): string | null => {

@@ -1,11 +1,10 @@
-import RegisterPymePage from './pages/register/RegisterPymePage';
-
+import RegisterPyme from './pages/register';
 // src/App.tsx
 const App = () => {
 	// <-- Cambiado a arrow function
 	return (
 		<div className='app'>
-			<RegisterPymePage />
+			<RegisterPyme />
 		</div>
 	);
 };

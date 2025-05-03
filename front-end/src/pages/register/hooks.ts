@@ -1,9 +1,10 @@
-// src/hooks/useRegisterPymeForm.ts
+// src/pages/register/hooks.ts
 import { useState } from 'react';
-import { RegisterPymeFormData } from '../models/PymeFormData.models';
-import { useApiHandler } from './useApiHandler';
-import { doPost } from '../services/http.service';
-const useRegisterPymeForm = () => {
+import { RegisterPymeFormData } from './types';
+import { useApiHandler } from '../../hooks/useApiHandler';
+import { doPost } from '../../services/http.service';
+
+export const useRegisterPymeForm = () => {
 	const [formData, setFormData] = useState<RegisterPymeFormData>({
 		companyName: '',
 		email: '',
@@ -13,15 +14,15 @@ const useRegisterPymeForm = () => {
 	});
 
 	const [error, setError] = useState<string>('');
-	const [isSubmitting, setIsSubmitting] = useState(false); // Estado para loading
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const { handleMutation } = useApiHandler();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setFormData({
-			...formData,
+		setFormData(prev => ({
+			...prev,
 			[name]: value,
-		});
+		}));
 	};
 
 	const resetForm = () => {
@@ -44,18 +45,19 @@ const useRegisterPymeForm = () => {
 			);
 
 			if (isError) {
-				setError(message);
-			} else {
-				resetForm();
-				return true; // Indica que el registro fue exitoso
+				setError(message || 'Error al registrar la pyme');
+				return false;
 			}
+
+			resetForm();
+			return true;
 		} catch (err) {
-			setError('Ocurrió un error inesperado al registrar la pyme');
-			console.error('Error al registrar pyme:', err);
+			setError('Error inesperado al registrar');
+			console.error('Registration error:', err);
+			return false;
 		} finally {
 			setIsSubmitting(false);
 		}
-		return false; // Indica que el registro falló
 	};
 
 	return {
@@ -64,9 +66,6 @@ const useRegisterPymeForm = () => {
 		isSubmitting,
 		setError,
 		handleChange,
-		resetForm,
 		registerPyme,
 	};
 };
-
-export default useRegisterPymeForm;

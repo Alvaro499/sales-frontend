@@ -1,4 +1,4 @@
-import RegisterPyme from './pages/register';
+import RegisterPyme from './pages/registerPyme';
 // src/App.tsx
 const App = () => {
 	// <-- Cambiado a arrow function

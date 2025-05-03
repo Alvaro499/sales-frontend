@@ -1,14 +1,20 @@
 // src/components/register/RegisterPymeForm.tsx
 import React from 'react';
 import useRegisterPymeForm from '../../hooks/useRegisterPymeForm';
-import { validateRegisterPymeForm } from '../../utilities/registerPymeValidation'; // Función de validación específica
+import { validateRegisterPymeForm } from '../../utilities/registerPymeValidation';
 import './StylesPymeForm.css';
 
 const RegisterPymeForm = () => {
-	const { formData, error, setError, handleChange, resetForm } =
-		useRegisterPymeForm(); // Usamos el hook aquí
+	const {
+		formData,
+		error,
+		isSubmitting,
+		setError,
+		handleChange,
+		registerPyme,
+	} = useRegisterPymeForm();
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		// Validar los datos del formulario
@@ -18,9 +24,11 @@ const RegisterPymeForm = () => {
 			return;
 		}
 
-		// Aquí iría la lógica para enviar los datos al backend
-		console.log('Datos de la Pyme enviados', formData);
-		resetForm();
+		const success = await registerPyme();
+		if (success) {
+			//Este alert es temporal hasta que se decida si se maneja de otra forma
+			alert('¡Pyme registrada con éxito!');
+		}
 	};
 
 	return (
@@ -62,7 +70,7 @@ const RegisterPymeForm = () => {
 					<input
 						type='text'
 						name='phone'
-						value={formData.phone || ''}
+						value={formData.phone}
 						onChange={handleChange}
 					/>
 				</label>
@@ -77,7 +85,9 @@ const RegisterPymeForm = () => {
 					/>
 				</label>
 				{error && <p className='error-message'>{error}</p>}
-				<button type='submit'>Registrar Pyme</button>
+				<button type='submit' disabled={isSubmitting}>
+					{isSubmitting ? 'Registrando...' : 'Registrar Pyme'}
+				</button>
 			</form>
 		</div>
 	);

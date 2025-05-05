@@ -19,7 +19,9 @@ const usePublishProduct = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	// Handle form input changes
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+	) => {
 		const { name, value } = e.target;
 		setProduct(prevProduct => ({
 			...prevProduct,
@@ -89,7 +91,7 @@ const usePublishProduct = () => {
 				setError('No se pudo publicar el producto.');
 			}
 		} catch (err) {
-			setError('Error al publicar el producto.');
+			setError('Error al publicar el producto.' + err);
 		} finally {
 			setIsLoading(false);
 		}

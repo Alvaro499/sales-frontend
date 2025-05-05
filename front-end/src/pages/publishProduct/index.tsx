@@ -1,6 +1,7 @@
 import React from 'react';
 import usePublishProduct from './hooks';
 import { Button, Form, Input, Checkbox, Spin } from 'antd';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import './style.css';
 
 const { TextArea } = Input;
@@ -95,7 +96,7 @@ const ProductPublishForm = () => {
 					<Checkbox
 						name='available'
 						checked={product.available}
-						onChange={e => handleInputChange(e as any)}
+						onChange={(e: CheckboxChangeEvent) => handleInputChange(e)}
 					>
 						Disponible
 					</Checkbox>

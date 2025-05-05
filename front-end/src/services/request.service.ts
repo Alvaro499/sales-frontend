@@ -6,12 +6,12 @@ const BASE_PATH = '/api';
 
 export const pymeRegistrationService = {
 	register: async (
-		registrationData: Pyme,
+		registrationData: Pyme
 	): Promise<OkResponse | ErrorResponse> => {
 		try {
 			const response = await doPost<Pyme, OkResponse>(
 				registrationData,
-				`${BASE_PATH}/pymes/register`,
+				`${BASE_PATH}/pymes/register`
 			);
 
 			return response.status ? response : { ...response, status: 'success' };

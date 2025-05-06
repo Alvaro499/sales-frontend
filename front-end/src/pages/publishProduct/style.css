@@ -4,11 +4,13 @@
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
-	background-color: #f5f7fa; /* Color de fondo suave */
+	background-color: #f5f7fa; /* Fondo suave */
 	padding: 20px;
+	width: 100%; /* Asegura que ocupe todo el ancho disponible */
+	box-sizing: border-box; /* Asegura que el tamaño sea calculado correctamente */
   }
   
-  /* Estilos para el formulario */
+  /* Estilos para el formulario de Ant Design */
   .ant-form {
 	background-color: white; /* Fondo blanco para el formulario */
 	padding: 2rem;
@@ -16,17 +18,13 @@
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
 	width: 100%;
 	max-width: 500px; /* Ancho máximo */
-	box-sizing: border-box;
+	margin: 0 auto; /* Asegura que se centre horizontalmente */
+	box-sizing: border-box; /* Asegura que no se añadan márgenes inesperados */
   }
   
-  .ant-form-item-label {
-	font-weight: 500; /* Etiquetas más visibles */
-	color: #2d3748; /* Color de las etiquetas (como en la referencia) */
-  }
-  
-  /* Ajustar los campos de texto */
+  /* Ajustes de estilo para los inputs */
   .ant-input, .ant-textarea {
-	width: 100%;
+	width: 100%; /* Asegura que los campos ocupen todo el ancho disponible */
 	padding: 0.75rem;
 	margin-top: 0.25rem;
 	border: 1px solid #e2e8f0; /* Borde gris claro */
@@ -34,57 +32,41 @@
 	font-size: 1rem;
   }
   
+  /* Enfoque de los campos de texto */
   .ant-input:focus, .ant-textarea:focus {
 	outline: none;
 	border-color: #4299e1; /* Borde azul cuando está en foco */
 	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2); /* Sombra azul */
   }
   
-  /* Estilo para el botón de publicar */
-  .publish-button {
-	width: 100%;
+  /* Estilo para los botones */
+  .publish-button, .cancel-button {
+	width: 48%; /* Ajustar el ancho de los botones */
 	padding: 0.75rem;
+	font-size: 1rem;
+	border-radius: 4px;
+  }
+  
+  .publish-button {
 	background-color: #4299e1; /* Azul claro */
 	color: white;
-	border: none;
-	border-radius: 4px;
-	font-size: 1rem;
-	cursor: pointer;
-	transition: background-color 0.2s;
   }
   
   .publish-button:hover {
 	background-color: #3182ce; /* Azul oscuro al pasar el ratón */
   }
   
-  .publish-button:disabled {
-	background-color: #a0aec0; /* Color cuando el botón está deshabilitado */
-	cursor: not-allowed;
-  }
-  
-  /* Estilo para el botón de cancelar */
   .cancel-button {
-	width: 48%;
-	padding: 0.75rem;
-	font-size: 1rem;
-	margin-right: 4%; /* Espacio entre los botones */
-	border: 1px solid #e2e8f0; /* Borde gris claro */
 	background-color: white;
 	color: #4299e1; /* Color de texto azul */
-	cursor: pointer;
+	margin-right: 4%; /* Espacio entre los botones */
   }
   
   .cancel-button:hover {
 	background-color: #f7fafc; /* Fondo claro al pasar el ratón */
   }
   
-  /* Estilo para la alineación de los botones */
-  .form-actions {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-  }
-  
+  /* Estilo para los mensajes de error */
   .error-message {
 	color: #e53e3e; /* Color rojo para mensajes de error */
 	margin-top: 0.5rem;

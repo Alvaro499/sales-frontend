@@ -1,17 +1,20 @@
 import React from 'react';
 import usePublishProduct from './hooks';
-import { Button, Form, Input, Checkbox, Spin } from 'antd';
+import { Button, Form, Input, Checkbox, Spin, Select } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import './style.css';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const ProductPublishForm = () => {
 	const {
 		product,
+		categories,
 		error,
 		isLoading,
 		handleInputChange,
+		handleCategoryChange,
 		handlePriceChange,
 		handlePublish,
 	} = usePublishProduct();
@@ -90,6 +93,20 @@ const ProductPublishForm = () => {
 						onChange={handleInputChange}
 						placeholder='123e4567-e89b-12d3-a456-426614174000'
 					/>
+				</Form.Item>
+
+				<Form.Item label='Categoría' name='category_id'>
+					<Select
+						value={product.category_id}
+						onChange={handleCategoryChange}
+						placeholder='Selecciona una categoría'
+					>
+						{categories.map(category => (
+							<Option key={category.category_id} value={category.category_id}>
+								{category.name}
+							</Option>
+						))}
+					</Select>
 				</Form.Item>
 
 				<Form.Item name='available' valuePropName='checked'>

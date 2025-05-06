@@ -13,10 +13,18 @@ const usePublishProduct = () => {
 		stock: 0,
 		url_img: '',
 		is_active: true,
+		category_id: null, // Nueva propiedad para la categoría
 	});
 
 	const [error, setError] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	// Lista de categorías (esto debería venir de una API o base de datos)
+	const categories = [
+		{ category_id: 1, name: 'Electronics' },
+		{ category_id: 2, name: 'Clothing' },
+		{ category_id: 3, name: 'Food' },
+	];
 
 	// Handle form input changes
 	const handleInputChange = (
@@ -26,6 +34,14 @@ const usePublishProduct = () => {
 		setProduct(prevProduct => ({
 			...prevProduct,
 			[name]: value,
+		}));
+	};
+
+	// Handle category selection change
+	const handleCategoryChange = (value: number) => {
+		setProduct(prevProduct => ({
+			...prevProduct,
+			category_id: value, // Actualizamos la categoría seleccionada
 		}));
 	};
 
@@ -55,7 +71,8 @@ const usePublishProduct = () => {
 			!product.description ||
 			!product.price ||
 			!product.stock ||
-			!product.url_img
+			!product.url_img ||
+			product.category_id === null // Validar que se haya seleccionado una categoría
 		) {
 			setError('Todos los campos son obligatorios.');
 			return false;
@@ -106,11 +123,13 @@ const usePublishProduct = () => {
 
 	return {
 		product,
+		categories, // Pasar la lista de categorías al componente
 		error,
 		isLoading,
 		handleInputChange,
+		handleCategoryChange, // Añadimos esta función para manejar el cambio de categoría
 		handlePriceChange,
-		handleAvailabilityChange, // Added this function to handle availability change
+		handleAvailabilityChange,
 		handlePublish,
 	};
 };

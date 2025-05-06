@@ -9,4 +9,18 @@ export interface Product {
 	stock: number;
 	url_img: string;
 	is_active: boolean;
+	category_id: number | null;
 }
+
+export interface Category {
+	category_id: number;
+	name: string;
+	description: string;
+}
+
+export interface ProductCategory {
+	product_category_id: number;
+	product_id: string;
+	category_id: number;
+}
+	

@@ -20,7 +20,7 @@ apiInstance.interceptors.request.use(
 		// }
 		return config;
 	},
-	error => Promise.reject(error),
+	error => Promise.reject(error)
 );
 
 // Interceptor para manejar la respuesta (manejo de errores, token expirado, etc.)
@@ -34,7 +34,7 @@ apiInstance.interceptors.response.use(
 			// Manejar sesión expirada (ej. removeSessionToken())
 		}
 		return Promise.reject(error);
-	},
+	}
 );
 
 // ----------------------------------- MÉTODOS AXIOS -----------------------------------

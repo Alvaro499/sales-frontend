@@ -2,15 +2,9 @@ import { doPost } from './http.service';
 import { Pyme } from '../models/Pymes.models';
 import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
+import { AxiosError } from 'axios';
 
 const BASE_PATH = '/api';
-
-interface AxiosError {
-	response?: {
-		data?: ErrorResponse | { message?: string; code?: string };
-		status?: number;
-	};
-}
 
 export const pymeRegistrationService = {
 	register: async (
@@ -23,25 +17,25 @@ export const pymeRegistrationService = {
 			);
 			return response;
 		} catch (error) {
-			const axiosError = error as AxiosError;
-			const errorData = axiosError.response?.data;
+			const axiosError = error as AxiosError<
+				ErrorResponse | { message?: string; errorCode?: string }
+			>;
 
-			if (
-				errorData &&
-				'code' in errorData &&
-				errorData.code === 'EMAIL_EXISTS'
-			) {
+			// Manejo específico de errores de red
+			if (!axiosError.response) {
 				return {
-					message: 'El correo electrónico ya está registrado',
-					code: axiosError.response?.status || 409,
-					errorCode: 'EMAIL_EXISTS',
+					message: 'Error de conexión. Verifica tu red e intenta nuevamente.',
+					code: 503,
+					errorCode: 'NETWORK_ERROR',
 				};
 			}
 
+			const errorData = axiosError.response.data;
+
 			return {
-				message:
-					(errorData as ErrorResponse)?.message || 'Error al registrar la PYME',
-				code: axiosError.response?.status || 500,
+				message: (errorData as ErrorResponse)?.message || 'Error al registrar',
+				code: axiosError.response.status || 500,
+				errorCode: (errorData as { errorCode?: string })?.errorCode,
 			};
 		}
 	},
@@ -57,10 +51,10 @@ export const pymeRegistrationService = {
 			);
 			return response;
 		} catch (error) {
-			const axiosError = error as AxiosError;
+			const axiosError = error as AxiosError<ErrorResponse>;
 			return {
 				message:
-					(axiosError.response?.data as ErrorResponse)?.message ||
+					axiosError.response?.data?.message ||
 					'Error al solicitar recuperación',
 				code: axiosError.response?.status || 500,
 			};
@@ -77,11 +71,9 @@ export const pymeRegistrationService = {
 			);
 			return response;
 		} catch (error) {
-			const axiosError = error as AxiosError;
+			const axiosError = error as AxiosError<ErrorResponse>;
 			return {
-				message:
-					(axiosError.response?.data as ErrorResponse)?.message ||
-					'Código incorrecto',
+				message: axiosError.response?.data?.message || 'Código incorrecto',
 				code: axiosError.response?.status || 400,
 			};
 		}
@@ -97,10 +89,10 @@ export const pymeRegistrationService = {
 			);
 			return response;
 		} catch (error) {
-			const axiosError = error as AxiosError;
+			const axiosError = error as AxiosError<ErrorResponse>;
 			return {
 				message:
-					(axiosError.response?.data as ErrorResponse)?.message ||
+					axiosError.response?.data?.message ||
 					'Error al reenviar el código de verificación',
 				code: axiosError.response?.status || 500,
 			};

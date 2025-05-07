@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
-import { VerificationRequest } from '../../models/Pymes.models';
+import { VerificationRequest } from '../../models/Auth.models';
 import { VerificationHook } from './types';
 
 export const useVerification = (): VerificationHook => {

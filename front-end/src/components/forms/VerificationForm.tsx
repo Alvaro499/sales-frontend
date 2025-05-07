@@ -1,6 +1,6 @@
 import React from 'react';
-import { VerificationFormProps } from '../../models/Pymes.models';
-import './styles/index.css';
+import { VerificationFormProps } from './types';
+import './index.css';
 
 export const VerificationForm: React.FC<VerificationFormProps> = ({
 	email,

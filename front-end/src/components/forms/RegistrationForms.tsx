@@ -1,6 +1,6 @@
 import React from 'react';
-import { RegistrationFormProps } from '../../models/Pymes.models';
-import './styles/index.css';
+import { RegistrationFormProps } from './types';
+import './index.css';
 
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 	formData,

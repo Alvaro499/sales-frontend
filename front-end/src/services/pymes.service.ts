@@ -1,9 +1,6 @@
 import { doPost } from './http.service';
-import {
-	Pyme,
-	RecoveryRequest,
-	VerificationRequest,
-} from '../models/Pymes.models';
+import { Pyme } from '../models/Pymes.models';
+import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 
 const BASE_PATH = '/api';

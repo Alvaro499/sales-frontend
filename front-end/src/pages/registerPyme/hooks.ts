@@ -1,11 +1,11 @@
-// src/pages/register/hooks.ts
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { pymeRegistrationService } from '../../services/pymes.service';
+import { validateRegisterPymeForm } from '../../utilities/pymeFormValidation';
 import { Pyme } from '../../models/Pymes.models';
-import { useApiHandler } from '../../hooks/useApiHandler';
-import { pymeRegistrationService } from '../../services/request.service';
-import { ErrorResponse } from '../../models/Api.models';
 
-export const useRegisterPymeForm = () => {
+export const useRegisterForm = () => {
+	const navigate = useNavigate();
 	const [formData, setFormData] = useState<Pyme>({
 		companyName: '',
 		email: '',
@@ -14,54 +14,45 @@ export const useRegisterPymeForm = () => {
 		address: '',
 	});
 
-	const [error, setError] = useState<string>('');
+	const [error, setError] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [verificationRequired] = useState(false);
-	const { handleMutation } = useApiHandler();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setFormData(prev => ({
-			...prev,
-			[name]: value,
-		}));
+		setFormData(prev => ({ ...prev, [name]: value }));
+		if (name === 'email' && error) {
+			setError('');
+		}
 	};
 
-	const resetForm = () => {
-		setFormData({
-			companyName: '',
-			email: '',
-			password: '',
-			phone: '',
-			address: '',
-		});
-		setError('');
-	};
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-	const registerPyme = async () => {
+		const validationError = validateRegisterPymeForm(formData);
+		if (validationError) {
+			setError(validationError);
+			return;
+		}
+
 		setIsSubmitting(true);
 		setError('');
 
 		try {
-			const response = await handleMutation(
-				pymeRegistrationService.register,
-				formData,
-			);
+			const response = await pymeRegistrationService.register(formData);
 
-			if ('code' in response) {
-				// Manejo de error
-				setError(response.message || 'Error al registrar la pyme');
-				return { success: false, requiresVerification: false };
+			if ('errorCode' in response) {
+				if (response.errorCode === 'EMAIL_ALREADY_EXISTS') {
+					setError('El email ya está registrado. Por favor usa otro email.');
+				} else {
+					setError(response.message || 'Error al registrar');
+				}
+				return;
 			}
 
-			// Éxito en registro
-			resetForm();
-			return { success: true, requiresVerification: true };
+			navigate(`/verificacion?email=${encodeURIComponent(formData.email)}`);
 		} catch (err) {
-			const error = err as ErrorResponse;
-			setError(error.message || 'Error inesperado al registrar');
-			console.error('Registration error:', err);
-			return { success: false, requiresVerification: false };
+			console.error('Error inesperado:', err);
+			setError('Error inesperado al registrar. Por favor intenta nuevamente.');
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -71,10 +62,8 @@ export const useRegisterPymeForm = () => {
 		formData,
 		error,
 		isSubmitting,
-		verificationRequired,
-		setError,
 		handleChange,
-		registerPyme,
-		resetForm,
+		handleSubmit,
+		setError,
 	};
 };

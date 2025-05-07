@@ -70,13 +70,13 @@ export const pymeRegistrationService = {
 		}
 	},
 
-	verifyEmail: async (
+	verifyCode: async (
 		verificationData: VerificationRequest,
 	): Promise<OkResponse | ErrorResponse> => {
 		try {
 			const response = await doPost<VerificationRequest, OkResponse>(
 				verificationData,
-				`${BASE_PATH}/pymes/verify-email`,
+				`${BASE_PATH}/pymes/verify-code`,
 			);
 			return response;
 		} catch (error) {
@@ -84,8 +84,8 @@ export const pymeRegistrationService = {
 			return {
 				message:
 					(axiosError.response?.data as ErrorResponse)?.message ||
-					'Error al verificar el código',
-				code: axiosError.response?.status || 500,
+					'Código incorrecto',
+				code: axiosError.response?.status || 400,
 			};
 		}
 	},
@@ -94,12 +94,8 @@ export const pymeRegistrationService = {
 		email: string,
 	): Promise<OkResponse | ErrorResponse> => {
 		try {
-			const verificationRequest: VerificationRequest = {
-				email,
-				verificationCode: '',
-			};
-			const response = await doPost<VerificationRequest, OkResponse>(
-				verificationRequest,
+			const response = await doPost<{ email: string }, OkResponse>(
+				{ email },
 				`${BASE_PATH}/pymes/resend-verification-code`,
 			);
 			return response;
@@ -108,7 +104,7 @@ export const pymeRegistrationService = {
 			return {
 				message:
 					(axiosError.response?.data as ErrorResponse)?.message ||
-					'Error al reenviar el código',
+					'Error al reenviar el código de verificación',
 				code: axiosError.response?.status || 500,
 			};
 		}

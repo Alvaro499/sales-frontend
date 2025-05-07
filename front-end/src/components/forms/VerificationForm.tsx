@@ -9,6 +9,7 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 	isSubmitting,
 	onCodeChange,
 	onSubmit,
+	onResendCode,
 }) => {
 	return (
 		<div className='form-container'>
@@ -65,10 +66,10 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 					</button>
 				</div>
 
-				{/* Reenvío de código */}
 				<div className='resend-section'>
 					<p>¿No recibiste el código?</p>
-					<button type='button' className='btn-text'>
+					<button type='button' className='btn-text' onClick={onResendCode}>
+						{' '}
 						Reenviar código
 					</button>
 				</div>

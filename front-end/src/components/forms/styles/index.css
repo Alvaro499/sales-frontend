@@ -2,16 +2,18 @@
 	width: 100%;
 	padding: 2.5rem 4rem; /* Aumentamos padding en los laterales */
 	background: white;
-	border-radius: 12px;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	border-radius: 20px;
 }
 
 .form-title {
 	text-align: center;
-	color: #2d3748;
-	margin-bottom: 2.5rem; /* Ajuste de margen */
+	color: #ffffff;
+	margin-bottom: 1rem;
+	border-radius: 8px;
 	font-size: 1.75rem;
 	font-weight: 600;
+	background-color: #4299e1;
+	padding: 3rem;
 }
 
 .form-group {

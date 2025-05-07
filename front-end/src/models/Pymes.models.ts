@@ -27,7 +27,7 @@ export interface RegistrationFormProps {
 export interface VerificationFormProps {
 	email: string;
 	verificationCode: string;
-	error: string;
+	error: string | null;
 	isSubmitting: boolean;
 	onCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onSubmit: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;

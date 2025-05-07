@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
 import { VerificationRequest } from '../../models/Pymes.models';
+import { VerificationHook } from './types';
 
-export const useVerification = () => {
+export const useVerification = (): VerificationHook => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const email = new URLSearchParams(location.search).get('email') || '';
@@ -13,11 +14,12 @@ export const useVerification = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setVerificationCode(e.target.value);
+		setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6));
 	};
-
-	const handleVerify = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const handleVerify = async (
+		e: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
+		e.preventDefault(); // Evitar que el formulario se envíe por defecto
 		setIsSubmitting(true);
 		setError('');
 
@@ -28,31 +30,30 @@ export const useVerification = () => {
 			};
 
 			const response =
-				await pymeRegistrationService.verifyEmail(verificationData);
+				await pymeRegistrationService.verifyCode(verificationData);
 
 			if ('errorCode' in response) {
 				setError(response.message || 'Código de verificación inválido');
 				return;
 			}
-
 			navigate('/registro-exitoso');
 		} catch (err) {
-			console.error(err);
+			console.error('Error de verificación:', err);
 			setError('Error al verificar el código');
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
-	const handleResendCode = async () => {
+	const handleResendCode = async (): Promise<void> => {
 		setIsSubmitting(true);
 		setError('');
 
 		try {
 			await pymeRegistrationService.resendVerificationCode(email);
-			alert('Código reenviado con éxito');
+			setVerificationCode('');
 		} catch (err) {
-			console.error(err);
+			console.error('Error al reenviar código:', err);
 			setError('Error al reenviar el código');
 		} finally {
 			setIsSubmitting(false);
@@ -60,7 +61,7 @@ export const useVerification = () => {
 	};
 
 	const handleBack = () => {
-		navigate('/registro');
+		navigate('/registro', { state: { email } });
 	};
 
 	return {

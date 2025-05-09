@@ -1,12 +1,17 @@
-import RegisterPyme from './pages/registerPyme';
-// src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import RegisterPymePage from './pages/registerPyme'; // Asegúrate que el nombre del componente sea correcto
+import VerificationPage from './pages/verificationPyme';
 const App = () => {
-	// <-- Cambiado a arrow function
 	return (
-		<div className='app'>
-			<RegisterPyme />
-		</div>
+		<Router>
+			<div className='app'>
+				<Routes>
+					<Route path='/registro' element={<RegisterPymePage />} />
+					<Route path='/verificacion' element={<VerificationPage />} />
+				</Routes>
+			</div>
+		</Router>
 	);
 };
 
-export default App; // <-- Añade esta línea
+export default App;

@@ -1,11 +1,13 @@
-// src/pages/register/hooks.ts
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { pymeRegistrationService } from '../../services/pymes.service';
+import { validateRegisterPymeForm } from '../../utilities/pymeFormValidation';
 import { Pyme } from '../../models/Pymes.models';
 import { useApiHandler } from '../../hooks/useApiHandler';
-import { pymeRegistrationService } from '../../services/request.service';
-import { ErrorResponse } from '../../models/Api.models';
 
-export const useRegisterPymeForm = () => {
+export const useRegisterForm = () => {
+	const navigate = useNavigate();
+	const { handleMutation } = useApiHandler();
 	const [formData, setFormData] = useState<Pyme>({
 		companyName: '',
 		email: '',
@@ -14,31 +16,24 @@ export const useRegisterPymeForm = () => {
 		address: '',
 	});
 
-	const [error, setError] = useState<string>('');
+	const [error, setError] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [verificationRequired] = useState(false);
-	const { handleMutation } = useApiHandler();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setFormData(prev => ({
-			...prev,
-			[name]: value,
-		}));
+		setFormData(prev => ({ ...prev, [name]: value }));
+		if (error) setError('');
 	};
 
-	const resetForm = () => {
-		setFormData({
-			companyName: '',
-			email: '',
-			password: '',
-			phone: '',
-			address: '',
-		});
-		setError('');
-	};
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-	const registerPyme = async () => {
+		const validationError = validateRegisterPymeForm(formData);
+		if (validationError) {
+			setError(validationError);
+			return;
+		}
+
 		setIsSubmitting(true);
 		setError('');
 
@@ -48,33 +43,45 @@ export const useRegisterPymeForm = () => {
 				formData,
 			);
 
-			if ('code' in response) {
-				// Manejo de error
-				setError(response.message || 'Error al registrar la pyme');
-				return { success: false, requiresVerification: false };
+			if (
+				response.isSuccess === true &&
+				!response.errorCode &&
+				!response.message?.includes('Error')
+			) {
+				navigate(`/verificacion?email=${encodeURIComponent(formData.email)}`);
+				return;
 			}
 
-			// Éxito en registro
-			resetForm();
-			return { success: true, requiresVerification: true };
+			// Manejo de errores conocidos
+			if (response.errorCode === 'EMAIL_EXISTS') {
+				setError('El correo electrónico ya está registrado');
+			} else {
+				setError(
+					response.message ||
+						'Error al registrar. Por favor intenta nuevamente.',
+				);
+			}
 		} catch (err) {
-			const error = err as ErrorResponse;
-			setError(error.message || 'Error inesperado al registrar');
-			console.error('Registration error:', err);
-			return { success: false, requiresVerification: false };
+			// Errores no controlados (como NETWORK_ERROR)
+			if (err instanceof Error && err.message === 'NETWORK_ERROR') {
+				setError('Error de conexión. Verifica tu red e intenta nuevamente.');
+			} else {
+				console.error('Error inesperado:', err);
+				setError('Ocurrió un error inesperado. Por favor intenta más tarde.');
+			}
 		} finally {
 			setIsSubmitting(false);
 		}
-	};
 
+		// Si hay un error, evitar la navegación
+		if (error) return; // Esta línea asegura que no se navegue si hay un error.
+	};
 	return {
 		formData,
 		error,
 		isSubmitting,
-		verificationRequired,
-		setError,
 		handleChange,
-		registerPyme,
-		resetForm,
+		handleSubmit,
+		setError, // Opcional: si necesitas permitir que el componente modifique el error
 	};
 };

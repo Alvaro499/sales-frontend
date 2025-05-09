@@ -1,0 +1,117 @@
+{
+  "pymes": [
+    {
+      "id": "9f3e",
+      "companyName": "Plasma Innova",
+      "email": "marianoda20027@gmail.com",
+      "password": "marianito 21221",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael"
+    },
+    {
+      "id": "0f6c",
+      "companyName": "Plasma Innova",
+      "email": "marianoda20027@gmail.com",
+      "password": "bdqwiudhqwuidhiwhq dqwi",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael"
+    }
+  ],
+  "verification": [
+    {
+      "id": "1739",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "90f8",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "6103",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "5401",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "7731",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "b331",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "024e",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "7977",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "82b4",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "d60f",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "eb86",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "ea87",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "e217",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "5b76",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "99fe",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "5164",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "a251",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "a0f8",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "d734",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    }
+  ]
+}

@@ -1,58 +1,121 @@
-// Este hook va a manejar el API, busca generalizar el manejo de errores y , centralizarlo en un único lugar.
 import { AxiosError } from 'axios';
 import { ErrorResponse } from '../models/Api.models';
 
+interface ApiResponse<T> {
+	result?: T;
+	isSuccess: boolean;
+	isError: boolean;
+	message: string;
+	errorCode?: string;
+}
+
 export const useApiHandler = () => {
-	// Para actualizaciones o escrituras
 	const handleMutation = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
 		input: TInput,
-	) => {
-		let isError = false;
-		let isSuccess = !isError;
-		let message = 'Process executed successfully';
-		let result;
+	): Promise<ApiResponse<TResult>> => {
 		try {
-			result = await call(input);
-			return { result, isSuccess, isError, message };
-		} catch (e) {
-			if (e instanceof AxiosError) {
-				const axiosError = e as AxiosError;
-				result = axiosError.response;
-				const error = result?.data as ErrorResponse;
-				if (error !== null) {
-					message = error.message;
-					isError = true;
-					isSuccess = !isError;
-					return { error, isSuccess, isError, message };
+			const result = await call(input);
+
+			// Verificación mejorada con type guards
+			if (isErrorResponse(result)) {
+				return {
+					result: undefined,
+					isSuccess: false,
+					isError: true,
+					message: result.message,
+					errorCode: result.errorCode || 'API_ERROR',
+				};
+			}
+
+			// Respuesta exitosa
+			return {
+				result,
+				isSuccess: true,
+				isError: false,
+				message: 'Operación exitosa',
+			};
+		} catch (error: unknown) {
+			// Explicitamente typed como unknown
+			// Type-safe error handling
+			if (error instanceof Error) {
+				if (error.message.includes('Network Error')) {
+					return networkErrorResponse();
 				}
 			}
-			throw e;
+
+			if (error instanceof AxiosError) {
+				return axiosErrorResponse(error);
+			}
+
+			return {
+				result: undefined,
+				isSuccess: false,
+				isError: true,
+				message: 'Error inesperado',
+				errorCode: 'UNKNOWN_ERROR',
+			};
 		}
 	};
-	//Para lecturas
+
+	// Helper functions para respuestas de error
+	const networkErrorResponse = (): ApiResponse<never> => ({
+		result: undefined,
+		isSuccess: false,
+		isError: true,
+		message: 'Error de conexión',
+		errorCode: 'NETWORK_ERROR',
+	});
+
+	const axiosErrorResponse = (
+		error: AxiosError<ErrorResponse>,
+	): ApiResponse<never> => ({
+		result: undefined,
+		isSuccess: false,
+		isError: true,
+		message: error.response?.data?.message || 'Error en la solicitud',
+		errorCode: error.response?.data?.errorCode || 'API_ERROR',
+	});
+
+	// Type guard para ErrorResponse
+	const isErrorResponse = (response: unknown): response is ErrorResponse => {
+		return (
+			typeof response === 'object' &&
+			response !== null &&
+			'message' in response &&
+			'code' in response
+		);
+	};
+
 	const handleQuery = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
 		input: TInput,
-	) => {
-		let isError = false;
-		let message = 'Process executed successfully';
-		let result;
+	): Promise<{
+		result?: TResult;
+		isError: boolean;
+		message: string;
+	}> => {
 		try {
-			result = await call(input);
-			return { result, isError, message };
+			const result = await call(input);
+			return {
+				result,
+				isError: false,
+				message: 'Consulta exitosa',
+			};
 		} catch (e) {
 			if (e instanceof AxiosError) {
-				const axiosError = e as AxiosError;
-				result = axiosError.response;
-				const error = result?.data as ErrorResponse;
-				if (error !== null) {
-					message = error.message;
-					isError = true;
-					return { result, isError, message };
-				}
+				const axiosError = e as AxiosError<ErrorResponse>;
+				return {
+					result: undefined,
+					isError: true,
+					message: axiosError.response?.data?.message || 'Error en la consulta',
+				};
 			}
-			throw e;
+			return {
+				result: undefined,
+				isError: true,
+				message: 'Error desconocido en la consulta',
+			};
 		}
 	};
 

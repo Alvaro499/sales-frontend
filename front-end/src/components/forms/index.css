@@ -1,0 +1,121 @@
+.form-container {
+	width: 100%;
+	padding: 2.5rem 4rem; /* Aumentamos padding en los laterales */
+	background: white;
+	border-radius: 20px;
+}
+
+.form-title {
+	text-align: center;
+	color: #ffffff;
+	margin-bottom: 1rem;
+	border-radius: 8px;
+	font-size: 1.75rem;
+	font-weight: 600;
+	background-color: #4299e1;
+	padding: 3rem;
+}
+
+.form-group {
+	margin-bottom: 2rem; /* Aumentamos la separación entre grupos */
+}
+
+.form-label {
+	display: block;
+	font-weight: 500;
+	color: #4a5568;
+	margin-bottom: 0.75rem;
+	font-size: 1rem; /* Aumento ligeramente el tamaño */
+}
+
+.form-input {
+	width: 90%;
+	padding: 1rem 1rem; /* Menos padding horizontal */
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+	background-color: #f8fafc;
+	margin: 0 auto; /* Centrado */
+	display: block;
+}
+
+.form-input::placeholder {
+	color: #a0aec0;
+	opacity: 0.6; /* Hacemos el placeholder aún más suave */
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: #4299e1;
+	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+	background-color: white;
+}
+
+/* Texto opcional */
+.optional-text {
+	color: #718096;
+	font-weight: normal;
+}
+
+/* Botón mejorado */
+.btn-primary {
+	width: 100%;
+	padding: 1rem;
+	background-color: #4299e1;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-size: 1.05rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.btn-primary:hover {
+	background-color: #3182ce;
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+}
+
+.btn-primary:disabled {
+	background-color: #a0aec0; /* Cambié para cuando está deshabilitado */
+	cursor: not-allowed;
+}
+
+/* Sección de recuperación mejorada */
+.recovery-section {
+	margin-top: 2rem; /* Aumentamos el margen entre campos y la recuperación */
+	text-align: center;
+	font-size: 1rem;
+	color: #4a5568;
+}
+
+.recovery-section button {
+	background: none;
+	border: none;
+	color: #4299e1;
+	font-weight: 500;
+	cursor: pointer;
+	padding: 0;
+	margin-left: 0.25rem;
+}
+
+.recovery-section button:hover {
+	text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+	.form-container {
+		padding: 2rem; /* Menos padding en pantallas pequeñas */
+	}
+
+	.form-title {
+		font-size: 1.5rem; /* Ajustamos el tamaño del título en pantallas pequeñas */
+	}
+
+	.btn-primary {
+		padding: 1rem; /* Reducimos el tamaño del botón */
+	}
+}

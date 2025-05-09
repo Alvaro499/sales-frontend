@@ -12,7 +12,7 @@ interface ApiResponse<T> {
 export const useApiHandler = () => {
 	const handleMutation = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
-		input: TInput,
+		input: TInput
 	): Promise<ApiResponse<TResult>> => {
 		try {
 			const result = await call(input);
@@ -67,9 +67,7 @@ export const useApiHandler = () => {
 		errorCode: 'NETWORK_ERROR',
 	});
 
-	const axiosErrorResponse = (
-		error: AxiosError<ErrorResponse>,
-	): ApiResponse<never> => ({
+	const axiosErrorResponse = (error: AxiosError<ErrorResponse>): ApiResponse<never> => ({
 		result: undefined,
 		isSuccess: false,
 		isError: true,
@@ -89,7 +87,7 @@ export const useApiHandler = () => {
 
 	const handleQuery = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
-		input: TInput,
+		input: TInput
 	): Promise<{
 		result?: TResult;
 		isError: boolean;

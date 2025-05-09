@@ -3,8 +3,7 @@ import { RegistrationForm } from '../../components/forms/RegistrationForms';
 import './styles/index.css';
 
 export const RegisterPymePage = () => {
-	const { formData, error, isSubmitting, handleChange, handleSubmit } =
-		useRegisterForm();
+	const { formData, error, isSubmitting, handleChange, handleSubmit } = useRegisterForm();
 
 	const handleRecoveryClick = () => {
 		alert('Funcionalidad de recuperación');

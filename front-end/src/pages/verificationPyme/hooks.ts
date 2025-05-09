@@ -19,9 +19,7 @@ export const useVerification = (): VerificationHook => {
 		setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 4));
 	};
 
-	const handleVerify = async (
-		e: React.FormEvent<HTMLFormElement>,
-	): Promise<void> => {
+	const handleVerify = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		e.preventDefault();
 
 		if (verificationCode.length !== 4) {
@@ -33,10 +31,7 @@ export const useVerification = (): VerificationHook => {
 		setError('');
 
 		const verificationData: VerificationRequest = { email, verificationCode };
-		const response = await handleMutation(
-			pymeRegistrationService.verifyCode,
-			verificationData,
-		);
+		const response = await handleMutation(pymeRegistrationService.verifyCode, verificationData);
 
 		console.log(response);
 
@@ -55,7 +50,7 @@ export const useVerification = (): VerificationHook => {
 
 		const response = await handleMutation(
 			pymeRegistrationService.resendVerificationCode,
-			email,
+			email
 		);
 
 		if (!response.isSuccess) {

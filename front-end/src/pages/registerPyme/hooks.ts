@@ -38,10 +38,7 @@ export const useRegisterForm = () => {
 		setError('');
 
 		try {
-			const response = await handleMutation(
-				pymeRegistrationService.register,
-				formData,
-			);
+			const response = await handleMutation(pymeRegistrationService.register, formData);
 
 			if (
 				response.isSuccess === true &&
@@ -56,10 +53,7 @@ export const useRegisterForm = () => {
 			if (response.errorCode === 'EMAIL_EXISTS') {
 				setError('El correo electrónico ya está registrado');
 			} else {
-				setError(
-					response.message ||
-						'Error al registrar. Por favor intenta nuevamente.',
-				);
+				setError(response.message || 'Error al registrar. Por favor intenta nuevamente.');
 			}
 		} catch (err) {
 			// Errores no controlados (como NETWORK_ERROR)

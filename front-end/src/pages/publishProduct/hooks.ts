@@ -27,9 +27,7 @@ const usePublishProduct = () => {
 	];
 
 	// Handle form input changes
-	const handleInputChange = (
-		e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-	) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setProduct(prevProduct => ({
 			...prevProduct,

@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
 import { VerificationRequest } from '../../models/Auth.models';
 import { VerificationHook } from './types';
+import { useApiHandler } from '../../hooks/useApiHandler';
 
 export const useVerification = (): VerificationHook => {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { handleMutation } = useApiHandler();
 	const email = new URLSearchParams(location.search).get('email') || '';
 
 	const [verificationCode, setVerificationCode] = useState('');
@@ -14,50 +16,53 @@ export const useVerification = (): VerificationHook => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+		setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 4));
 	};
+
 	const handleVerify = async (
 		e: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
-		e.preventDefault(); // Evitar que el formulario se envíe por defecto
+		e.preventDefault();
+
+		if (verificationCode.length !== 4) {
+			setError('El código debe tener 4 dígitos');
+			return;
+		}
+
 		setIsSubmitting(true);
 		setError('');
 
-		try {
-			const verificationData: VerificationRequest = {
-				email,
-				verificationCode,
-			};
+		const verificationData: VerificationRequest = { email, verificationCode };
+		const response = await handleMutation(
+			pymeRegistrationService.verifyCode,
+			verificationData,
+		);
 
-			const response =
-				await pymeRegistrationService.verifyCode(verificationData);
+		console.log(response);
 
-			if ('errorCode' in response) {
-				setError(response.message || 'Código de verificación inválido');
-				return;
-			}
+		if (response.isSuccess && !response.errorCode) {
 			navigate('/registro-exitoso');
-		} catch (err) {
-			console.error('Error de verificación:', err);
-			setError('Error al verificar el código');
-		} finally {
-			setIsSubmitting(false);
+		} else {
+			setError(response.message || 'Error al verificar el código');
 		}
+
+		setIsSubmitting(false);
 	};
 
 	const handleResendCode = async (): Promise<void> => {
 		setIsSubmitting(true);
 		setError('');
 
-		try {
-			await pymeRegistrationService.resendVerificationCode(email);
-			setVerificationCode('');
-		} catch (err) {
-			console.error('Error al reenviar código:', err);
-			setError('Error al reenviar el código');
-		} finally {
-			setIsSubmitting(false);
+		const response = await handleMutation(
+			pymeRegistrationService.resendVerificationCode,
+			email,
+		);
+
+		if (!response.isSuccess) {
+			setError(response.message || 'Error al reenviar el código');
 		}
+
+		setIsSubmitting(false);
 	};
 
 	const handleBack = () => {

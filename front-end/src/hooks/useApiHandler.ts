@@ -17,53 +17,37 @@ export const useApiHandler = () => {
 		try {
 			const result = await call(input);
 
-			// Verificar si la respuesta es un error disfrazado de éxito
-			if (
-				typeof result === 'object' &&
-				result !== null &&
-				'errorCode' in result
-			) {
-				const errorResponse = result as unknown as ErrorResponse;
+			// Verificación mejorada con type guards
+			if (isErrorResponse(result)) {
 				return {
 					result: undefined,
 					isSuccess: false,
 					isError: true,
-					message: errorResponse.message,
-					errorCode: errorResponse.errorCode,
+					message: result.message,
+					errorCode: result.errorCode || 'API_ERROR',
 				};
 			}
 
+			// Respuesta exitosa
 			return {
 				result,
 				isSuccess: true,
 				isError: false,
 				message: 'Operación exitosa',
 			};
-		} catch (e) {
-			// Manejo de errores de red
-			if (e instanceof Error && e.message.includes('Network Error')) {
-				return {
-					result: undefined,
-					isSuccess: false,
-					isError: true,
-					message: 'Error de conexión',
-					errorCode: 'NETWORK_ERROR',
-				};
+		} catch (error: unknown) {
+			// Explicitamente typed como unknown
+			// Type-safe error handling
+			if (error instanceof Error) {
+				if (error.message.includes('Network Error')) {
+					return networkErrorResponse();
+				}
 			}
 
-			// Manejo de errores de Axios
-			if (e instanceof AxiosError) {
-				const errorData = e.response?.data as ErrorResponse | undefined;
-				return {
-					result: undefined,
-					isSuccess: false,
-					isError: true,
-					message: errorData?.message || 'Error en la solicitud',
-					errorCode: errorData?.errorCode || 'API_ERROR',
-				};
+			if (error instanceof AxiosError) {
+				return axiosErrorResponse(error);
 			}
 
-			// Error genérico
 			return {
 				result: undefined,
 				isSuccess: false,
@@ -74,29 +58,64 @@ export const useApiHandler = () => {
 		}
 	};
 
-	// Para lecturas
+	// Helper functions para respuestas de error
+	const networkErrorResponse = (): ApiResponse<never> => ({
+		result: undefined,
+		isSuccess: false,
+		isError: true,
+		message: 'Error de conexión',
+		errorCode: 'NETWORK_ERROR',
+	});
+
+	const axiosErrorResponse = (
+		error: AxiosError<ErrorResponse>,
+	): ApiResponse<never> => ({
+		result: undefined,
+		isSuccess: false,
+		isError: true,
+		message: error.response?.data?.message || 'Error en la solicitud',
+		errorCode: error.response?.data?.errorCode || 'API_ERROR',
+	});
+
+	// Type guard para ErrorResponse
+	const isErrorResponse = (response: unknown): response is ErrorResponse => {
+		return (
+			typeof response === 'object' &&
+			response !== null &&
+			'message' in response &&
+			'code' in response
+		);
+	};
+
 	const handleQuery = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
 		input: TInput,
-	) => {
-		let isError = false;
-		let message = 'Process executed successfully';
-		let result;
+	): Promise<{
+		result?: TResult;
+		isError: boolean;
+		message: string;
+	}> => {
 		try {
-			result = await call(input);
-			return { result, isError, message };
+			const result = await call(input);
+			return {
+				result,
+				isError: false,
+				message: 'Consulta exitosa',
+			};
 		} catch (e) {
 			if (e instanceof AxiosError) {
-				const axiosError = e as AxiosError;
-				result = axiosError.response;
-				const error = result?.data as ErrorResponse;
-				if (error) {
-					message = error.message;
-					isError = true;
-					return { result, isError, message };
-				}
+				const axiosError = e as AxiosError<ErrorResponse>;
+				return {
+					result: undefined,
+					isError: true,
+					message: axiosError.response?.data?.message || 'Error en la consulta',
+				};
 			}
-			throw e;
+			return {
+				result: undefined,
+				isError: true,
+				message: 'Error desconocido en la consulta',
+			};
 		}
 	};
 

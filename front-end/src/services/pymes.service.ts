@@ -4,7 +4,8 @@ import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
-const BASE_PATH = '/api';
+const BASE_PATH = '/pymes';
+const BASE_PATH2 = '/verification';
 
 export const pymeRegistrationService = {
 	register: async (
@@ -13,29 +14,24 @@ export const pymeRegistrationService = {
 		try {
 			const response = await doPost<Pyme, OkResponse>(
 				registrationData,
-				`${BASE_PATH}/pymes/register`,
+				`${BASE_PATH}`,
 			);
 			return response;
 		} catch (error) {
-			const axiosError = error as AxiosError<
-				ErrorResponse | { message?: string; errorCode?: string }
-			>;
+			const axiosError = error as AxiosError<ErrorResponse>;
 
-			// Manejo específico de errores de red
 			if (!axiosError.response) {
 				return {
-					message: 'Error de conexión. Verifica tu red e intenta nuevamente.',
+					message: 'Error de conexión',
 					code: 503,
 					errorCode: 'NETWORK_ERROR',
 				};
 			}
 
-			const errorData = axiosError.response.data;
-
 			return {
-				message: (errorData as ErrorResponse)?.message || 'Error al registrar',
-				code: axiosError.response.status || 500,
-				errorCode: (errorData as { errorCode?: string })?.errorCode,
+				message: axiosError.response.data?.message || 'Error al registrar',
+				code: axiosError.response.status,
+				errorCode: axiosError.response.data?.errorCode || 'API_ERROR',
 			};
 		}
 	},
@@ -47,7 +43,7 @@ export const pymeRegistrationService = {
 			const recoveryRequest: RecoveryRequest = { email };
 			const response = await doPost<RecoveryRequest, OkResponse>(
 				recoveryRequest,
-				`${BASE_PATH}/pymes/request-recovery`,
+				`${BASE_PATH}/request-recovery`,
 			);
 			return response;
 		} catch (error) {
@@ -57,6 +53,7 @@ export const pymeRegistrationService = {
 					axiosError.response?.data?.message ||
 					'Error al solicitar recuperación',
 				code: axiosError.response?.status || 500,
+				errorCode: 'RECOVERY_ERROR',
 			};
 		}
 	},
@@ -67,34 +64,43 @@ export const pymeRegistrationService = {
 		try {
 			const response = await doPost<VerificationRequest, OkResponse>(
 				verificationData,
-				`${BASE_PATH}/pymes/verify-code`,
+				`${BASE_PATH2}`,
 			);
-			return response;
+			return response; // Retorna directamente la respuesta
 		} catch (error) {
 			const axiosError = error as AxiosError<ErrorResponse>;
+
+			if (!axiosError.response) {
+				return {
+					message: 'Error de conexión',
+					code: 503,
+					errorCode: 'NETWORK_ERROR',
+				};
+			}
+
 			return {
-				message: axiosError.response?.data?.message || 'Código incorrecto',
-				code: axiosError.response?.status || 400,
+				message: axiosError.response?.data?.message || 'Error al verificar',
+				code: axiosError.response?.status || 500,
+				errorCode: 'VERIFICATION_ERROR',
 			};
 		}
 	},
-
 	resendVerificationCode: async (
 		email: string,
 	): Promise<OkResponse | ErrorResponse> => {
 		try {
 			const response = await doPost<{ email: string }, OkResponse>(
 				{ email },
-				`${BASE_PATH}/pymes/resend-verification-code`,
+				`${BASE_PATH}/resend-verification-code`,
 			);
 			return response;
 		} catch (error) {
 			const axiosError = error as AxiosError<ErrorResponse>;
 			return {
 				message:
-					axiosError.response?.data?.message ||
-					'Error al reenviar el código de verificación',
+					axiosError.response?.data?.message || 'Error al reenviar el código',
 				code: axiosError.response?.status || 500,
+				errorCode: 'RESEND_ERROR',
 			};
 		}
 	},

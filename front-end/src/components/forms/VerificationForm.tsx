@@ -40,9 +40,7 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 						className='form-input verification-code'
 						placeholder='0000'
 					/>
-					<small className='hint-text'>
-						Revisa tu bandeja de entrada o spam
-					</small>
+					<small className='hint-text'>Revisa tu bandeja de entrada o spam</small>
 				</div>
 
 				{/* Mensaje de error */}

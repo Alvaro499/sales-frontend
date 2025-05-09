@@ -8,10 +8,10 @@
 	padding: 20px;
 	width: 100%; /* Asegura que ocupe todo el ancho disponible */
 	box-sizing: border-box; /* Asegura que el tamaño sea calculado correctamente */
-  }
-  
-  /* Estilos para el formulario de Ant Design */
-  .ant-form {
+}
+
+/* Estilos para el formulario de Ant Design */
+.ant-form {
 	background-color: white; /* Fondo blanco para el formulario */
 	padding: 2rem;
 	border-radius: 8px;
@@ -20,56 +20,58 @@
 	max-width: 500px; /* Ancho máximo */
 	margin: 0 auto; /* Asegura que se centre horizontalmente */
 	box-sizing: border-box; /* Asegura que no se añadan márgenes inesperados */
-  }
-  
-  /* Ajustes de estilo para los inputs */
-  .ant-input, .ant-textarea {
+}
+
+/* Ajustes de estilo para los inputs */
+.ant-input,
+.ant-textarea {
 	width: 100%; /* Asegura que los campos ocupen todo el ancho disponible */
 	padding: 0.75rem;
 	margin-top: 0.25rem;
 	border: 1px solid #e2e8f0; /* Borde gris claro */
 	border-radius: 4px;
 	font-size: 1rem;
-  }
-  
-  /* Enfoque de los campos de texto */
-  .ant-input:focus, .ant-textarea:focus {
+}
+
+/* Enfoque de los campos de texto */
+.ant-input:focus,
+.ant-textarea:focus {
 	outline: none;
 	border-color: #4299e1; /* Borde azul cuando está en foco */
 	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2); /* Sombra azul */
-  }
-  
-  /* Estilo para los botones */
-  .publish-button, .cancel-button {
+}
+
+/* Estilo para los botones */
+.publish-button,
+.cancel-button {
 	width: 48%; /* Ajustar el ancho de los botones */
 	padding: 0.75rem;
 	font-size: 1rem;
 	border-radius: 4px;
-  }
-  
-  .publish-button {
+}
+
+.publish-button {
 	background-color: #4299e1; /* Azul claro */
 	color: white;
-  }
-  
-  .publish-button:hover {
+}
+
+.publish-button:hover {
 	background-color: #3182ce; /* Azul oscuro al pasar el ratón */
-  }
-  
-  .cancel-button {
+}
+
+.cancel-button {
 	background-color: white;
 	color: #4299e1; /* Color de texto azul */
 	margin-right: 4%; /* Espacio entre los botones */
-  }
-  
-  .cancel-button:hover {
+}
+
+.cancel-button:hover {
 	background-color: #f7fafc; /* Fondo claro al pasar el ratón */
-  }
-  
-  /* Estilo para los mensajes de error */
-  .error-message {
+}
+
+/* Estilo para los mensajes de error */
+.error-message {
 	color: #e53e3e; /* Color rojo para mensajes de error */
 	margin-top: 0.5rem;
 	font-size: 0.875rem;
-  }
-  
+}

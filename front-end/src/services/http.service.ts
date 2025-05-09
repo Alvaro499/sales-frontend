@@ -1,8 +1,4 @@
-import axios, {
-	AxiosInstance,
-	AxiosResponse,
-	InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 // API Real URL
 const apiInstance: AxiosInstance = axios.create({
@@ -27,10 +23,7 @@ apiInstance.interceptors.request.use(
 apiInstance.interceptors.response.use(
 	response => response,
 	async error => {
-		if (
-			error.response?.status === 401 &&
-			error.response?.data?.code === 40103
-		) {
+		if (error.response?.status === 401 && error.response?.data?.code === 40103) {
 			// Manejar sesión expirada (ej. removeSessionToken())
 		}
 		return Promise.reject(error);

@@ -1,8 +1,22 @@
 {
-	"useTabs": true,
-	"singleQuote": true,
-	"jsxSingleQuote": true,
-	"arrowParens": "avoid",
-	"endOfLine": "lf",
-	"trailingComma": "es5"
+  "useTabs": true,
+  "tabWidth": 4,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "bracketSpacing": true,
+  "semi": true,
+  "parser": "typescript",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "useTabs": false,
+        "tabWidth": 2
+      }
+    }
+  ]
 }

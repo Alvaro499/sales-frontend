@@ -1,2 +1,15 @@
-dist
-package-lock.json
+dist;
+package - lock.json;
+.*
+*.json
+*.md
+*.html
+*.css
+*.svg
+*.yaml
+*.yml
+dist/
+build/
+node_modules/
+public/
+db.json

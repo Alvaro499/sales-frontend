@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RegisterPymePage from './pages/registerPyme'; // Asegúrate que el nombre del componente sea correcto
 import VerificationPage from './pages/verificationPyme';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ProductPublishForm from './pages/publishProduct';
+
 const App = () => {
 	return (
 		<Router>
@@ -8,6 +11,7 @@ const App = () => {
 				<Routes>
 					<Route path='/registro' element={<RegisterPymePage />} />
 					<Route path='/verificacion' element={<VerificationPage />} />
+					<Route path='/newProduct' element={<ProductPublishForm />} />
 				</Routes>
 			</div>
 		</Router>

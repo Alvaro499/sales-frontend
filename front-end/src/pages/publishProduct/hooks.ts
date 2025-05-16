@@ -97,7 +97,7 @@ const usePublishProduct = () => {
 			});
 		} catch (e) {
 			setError('Error al publicar el producto.');
-			console.error(e);
+			throw new Error(String(e));
 		} finally {
 			setIsLoading(false);
 		}

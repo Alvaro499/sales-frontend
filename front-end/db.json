@@ -23,6 +23,30 @@
       "password": "12313491h3f8 3r9fh9312",
       "phone": "+50671133894",
       "address": "200 Mts sur del Cementerio de San Rafael"
+    },
+    {
+      "id": "f02e",
+      "companyName": "Plasma Innova",
+      "email": "marianoda20027@gmail.com",
+      "password": "32i9u3r92ur9ur293ur932ur2",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael"
+    },
+    {
+      "id": "b0cf",
+      "companyName": "Plasma Innova",
+      "email": "marianoda20027@gmail.com",
+      "password": "212ernfifrmfiojerofjero",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael"
+    },
+    {
+      "id": "bcd9",
+      "companyName": "Plasma Innova",
+      "email": "marianoda20027@gmail.com",
+      "password": "123456789",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael"
     }
   ],
   "verification": [
@@ -123,6 +147,21 @@
     },
     {
       "id": "70f4",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "6014",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "1342",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "f5b9",
       "email": "marianoda20027@gmail.com",
       "verificationCode": "1234"
     }

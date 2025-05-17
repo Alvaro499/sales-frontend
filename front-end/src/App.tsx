@@ -3,6 +3,7 @@ import RegisterPymePage from './pages/registerPyme'; // Asegúrate que el nombre
 import VerificationPage from './pages/verificationPyme';
 import { PasswordResetPage } from './pages/PasswordResetPage';
 import ProductPublishForm from './pages/publishProduct';
+import ProductPublishPanel from './pages/manageProducts';
 
 const App = () => {
 	return (
@@ -14,6 +15,7 @@ const App = () => {
 					<Route path='/reset-password/:token' element={<PasswordResetPage />} />
 					<Route path='/newProduct' element={<ProductPublishForm />} />
 
+					<Route path='/productPublishPanel' element={<ProductPublishPanel />} />
 				</Routes>
 			</div>
 		</Router>

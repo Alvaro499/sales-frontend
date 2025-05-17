@@ -3,6 +3,7 @@ import RegisterPymePage from './pages/registerPyme'; // Asegúrate que el nombre
 import VerificationPage from './pages/verificationPyme';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductPublishForm from './pages/publishProduct';
+import ProductPublishPanel from './pages/manageProducts';
 
 const App = () => {
 	return (
@@ -12,6 +13,7 @@ const App = () => {
 					<Route path='/registro' element={<RegisterPymePage />} />
 					<Route path='/verificacion' element={<VerificationPage />} />
 					<Route path='/newProduct' element={<ProductPublishForm />} />
+					<Route path='/productPublishPanel' element={<ProductPublishPanel />} />
 				</Routes>
 			</div>
 		</Router>

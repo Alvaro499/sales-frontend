@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { PasswordResetForm } from '../../components/PasswordResetForms';
+import { PasswordResetForm } from '../../components/forms/PasswordResetForms';
 import { usePasswordReset } from './hooks';
 
 export const PasswordResetPage: React.FC = () => {

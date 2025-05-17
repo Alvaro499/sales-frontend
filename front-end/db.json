@@ -165,5 +165,77 @@
       "email": "marianoda20027@gmail.com",
       "verificationCode": "1234"
     }
+  ],
+  "productos": [
+    {
+      "id": "a1aa",
+      "product_id": "",
+      "pyme_id": "a0f8",
+      "name": "T-shirt",
+      "description": "Camiseta cómoda de algodón",
+      "price": 29.99,
+      "available": true,
+      "promotion": "20%",
+      "stock": 4,
+      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "is_active": true,
+      "category_id": 2
+    },
+    {
+      "id": "b2bb",
+      "product_id": "",
+      "pyme_id": "b1f9",
+      "name": "Sneakers",
+      "description": "Zapatillas deportivas ligeras",
+      "price": 59.99,
+      "available": true,
+      "promotion": null,
+      "stock": 10,
+      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "is_active": true,
+      "category_id": 1
+    },
+    {
+      "id": "c3cc",
+      "product_id": "",
+      "pyme_id": "c2g0",
+      "name": "Coffee Mug",
+      "description": "Taza para café con diseño moderno",
+      "price": 9.99,
+      "available": false,
+      "promotion": null,
+      "stock": 0,
+      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "is_active": true,
+      "category_id": 3
+    },
+    {
+      "id": "d4dd",
+      "product_id": "",
+      "pyme_id": "d3h1",
+      "name": "Jeans",
+      "description": "Pantalones vaqueros clásicos",
+      "price": 49.99,
+      "available": true,
+      "promotion": "15%",
+      "stock": 7,
+      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "is_active": true,
+      "category_id": 2
+    },
+    {
+      "id": "e5ee",
+      "product_id": "",
+      "pyme_id": "e4i2",
+      "name": "Headphones",
+      "description": "Auriculares con cancelación de ruido",
+      "price": 79.99,
+      "available": true,
+      "promotion": null,
+      "stock": 5,
+      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "is_active": true,
+      "category_id": 1
+    }
   ]
 }

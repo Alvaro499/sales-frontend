@@ -2,15 +2,11 @@ import { doPost } from './http.service'; //doGet, doPut
 import { Product } from '../models/Products.models';
 //import { OkResponse, ErrorResponse } from '../models/Api.models';
 
-//Promise ya viene de react, es de tipo Event [], que será el campo data de la respuesta
-const BASE_PATH = '/api/';
+const BASE_PATH = '/productos'; // Cambia esto a la ruta real de tu backend
 
-export const createProduct = async (event: Product): Promise<Response> => {
-	console.log(event);
-	const response = await doPost<Product, Response>(
-		event,
-		BASE_PATH + '/api/...' // Cambia esto por la ruta correcta
-	);
+export const createProduct = async (product: Product): Promise<Response> => {
+	console.log(product);
+	const response = await doPost<Product, Response>(product, BASE_PATH);
 
 	return response;
 };

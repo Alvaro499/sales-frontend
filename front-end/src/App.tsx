@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import RegisterPymePage from './pages/registerPyme';
+import RegisterPymePage from './pages/registerPyme'; // Asegúrate que el nombre del componente sea correcto
 import VerificationPage from './pages/verificationPyme';
 import { PasswordResetPage } from './pages/PasswordResetPage';
+import ProductPublishForm from './pages/publishProduct';
 
-export const App = () => {
+const App = () => {
 	return (
 		<Router>
 			<div className='app'>
@@ -11,8 +12,12 @@ export const App = () => {
 					<Route path='/registro' element={<RegisterPymePage />} />
 					<Route path='/verificacion' element={<VerificationPage />} />
 					<Route path='/reset-password/:token' element={<PasswordResetPage />} />
+					<Route path='/newProduct' element={<ProductPublishForm />} />
+
 				</Routes>
 			</div>
 		</Router>
 	);
 };
+
+export default App;

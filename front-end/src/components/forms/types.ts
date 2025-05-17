@@ -18,3 +18,9 @@ export interface VerificationFormProps {
 	onResendCode: () => void | Promise<void>;
 	onBack: () => void;
 }
+
+export interface PasswordResetProps {
+  onSubmit: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  isSubmitting: boolean;
+  minLength?: number;
+}

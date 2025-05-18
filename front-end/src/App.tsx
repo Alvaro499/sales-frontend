@@ -6,6 +6,7 @@ import ProductPublishForm from './pages/publishProduct';
 import ProductPublishPanel from './pages/manageProducts';
 import Home from './pages/home';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AdminHome from './pages/admin';
 
 const App = () => {
 	return (
@@ -19,6 +20,8 @@ const App = () => {
 					<Route path='/newProduct' element={<ProductPublishForm />} />
 
 					<Route path='/productPublishPanel' element={<ProductPublishPanel />} />
+					<Route path='/admin' element={<AdminHome />} />
+					
 				</Routes>
 			</div>
 		</Router>

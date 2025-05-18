@@ -94,7 +94,11 @@ const Home: React.FC = () => {
 						>
 							Login
 						</button>
-						<button className='btn btn-primary ms-3' type='button' aria-label='Admin'>
+						<button className='btn btn-primary ms-3' 
+								type='button' 
+								aria-label='Admin'
+								onClick={() => navigate('/admin')}
+							>
 							Admin
 						</button>
 					</div>

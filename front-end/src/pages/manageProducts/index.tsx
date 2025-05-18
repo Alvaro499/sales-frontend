@@ -12,7 +12,9 @@ const ProductPublishPanel = () => {
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+    const [isStockModalVisible, setIsStockModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [newStock, setNewStock] = useState<number>(0);
 
     const showModal = (product: Product) => {
         setSelectedProduct(product);
@@ -22,6 +24,12 @@ const ProductPublishPanel = () => {
     const showViewModal = (product: Product) => {
         setSelectedProduct(product);
         setIsViewModalVisible(true);
+    };
+
+    const showStockModal = (product: Product) => {
+        setSelectedProduct(product);
+        setNewStock(product.stock);
+        setIsStockModalVisible(true);
     };
 
     const handleConfirm = () => {
@@ -35,6 +43,20 @@ const ProductPublishPanel = () => {
 
     const handleViewModalClose = () => {
         setIsViewModalVisible(false);
+    };
+
+    const handleStockModalClose = () => {
+        setIsStockModalVisible(false);
+    };
+
+    const handleStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewStock(Number(e.target.value));
+    };
+
+    const handleStockConfirm = () => {
+        // Aquí puedes agregar la lógica para actualizar el stock en la base de datos
+        console.log(`Nuevo stock para ${selectedProduct?.name}: ${newStock}`);
+        setIsStockModalVisible(false);
     };
 
     return (
@@ -64,10 +86,13 @@ const ProductPublishPanel = () => {
                                         <button className="btn btn-link p-0 me-2">Promoción</button>
                                     )}
                                     {product.is_active && (
-                                        <button className="btn btn-link p-0" onClick={() => showModal(product)}>
+                                        <button className="btn btn-link p-0 me-2" onClick={() => showModal(product)}>
                                             Despublicar
                                         </button>
                                     )}
+                                    <button className="btn btn-link p-0" onClick={() => showStockModal(product)}>
+                                        Administrar producto
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -116,6 +141,51 @@ const ProductPublishPanel = () => {
                         <div className="modal-footer">
                             <button className="btn btn-primary" onClick={handleViewModalClose}>Aceptar</button>
                             <button className="btn btn-secondary" onClick={handleViewModalClose}>Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal para administrar producto (actualizar stock) */}
+            <div className={`modal fade ${isStockModalVisible ? 'show d-block' : ''}`} tabIndex={-1} style={{ background: isStockModalVisible ? 'rgba(0,0,0,0.5)' : 'transparent' }}>
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Actualizar Stock</h5>
+                            <button type="button" className="btn-close" onClick={handleStockModalClose}></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="d-flex justify-content-between mb-3">
+                                <span>Producto: {selectedProduct?.name}</span>
+                                <span>Stock actual: {selectedProduct?.stock}</span>
+                            </div>
+                            <div className="d-flex align-items-center mb-3">
+                                <div className="me-4">
+                                    <label>Nuevo stock:</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        className="form-control"
+                                        value={newStock}
+                                        onChange={handleStockChange}
+                                        style={{ width: 80, display: 'inline-block', marginLeft: 8 }}
+                                    />
+                                </div>
+                                {newStock === 0 && (
+                                    <span className="text-warning ms-3">
+                                        &#9888; El producto se marcará como 'No disponible' en el catálogo.
+                                    </span>
+                                )}
+                                 {newStock < 0 && (
+                                    <span className="text-warning ms-3">
+                                        &#9888; El valor ingresado no es válido.
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button className="btn btn-primary" disabled={newStock < 0} onClick={handleStockConfirm}>Confirmar</button>
+                            <button className="btn btn-secondary" onClick={handleStockModalClose}>Cancelar</button>
                         </div>
                     </div>
                 </div>

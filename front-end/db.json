@@ -166,7 +166,7 @@
       "verificationCode": "1234"
     }
   ],
-  "productos": [
+ "productos": [
     {
       "id": "a1aa",
       "product_id": "",
@@ -177,7 +177,7 @@
       "available": true,
       "promotion": "20%",
       "stock": 4,
-      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 2
     },
@@ -191,7 +191,7 @@
       "available": true,
       "promotion": null,
       "stock": 10,
-      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 1
     },
@@ -205,7 +205,7 @@
       "available": false,
       "promotion": null,
       "stock": 0,
-      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 3
     },
@@ -219,7 +219,7 @@
       "available": true,
       "promotion": "15%",
       "stock": 7,
-      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 2
     },
@@ -233,9 +233,36 @@
       "available": true,
       "promotion": null,
       "stock": 5,
-      "url_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrQ7bhf6knNLBwZGrzFNjuyr6I7PlsI8d16Q&s",
+      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 1
+    }
+  ],
+   "categories": [
+    {
+      "category_id": 1,
+      "name": "Calzado",
+      "description": "Zapatos, zapatillas y otros tipos de calzado"
+    },
+    {
+      "category_id": 2,
+      "name": "Ropa",
+      "description": "Prendas de vestir como camisetas, jeans y más"
+    },
+    {
+      "category_id": 3,
+      "name": "Accesorios",
+      "description": "Artículos como tazas, auriculares y otros accesorios"
+    },
+    {
+      "category_id": 4,
+      "name": "Electrónica",
+      "description": "Dispositivos electrónicos y gadgets"
+    },
+    {
+      "category_id": 5,
+      "name": "Hogar",
+      "description": "Artículos para el hogar y decoración"
     }
   ]
 }

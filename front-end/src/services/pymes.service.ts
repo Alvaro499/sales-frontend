@@ -4,18 +4,21 @@ import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
-const BASE_PATH = '/pymes';
-const VERIFICATION_PATH = '/verification';
+const BASE_PATH = '/api/pymes';
 
 interface PasswordResetRequest {
   token: string;
   newPassword: string;
 }
 
+
 export const pymeRegistrationService = {
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
-      const response = await doPost<Pyme, OkResponse>(registrationData, BASE_PATH);
+      const response = await doPost<Pyme, OkResponse>(
+        registrationData, 
+        `${BASE_PATH}/register` 
+      );
       return response;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
@@ -33,6 +36,7 @@ export const pymeRegistrationService = {
       };
     }
   },
+  
 
   requestRecovery: async (email: string): Promise<OkResponse | ErrorResponse> => {
     try {
@@ -65,7 +69,7 @@ export const pymeRegistrationService = {
     try {
       const response = await doPost<VerificationRequest, OkResponse>(
         verificationData,
-        VERIFICATION_PATH
+        BASE_PATH
       );
       return response;
     } catch (error) {
@@ -74,6 +78,7 @@ export const pymeRegistrationService = {
         return {
           message: 'Error de conexión',
           code: 503,
+          
           errorCode: 'NETWORK_ERROR',
         };
       }

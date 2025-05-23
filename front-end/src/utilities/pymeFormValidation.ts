@@ -1,6 +1,6 @@
 import { Pyme } from '../models/Pymes.models';
 export const validateRegisterPymeForm = (formData: Pyme): string | null => {
-	if (!formData.companyName) {
+	if (!formData.pymeName) {
 		return 'El nombre de la empresa es obligatorio';
 	}
 	if (!formData.email) {
@@ -11,6 +11,9 @@ export const validateRegisterPymeForm = (formData: Pyme): string | null => {
 	}
 	if (!formData.address) {
 		return 'La dirección es obligatoria';
+	}
+	if (!formData.description) {
+		return 'La descripccion es obligatoria';
 	}
 	return null;
 };

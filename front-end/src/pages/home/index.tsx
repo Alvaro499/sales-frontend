@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from './hooks';
-import { Product } from './types';
+import { Product } from '../../models/Products.models';
 import './Styles.css';
 
 const Home: React.FC = () => {

@@ -3,14 +3,9 @@ import { Pyme } from '../models/Pymes.models';
 import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
+import { PasswordResetRequest } from '../models/Auth.models';
 
 const BASE_PATH = '/api/pymes';
-
-interface PasswordResetRequest {
-  token: string;
-  newPassword: string;
-}
-
 
 export const pymeRegistrationService = {
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {

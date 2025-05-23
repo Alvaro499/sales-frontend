@@ -169,7 +169,7 @@
  "productos": [
     {
       "id": "a1aa",
-      "product_id": "",
+      "product_id": "a1aa",
       "pyme_id": "a0f8",
       "name": "T-shirt",
       "description": "Camiseta cómoda de algodón",
@@ -183,7 +183,7 @@
     },
     {
       "id": "b2bb",
-      "product_id": "",
+      "product_id": "b2bb",
       "pyme_id": "b1f9",
       "name": "Sneakers",
       "description": "Zapatillas deportivas ligeras",
@@ -197,7 +197,7 @@
     },
     {
       "id": "c3cc",
-      "product_id": "",
+      "product_id": "c3cc",
       "pyme_id": "c2g0",
       "name": "Coffee Mug",
       "description": "Taza para café con diseño moderno",
@@ -211,7 +211,7 @@
     },
     {
       "id": "d4dd",
-      "product_id": "",
+      "product_id": "d4dd",
       "pyme_id": "d3h1",
       "name": "Jeans",
       "description": "Pantalones vaqueros clásicos",
@@ -225,7 +225,7 @@
     },
     {
       "id": "e5ee",
-      "product_id": "",
+      "product_id": "e5ee",
       "pyme_id": "e4i2",
       "name": "Headphones",
       "description": "Auriculares con cancelación de ruido",

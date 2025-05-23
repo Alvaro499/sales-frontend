@@ -110,8 +110,6 @@ const Home: React.FC = () => {
 								tabIndex={0}
 								aria-labelledby={`producto-${product.product_id}-nombre`}
 								aria-describedby={`producto-${product.product_id}-descripcion`}
-								onClick={() => navigate(`/producto/${product.product_id}`)}
-								style={{ cursor: 'pointer' }}
 							>
 								<img
 									src={product.url_img}
@@ -132,9 +130,16 @@ const Home: React.FC = () => {
 									>
 										{product.description}
 									</p>
-									<p className='mt-auto fw-bold fs-5 text-dark'>
+									<p className='fw-bold fs-5 text-dark'>
 										${product.price.toFixed(2)}
 									</p>
+
+									<button
+										className='btn btn-outline-primary mt-3'
+										onClick={() => navigate(`/producto/${product.product_id}`)}
+									>
+										Ver Detalle
+									</button>
 								</div>
 							</article>
 						</div>

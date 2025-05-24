@@ -2,9 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Product } from '../../models/Products.models';
 import useProductManagement from './hooks';
 import './style.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductPublishPanel = () => {
-    const { products, getProductsFromAPI, error } = useProductManagement();
+    const {
+        products,
+        getProductsFromAPI,
+        updateProductFromAPI,
+        unpublishProductFromAPI,
+        error
+    } = useProductManagement();
 
     useEffect(() => {
         getProductsFromAPI();
@@ -15,6 +22,7 @@ const ProductPublishPanel = () => {
     const [isStockModalVisible, setIsStockModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [newStock, setNewStock] = useState<number>(0);
+    const navigate = useNavigate();
 
     const showModal = (product: Product) => {
         setSelectedProduct(product);
@@ -32,9 +40,15 @@ const ProductPublishPanel = () => {
         setIsStockModalVisible(true);
     };
 
-    const handleConfirm = () => {
-        console.log(`Producto ${selectedProduct?.name} despublicado`);
+    // Handler para despublicar producto
+    const handleConfirm = async () => {
+        if (selectedProduct) {
+            const updatedProduct = { ...selectedProduct, is_active: false };
+            await unpublishProductFromAPI(selectedProduct.id, updatedProduct);
+        }
         setIsModalVisible(false);
+
+        getProductsFromAPI();
     };
 
     const handleCancel = () => {
@@ -53,26 +67,42 @@ const ProductPublishPanel = () => {
         setNewStock(Number(e.target.value));
     };
 
-    const handleStockConfirm = () => {
-        // Aquí puedes agregar la lógica para actualizar el stock en la base de datos
-        console.log(`Nuevo stock para ${selectedProduct?.name}: ${newStock}`);
+    // Handler para actualizar stock
+    const handleStockConfirm = async () => {
+        if (selectedProduct) {
+            const updatedProduct = {
+                ...selectedProduct,
+                stock: newStock,
+                available: newStock > 0
+            };
+            await updateProductFromAPI(selectedProduct.id, updatedProduct);
+        }
         setIsStockModalVisible(false);
+        getProductsFromAPI();
     };
 
     return (
         <div className="container panel-container mt-4">
             <h2>Panel de Productos Publicados</h2>
             <p>Bienvenido Pyme X</p>
+            <button
+                className='btn btn-primary'
+                onClick={() => navigate('/newProduct')}
+            >
+                Agregar producto
+            </button>
+            <br />
+            <br />
             <div className="row">
                 {products.map((product) => (
                     <div key={product.product_id} className="col-12 col-sm-6 col-md-4 mb-4">
                         <div className="card h-100 product-card">
-                            <img
-                                src={product.url_img}
-                                className="card-img-top"
-                                alt={product.name}
-                                style={{ height: '180px', objectFit: 'cover' }}
-                            />
+                          <img
+									src={product.url_img}
+									alt={`Imagen de ${product.name}`}
+									className='card-img-top rounded-top'
+									style={{ objectFit: 'cover', height: '200px' }}
+							/>
                             <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{product.name}</h5>
                                 <p className="card-text">Estado: {product.is_active ? 'Publicado' : 'Despublicado'}</p>
@@ -90,9 +120,11 @@ const ProductPublishPanel = () => {
                                             Despublicar
                                         </button>
                                     )}
+                                    {product.is_active && (
                                     <button className="btn btn-link p-0" onClick={() => showStockModal(product)}>
                                         Administrar producto
                                     </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

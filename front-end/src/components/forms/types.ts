@@ -1,11 +1,11 @@
 import { Pyme } from '../../models/Pymes.models';
 export interface RegistrationFormProps {
-	formData: Pyme;
-	error: string;
-	isSubmitting: boolean;
-	onRecoveryClick: () => void;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	onSubmit: (e: React.FormEvent) => void;
+  formData: Pyme;
+  error: string;
+  isSubmitting: boolean;
+  onRecoveryClick: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onSubmit: (e: React.FormEvent) => void;
 }
 
 export interface VerificationFormProps {
@@ -24,3 +24,8 @@ export interface PasswordResetProps {
   isSubmitting: boolean;
   minLength?: number;
 }
+export interface AuthFormProps {
+  isLogin?: boolean;
+  formTitle?: string;
+  onSuccess?: (data: any) => void;
+}	

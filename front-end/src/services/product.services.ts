@@ -22,6 +22,12 @@ export const getCategories = async (): Promise<Category[]> => {
   return response;
 };
 
+
+export const getProductById = async (id: string): Promise<Product> => {
+	return await doGet<Product>(`/productos/${id}`);
+};
+
+
 export const unpublishProduct = async (productId: string, product: Product): Promise<Product> => {
     const url = `${BASE_PATH}/${productId}`;
     return await doPut<Product, Product>(product, url);

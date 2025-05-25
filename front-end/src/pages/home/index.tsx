@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from './hooks';
-import { Product } from './types';
+import { Product } from '../../models/Products.models';
 import './Styles.css';
 
 const Home: React.FC = () => {
-	const { products, categories, loading, error } = useProducts();
 	const [search, setSearch] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState<string>('all');
-	const navigate = useNavigate();
+	const { filteredProducts, categories, loading, error } = useProducts(search, selectedCategory);
 
-	const filteredProducts = products.filter(product => {
-		const matchesSearch = product.name.toLowerCase().includes(search.toLowerCase());
-		const matchesCategory =
-			selectedCategory === 'all' || product.category_id === Number(selectedCategory);
-		return matchesSearch && matchesCategory;
-	});
+	const navigate = useNavigate();
 
 	return (
 		<>
@@ -46,7 +40,10 @@ const Home: React.FC = () => {
 						<span className='navbar-toggler-icon'></span>
 					</button>
 
-					<div className='collapse navbar-collapse justify-content-end' id='navbarContent'>
+					<div
+						className='collapse navbar-collapse justify-content-end'
+						id='navbarContent'
+					>
 						<div className='navbar-actions d-flex align-items-center gap-3'>
 							<input
 								className='form-control search-bar'
@@ -95,13 +92,13 @@ const Home: React.FC = () => {
 				<h1 className='text-center mb-5'>Productos Disponibles</h1>
 
 				{loading && <p className='text-center'>Cargando productos...</p>}
-				{error && (
+				{error && !categories.length && (
 					<p className='text-center text-danger' role='alert'>
 						{error}
 					</p>
 				)}
 
-				{!loading && filteredProducts.length === 0 && (
+				{!loading && filteredProducts.length === 0 && !error && (
 					<p className='text-center text-muted'>No se encontraron productos.</p>
 				)}
 
@@ -133,9 +130,16 @@ const Home: React.FC = () => {
 									>
 										{product.description}
 									</p>
-									<p className='mt-auto fw-bold fs-5 text-dark'>
+									<p className='fw-bold fs-5 text-dark'>
 										${product.price.toFixed(2)}
 									</p>
+
+									<button
+										className='btn btn-outline-primary mt-3'
+										onClick={() => navigate(`/producto/${product.product_id}`)}
+									>
+										Ver Detalle
+									</button>
 								</div>
 							</article>
 						</div>

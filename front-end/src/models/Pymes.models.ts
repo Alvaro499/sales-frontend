@@ -1,7 +1,8 @@
-export interface Pyme {
-	companyName: string;
-	email: string;
-	password: string;
-	phone?: string;
-	address: string;
+export  interface Pyme {
+  pymeName: string;  
+  email: string;
+  password: string;
+  phone?: string;
+  address: string;
+  description: string; 
 }

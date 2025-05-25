@@ -1,175 +1,10 @@
 {
-  "pymes": [
-    {
-      "id": "9f3e",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "marianito 21221",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    },
-    {
-      "id": "0f6c",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "bdqwiudhqwuidhiwhq dqwi",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    },
-    {
-      "id": "a3da",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "12313491h3f8 3r9fh9312",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    },
-    {
-      "id": "f02e",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "32i9u3r92ur9ur293ur932ur2",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    },
-    {
-      "id": "b0cf",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "212ernfifrmfiojerofjero",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    },
-    {
-      "id": "bcd9",
-      "companyName": "Plasma Innova",
-      "email": "marianoda20027@gmail.com",
-      "password": "123456789",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael"
-    }
-  ],
-  "verification": [
-    {
-      "id": "1739",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "90f8",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "6103",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "5401",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "7731",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "b331",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "024e",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "7977",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "82b4",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "d60f",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "eb86",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "ea87",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "e217",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "5b76",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "99fe",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "5164",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "a251",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "a0f8",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "d734",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "70f4",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "6014",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "1342",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "f5b9",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    }
-  ],
- "productos": [
+  "pymes": [],
+  "verification": [],
+  "productos": [
     {
       "id": "a1aa",
-      "product_id": "",
+      "product_id": "a1aa",
       "pyme_id": "a0f8",
       "name": "T-shirt",
       "description": "Camiseta cómoda de algodón",
@@ -183,7 +18,7 @@
     },
     {
       "id": "b2bb",
-      "product_id": "",
+      "product_id": "b2bb",
       "pyme_id": "b1f9",
       "name": "Sneakers",
       "description": "Zapatillas deportivas ligeras",
@@ -197,7 +32,7 @@
     },
     {
       "id": "c3cc",
-      "product_id": "",
+      "product_id": "c3cc",
       "pyme_id": "c2g0",
       "name": "Coffee Mug",
       "description": "Taza para café con diseño moderno",
@@ -211,7 +46,7 @@
     },
     {
       "id": "d4dd",
-      "product_id": "",
+      "product_id": "d4dd",
       "pyme_id": "d3h1",
       "name": "Jeans",
       "description": "Pantalones vaqueros clásicos",
@@ -225,7 +60,7 @@
     },
     {
       "id": "e5ee",
-      "product_id": "",
+      "product_id": "e5ee",
       "pyme_id": "e4i2",
       "name": "Headphones",
       "description": "Auriculares con cancelación de ruido",
@@ -238,31 +73,43 @@
       "category_id": 1
     }
   ],
-   "categories": [
+  "categories": [
     {
       "category_id": 1,
       "name": "Calzado",
-      "description": "Zapatos, zapatillas y otros tipos de calzado"
+      "description": "Zapatos, zapatillas y otros tipos de calzado",
+      "id": "0561"
     },
     {
       "category_id": 2,
       "name": "Ropa",
-      "description": "Prendas de vestir como camisetas, jeans y más"
+      "description": "Prendas de vestir como camisetas, jeans y más",
+      "id": "d8bf"
     },
     {
       "category_id": 3,
       "name": "Accesorios",
-      "description": "Artículos como tazas, auriculares y otros accesorios"
+      "description": "Artículos como tazas, auriculares y otros accesorios",
+      "id": "0dd5"
     },
     {
       "category_id": 4,
       "name": "Electrónica",
-      "description": "Dispositivos electrónicos y gadgets"
+      "description": "Dispositivos electrónicos y gadgets",
+      "id": "3f2f"
     },
     {
       "category_id": 5,
       "name": "Hogar",
-      "description": "Artículos para el hogar y decoración"
+      "description": "Artículos para el hogar y decoración",
+      "id": "3335"
+    }
+  ],
+  "login": [
+    {
+      "id": "42df",
+      "email": "marianoda20027@gmail.com",
+      "password": "adsdasdasdasda"
     }
   ]
 }

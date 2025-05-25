@@ -21,3 +21,8 @@ export const getCategories = async (): Promise<Category[]> => {
   const response = await doGet<Category[]>(BASE_PATH_CATEGORIES);
   return response;
 };
+
+
+export const getProductById = async (id: string): Promise<Product> => {
+	return await doGet<Product>(`/productos/${id}`);
+};

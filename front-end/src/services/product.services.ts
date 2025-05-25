@@ -1,4 +1,4 @@
-import { doGet, doPost } from './http.service'; //doGet, doPut
+import { doGet, doPost, doPut } from './http.service'; //doGet, doPut
 import { Category, Product } from '../models/Products.models';
 //import { OkResponse, ErrorResponse } from '../models/Api.models';
 
@@ -25,4 +25,15 @@ export const getCategories = async (): Promise<Category[]> => {
 
 export const getProductById = async (id: string): Promise<Product> => {
 	return await doGet<Product>(`/productos/${id}`);
+};
+
+
+export const unpublishProduct = async (productId: string, product: Product): Promise<Product> => {
+    const url = `${BASE_PATH}/${productId}`;
+    return await doPut<Product, Product>(product, url);
+};
+
+export const updateProduct = async (productId: string, product: Product): Promise<Product> => {
+    const url = `${BASE_PATH}/${productId}`;
+   return await doPut<Product, Product>(product, url);
 };

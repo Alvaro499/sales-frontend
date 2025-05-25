@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getProducts } from '../../services/product.services';
+import { getProducts, unpublishProduct, updateProduct } from '../../services/product.services';
 import { Product } from '../../models/Products.models';
 
 const useProductManagement = () => {
@@ -14,8 +14,32 @@ const useProductManagement = () => {
             setError('Error al listar los productos: ' + err);
         }
     };
+// Para despublicar un producto
+    const unpublishProductFromAPI = async (productId: string, product: Product) => {
+        try {
+            const updatedProduct = await unpublishProduct(productId, product);
+            setProducts((prev) =>
+                prev.map((p) => (p.product_id === productId ? updatedProduct : p))
+            );
+        } catch (err) {
+            setError('Error al despublicar el producto: ' + err);
+        }
+    };
 
-    return { products, getProductsFromAPI, error }; // Exporta los datos y funciones necesarias
+// Para actualizar un producto (por ejemplo, stock)
+    const updateProductFromAPI = async (productId: string, product: Product) => {
+        try {
+            const updatedProduct = await updateProduct(productId, product);
+            setProducts((prev) =>
+                prev.map((p) => (p.product_id === productId ? updatedProduct : p))
+            );
+        } catch (err) {
+            setError('Error al actualizar el producto: ' + err);
+        }
+    };
+
+
+    return { products, getProductsFromAPI, updateProductFromAPI, unpublishProductFromAPI, error }; // Exporta los datos y funciones necesarias
 };
 
 export default useProductManagement;

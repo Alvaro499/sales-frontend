@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { AuthService } from '../../services/auth.service';
+import { AuthCredentials } from '../../models/Auth.models';
 
 export const useAuthForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AuthCredentials>({
     email: '',
     password: ''
   });
-  const [errors, setErrors] = useState<{email?: string; password?: string}>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -33,7 +34,7 @@ export const useAuthForm = () => {
     setErrors(prev => ({ ...prev, [name]: error || undefined }));
   };
 
-  const handleSubmit = async (isLogin: boolean) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     setApiError(null);
 
@@ -51,9 +52,7 @@ export const useAuthForm = () => {
     }
 
     try {
-      const response = isLogin
-        ? await AuthService.login(formData)
-        : await AuthService.register(formData);
+      const response = await AuthService.login(formData);
       return response;
     } catch (error) {
       setApiError(error instanceof Error ? error.message : 'Error desconocido');

@@ -3,7 +3,6 @@ import { Pyme } from '../models/Pymes.models';
 import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
-import { PasswordResetRequest } from '../models/Auth.models';
 
 const BASE_PATH = '/api/pymes';
 
@@ -85,29 +84,4 @@ export const pymeRegistrationService = {
     }
   },
 
-  resetPassword: async (
-    data: PasswordResetRequest
-  ): Promise<OkResponse | ErrorResponse> => {
-    try {
-      const response = await doPost<PasswordResetRequest, OkResponse>(
-        data,
-        `${BASE_PATH}/reset-password`
-      );
-      return response;
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (!axiosError.response) {
-        return {
-          message: 'Error de conexión',
-          code: 503,
-          errorCode: 'NETWORK_ERROR',
-        };
-      }
-      return {
-        message: axiosError.response?.data?.message || 'Error al cambiar contraseña',
-        code: axiosError.response?.status || 500,
-        errorCode: axiosError.response?.data?.errorCode || 'PASSWORD_RESET_ERROR',
-      };
-    }
-  },
 };

@@ -24,3 +24,8 @@ export interface PasswordResetProps {
   isSubmitting: boolean;
   minLength?: number;
 }
+export interface AuthFormProps {
+  isLogin?: boolean;
+  formTitle?: string;
+  onSuccess?: (data: any) => void;
+}	

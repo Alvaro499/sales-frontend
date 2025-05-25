@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { pymeRegistrationService } from '../../services/pymes.service';
+import { AuthService } from '../../services/auth.service';
 import { useApiHandler } from '../../hooks/useApiHandler';
 
 export const usePasswordReset = (token?: string) => {
@@ -20,7 +20,7 @@ export const usePasswordReset = (token?: string) => {
 
     try {
       const response = await handleMutation(
-        pymeRegistrationService.resetPassword,
+        AuthService.resetPassword,
         { token, newPassword }
       );
 

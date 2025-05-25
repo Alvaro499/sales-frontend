@@ -12,3 +12,8 @@ export interface PasswordResetRequest {
   newPassword: string;
 }
 
+export interface AuthCredentials {
+  email: string;
+  password: string;
+}
+

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
-import { validateRegisterPymeForm } from '../../utilities/pymeFormValidation';
+import { validateRegisterPymeForm } from '../../utilities/validations/pymeFormValidation';
 import { Pyme } from '../../models/Pymes.models';
 import { useApiHandler } from '../../hooks/useApiHandler';
 

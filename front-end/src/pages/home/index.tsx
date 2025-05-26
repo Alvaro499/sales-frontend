@@ -5,150 +5,172 @@ import { Product } from '../../models/Products.models';
 import './Styles.css';
 
 const Home: React.FC = () => {
-	const [search, setSearch] = useState('');
-	const [selectedCategory, setSelectedCategory] = useState<string>('all');
-	const { filteredProducts, categories, loading, error } = useProducts(search, selectedCategory);
+    const [search, setSearch] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const { filteredProducts, categories, loading, error } = useProducts(search, selectedCategory);
+    const navigate = useNavigate();
 
-	const navigate = useNavigate();
+    return (
+        <div className="home-page">
+            {/* Enhanced Navbar */}
+            <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+                <div className="container">
+                    <div className="d-flex align-items-center">
+                        <a className="navbar-brand" href="/">
+                            <div className="d-flex align-items-center">
+                                <img
+                                    src="https://d500.epimg.net/cincodias/imagenes/2015/05/08/pyme/1431098283_691735_1431098420_noticia_normal.jpg"
+                                    alt="Logo"
+                                    width="40"
+                                    height="40"
+                                    className="rounded-circle me-2 border"
+                                />
+                                <span className="fw-bold fs-5 text-primary">PYME Shop</span>
+                            </div>
+                        </a>
+                    </div>
 
-	return (
-		<>
-			{/* Navbar elegante */}
-			<nav className='navbar navbar-expand-lg navbar-light bg-light shadow-sm py-3'>
-				<div className='container'>
-					<a className='navbar-brand d-flex align-items-center' href='/'>
-						<img
-							src='https://d500.epimg.net/cincodias/imagenes/2015/05/08/pyme/1431098283_691735_1431098420_noticia_normal.jpg'
-							alt='Logo de la empresa'
-							width={45}
-							height={45}
-							className='me-2 rounded shadow-sm'
-							style={{ objectFit: 'contain' }}
-						/>
-						<strong className='fs-4'>PYME Site</strong>
-					</a>
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent"
+                    >
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
 
-					<button
-						className='navbar-toggler'
-						type='button'
-						data-bs-toggle='collapse'
-						data-bs-target='#navbarContent'
-						aria-controls='navbarContent'
-						aria-expanded='false'
-						aria-label='Alternar navegación'
-					>
-						<span className='navbar-toggler-icon'></span>
-					</button>
+                    <div className="collapse navbar-collapse" id="navbarContent">
+                        <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 gap-3 ms-lg-auto">
+                            <div className="d-flex flex-column flex-lg-row gap-2 w-100">
+                                <div className="flex-grow-1 position-relative">
+                                    <input
+                                        type="search"
+                                        className="form-control ps-4"
+                                        placeholder="Buscar productos..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                    <i className="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
+                                </div>
+                                
+                                <select
+                                    className="form-select flex-shrink-0"
+                                    style={{ width: '200px' }}
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                >
+                                    <option value="all">Todas las categorías</option>
+                                    {categories.map((cat) => (
+                                        <option key={cat.category_id} value={cat.category_id}>
+                                            {cat.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-					<div
-						className='collapse navbar-collapse justify-content-end'
-						id='navbarContent'
-					>
-						<div className='navbar-actions d-flex align-items-center gap-3'>
-							<input
-								className='form-control search-bar'
-								type='search'
-								placeholder='Buscar productos...'
-								aria-label='Buscar productos'
-								value={search}
-								onChange={e => setSearch(e.target.value)}
-							/>
+                            <div className="d-flex gap-2">
+                                <button
+                                    className="btn btn-outline-primary d-flex align-items-center gap-2"
+                                    onClick={() => navigate('/login')}
+                                >
+                                    <i className="bi bi-box-arrow-in-right"></i>
+                                    <span className="d-none d-lg-inline">Conectar</span>
+                                </button>
+                                <button
+                                    className="btn btn-primary d-flex align-items-center gap-2"
+                                    onClick={() => navigate('/admin')}
+                                >
+                                    <i className="bi bi-shield-lock"></i>
+                                    <span className="d-none d-lg-inline">Admin</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-							<select
-								className='form-select'
-								aria-label='Filtrar por categoría'
-								value={selectedCategory}
-								onChange={e => setSelectedCategory(e.target.value)}
-								style={{ maxWidth: '180px' }}
-							>
-								<option value='all'>Todas las categorías</option>
-								{categories.map(cat => (
-									<option key={cat.category_id} value={cat.category_id}>
-										{cat.name}
-									</option>
-								))}
-							</select>
+            {/* Main Content */}
+            <main className="container py-4">
+                <div className="text-center mb-5">
+                    <h1 className="display-5 fw-bold mb-3">Nuestros Productos</h1>
+                    <p className="lead text-muted">Descubre lo mejor para tu negocio</p>
+                </div>
 
-							<div className='d-flex gap-2'>
-								<button
-  									className="btn btn-outline-primary d-flex align-items-center gap-2"
-  									onClick={() => navigate('/login')}
-									>
- 									 <i className="bi bi-person"></i>
-  									Conectar
-								</button>
-								<button
-									className='btn btn-primary'
-									onClick={() => navigate('/admin')}
-								>
-									Admin
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</nav>
+                {/* Status Messages */}
+                {loading && (
+                    <div className="text-center py-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                        <p className="mt-2">Cargando productos...</p>
+                    </div>
+                )}
 
-			<main className='container py-5'>
-				<h1 className='text-center mb-5'>Productos Disponibles</h1>
+                {error && !categories.length && (
+                    <div className="alert alert-danger text-center" role="alert">
+                        <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                        {error}
+                    </div>
+                )}
 
-				{loading && <p className='text-center'>Cargando productos...</p>}
-				{error && !categories.length && (
-					<p className='text-center text-danger' role='alert'>
-						{error}
-					</p>
-				)}
+                {!loading && filteredProducts.length === 0 && !error && (
+                    <div className="text-center py-5">
+                        <i className="bi bi-search text-muted" style={{ fontSize: '3rem' }}></i>
+                        <h3 className="mt-3">No se encontraron productos</h3>
+                        <p className="text-muted">Intenta con otros términos de búsqueda</p>
+                    </div>
+                )}
 
-				{!loading && filteredProducts.length === 0 && !error && (
-					<p className='text-center text-muted'>No se encontraron productos.</p>
-				)}
-
-				<div className='row g-4'>
-					{filteredProducts.map((product: Product) => (
-						<div key={product.product_id} className='col-12 col-md-6 col-lg-4'>
-							<article
-								className='card h-100 border-0 shadow-lg rounded-4 product-card'
-								tabIndex={0}
-								aria-labelledby={`producto-${product.product_id}-nombre`}
-								aria-describedby={`producto-${product.product_id}-descripcion`}
-							>
-								<img
-									src={product.url_img}
-									alt={`Imagen de ${product.name}`}
-									className='card-img-top rounded-top'
-									style={{ objectFit: 'cover', height: '200px' }}
-								/>
-								<div className='card-body d-flex flex-column'>
-									<h2
-										id={`producto-${product.product_id}-nombre`}
-										className='card-title h5 text-primary'
-									>
-										{product.name}
-									</h2>
-									<p
-										id={`producto-${product.product_id}-descripcion`}
-										className='card-text text-muted'
-									>
-										{product.description}
-									</p>
-									<p className='fw-bold fs-5 text-dark'>
-										${product.price.toFixed(2)}
-									</p>
-
-									<button
-										className='btn btn-outline-primary mt-3'
-										onClick={() => navigate(`/producto/${product.product_id}`)}
-									>
-										Ver Detalle
-									</button>
-								</div>
-							</article>
-						</div>
-					))}
-				</div>
-			</main>
-		</>
-	);
+                {/* Products Grid */}
+                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {filteredProducts.map((product: Product) => (
+                        <div key={product.product_id} className="col">
+                            <div 
+                                className="card h-100 border-0 shadow-sm transition-all product-card"
+                                onClick={() => navigate(`/producto/${product.product_id}`)}
+                                role="button"
+                            >
+                                <div className="position-relative overflow-hidden" style={{ height: '200px' }}>
+                                    <img
+                                        src={product.url_img}
+                                        alt={product.name}
+                                        className="card-img-top h-100 object-fit-cover"
+                                    />
+                                    {!product.available && (
+                                        <div className="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 small">
+                                            Agotado
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="card-body d-flex flex-column">
+                                    <h3 className="card-title h5 mb-2">{product.name}</h3>
+                                    <p className="card-text text-muted small flex-grow-1">
+                                        {product.description.length > 100 
+                                            ? `${product.description.substring(0, 100)}...` 
+                                            : product.description}
+                                    </p>
+                                    <div className="d-flex justify-content-between align-items-center mt-3">
+                                        <span className="fw-bold fs-5 text-primary">
+                                            ${product.price.toLocaleString('es-CL')}
+                                        </span>
+                                        <button 
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/producto/${product.product_id}`);
+                                            }}
+                                        >
+                                            Ver más
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </main>
+        </div>
+    );
 };
 
 export default Home;

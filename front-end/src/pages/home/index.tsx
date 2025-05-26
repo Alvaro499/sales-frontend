@@ -71,10 +71,11 @@ const Home: React.FC = () => {
 
 							<div className='d-flex gap-2'>
 								<button
-									className='btn btn-outline-primary'
-									onClick={() => navigate('/registro')}
-								>
-									Login
+  									className="btn btn-outline-primary d-flex align-items-center gap-2"
+  									onClick={() => navigate('/login')}
+									>
+ 									 <i className="bi bi-person"></i>
+  									Conectar
 								</button>
 								<button
 									className='btn btn-primary'

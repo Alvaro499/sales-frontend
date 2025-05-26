@@ -18,7 +18,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await handleSubmit(isLogin);
+    const result = await handleSubmit();
     if (result && onSuccess) onSuccess(result);
   };
 

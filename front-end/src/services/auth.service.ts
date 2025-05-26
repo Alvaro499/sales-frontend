@@ -2,64 +2,65 @@ import { doPost } from './http.service';
 import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
+import { authStorage } from './storage.sevice';
 
 export class AuthService {
-  private static BASE_PATH = '/login';
+  private static BASE_PATH = '/auth';
 
-  public static async login(credentials: AuthCredentials) {
+  public static async login(credentials: AuthCredentials): Promise<{ token: string } | ErrorResponse> {
     try {
-      const response = await doPost<AuthCredentials, any>(
+      const response = await doPost<AuthCredentials, { token: string }>(
         credentials,
-        `${this.BASE_PATH}`
+        `${this.BASE_PATH}/login`
       );
+      authStorage.setToken(response.token);
       return response;
     } catch (error) {
-      throw this.handleError(error);
+      return this.handleError(error);
     }
   }
 
-  public static async register(credentials: AuthCredentials) {
+  public static async register(credentials: AuthCredentials): Promise<OkResponse | ErrorResponse> {
     try {
-      const response = await doPost<AuthCredentials, any>(
+      return await doPost<AuthCredentials, OkResponse>(
         credentials,
         `${this.BASE_PATH}/register`
       );
-      return response;
     } catch (error) {
-      throw this.handleError(error);
+      return this.handleError(error);
     }
+  }
+
+  public static async logout(): Promise<void> {
+    authStorage.clearToken();
   }
 
   public static async resetPassword(
     data: PasswordResetRequest
   ): Promise<OkResponse | ErrorResponse> {
     try {
-      const response = await doPost<PasswordResetRequest, OkResponse>(
+      return await doPost<PasswordResetRequest, OkResponse>(
         data,
         `${this.BASE_PATH}/reset-password`
       );
-      return response;
     } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (!axiosError.response) {
-        return {
-          message: 'Error de conexión',
-          code: 503,
-          errorCode: 'NETWORK_ERROR',
-        };
-      }
-      return {
-        message: axiosError.response?.data?.message || 'Error al cambiar contraseña',
-        code: axiosError.response?.status || 500,
-        errorCode: axiosError.response?.data?.errorCode || 'PASSWORD_RESET_ERROR',
-      };
+      return this.handleError(error);
     }
   }
 
-  private static handleError(error: unknown): Error {
-    if (error instanceof AxiosError) {
-      return new Error(error.response?.data?.message || 'Error de autenticación');
+  private static handleError(error: unknown): ErrorResponse {
+    const axiosError = error as AxiosError<ErrorResponse>;
+    if (!axiosError.response) {
+      return {
+        message: 'Error de conexión',
+        code: 503,
+        errorCode: 'NETWORK_ERROR',
+      };
     }
-    return new Error('Error desconocido');
+    return {
+      message: axiosError.response?.data?.message || 'Error en la operación',
+      code: axiosError.response?.status || 500,
+      errorCode: axiosError.response?.data?.errorCode || 'UNKNOWN_ERROR',
+    };
   }
 }

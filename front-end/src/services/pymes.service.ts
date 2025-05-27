@@ -1,6 +1,6 @@
 import { doPost } from './http.service';
 import { Pyme } from '../models/Pymes.models';
-import { RecoveryRequest, VerificationRequest } from '../models/Auth.models';
+import { RecoveryRequest, VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 

@@ -11,8 +11,8 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="container">
-      <div className="formWrapper">
+    <div className="containerLogin">
+      <div className="formWrapperLogin">
         <AuthForm 
           isLogin={true}
           onSuccess={handleSuccess}

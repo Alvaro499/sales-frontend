@@ -8,6 +8,7 @@ import Home from './pages/home';
 import AdminHome from './pages/admin';
 import AuthPage from './pages/auth';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const App = () => {
   return (

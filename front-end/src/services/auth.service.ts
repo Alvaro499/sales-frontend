@@ -2,37 +2,48 @@ import { doPost } from './http.service';
 import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
-import { authStorage } from './storage.sevice';
 
 export class AuthService {
-  private static BASE_PATH = '/auth';
+  private static BASE_PATH = '/api/public/auth';
 
-  public static async login(credentials: AuthCredentials): Promise<{ token: string } | ErrorResponse> {
-    try {
-      const response = await doPost<AuthCredentials, { token: string }>(
-        credentials,
-        `${this.BASE_PATH}/login`
-      );
-      authStorage.setToken(response.token);
-      return response;
-    } catch (error) {
-      return this.handleError(error);
-    }
-  }
-
-  public static async register(credentials: AuthCredentials): Promise<OkResponse | ErrorResponse> {
+  public static async login(
+    credentials: AuthCredentials
+  ): Promise<OkResponse | ErrorResponse> {
     try {
       return await doPost<AuthCredentials, OkResponse>(
         credentials,
-        `${this.BASE_PATH}/register`
+        `${this.BASE_PATH}/login`
       );
     } catch (error) {
       return this.handleError(error);
     }
   }
 
+  public static async registerUser(
+  credentials: AuthCredentials
+): Promise<OkResponse | ErrorResponse> {
+  try {
+    const response = await doPost<AuthCredentials, OkResponse | string>(
+      credentials,
+      `${this.BASE_PATH}/register`
+    );
+
+    if (typeof response === 'string' && response === 'OK') {
+      return { status: 'OK' };
+    }
+    
+    if (typeof response === 'object' && 'status' in response) {
+      return response as OkResponse;
+    }
+
+    throw new Error('Respuesta inesperada del servidor');
+  } catch (error) {
+    return this.handleError(error);
+  }
+}
+
   public static async logout(): Promise<void> {
-    authStorage.clearToken();
+
   }
 
   public static async resetPassword(
@@ -50,6 +61,7 @@ export class AuthService {
 
   private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
+
     if (!axiosError.response) {
       return {
         message: 'Error de conexión',
@@ -57,6 +69,7 @@ export class AuthService {
         errorCode: 'NETWORK_ERROR',
       };
     }
+
     return {
       message: axiosError.response?.data?.message || 'Error en la operación',
       code: axiosError.response?.status || 500,

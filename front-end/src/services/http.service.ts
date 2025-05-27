@@ -17,7 +17,7 @@ export const removeSessionToken = () => {
 // ----------------------------- AXIOS INSTANCE -----------------------------
 
 const apiInstance: AxiosInstance = axios.create({
-	baseURL: 'http://localhost:8082', // Cambiar al backend real cuando sea necesario
+	baseURL: 'http://localhost:8083', // Cambiar al backend real cuando sea necesario
 });
 
 // ----------------------------- INTERCEPTORS -----------------------------

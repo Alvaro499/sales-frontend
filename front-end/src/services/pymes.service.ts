@@ -1,6 +1,7 @@
 import { doPost } from './http.service';
 import { Pyme } from '../models/Pymes.models';
-import { RecoveryRequest, VerificationRequest } from '../models/AuthPyme.models';
+import {  VerificationRequest } from '../models/AuthPyme.models';
+import { RecoveryUserRequest } from '../models/User.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
@@ -34,8 +35,8 @@ export const pymeRegistrationService = {
 
   requestRecovery: async (email: string): Promise<OkResponse | ErrorResponse> => {
     try {
-      const recoveryRequest: RecoveryRequest = { email };
-      const response = await doPost<RecoveryRequest, OkResponse>(
+      const recoveryRequest: RecoveryUserRequest = { email };
+      const response = await doPost<RecoveryUserRequest, OkResponse>(
         recoveryRequest,
         `${BASE_PATH}/request-recovery`
       );

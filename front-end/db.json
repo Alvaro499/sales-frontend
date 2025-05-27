@@ -25,7 +25,7 @@
       "price": 59.99,
       "available": true,
       "promotion": null,
-      "stock": 10,
+      "stock": 7,
       "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
       "is_active": true,
       "category_id": 1
@@ -37,11 +37,11 @@
       "name": "Coffee Mug",
       "description": "Taza para café con diseño moderno",
       "price": 9.99,
-      "available": false,
+      "available": true,
       "promotion": null,
-      "stock": 0,
+      "stock": 7,
       "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": true,
+      "is_active": false,
       "category_id": 3
     },
     {

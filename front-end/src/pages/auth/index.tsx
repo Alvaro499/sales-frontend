@@ -19,7 +19,7 @@ const AuthPage = () => {
         />
         <button 
           onClick={showRecoveryAlert}
-          className="btn btn-link"
+          className="btn btn-link d-block mx-auto mt-2"
         >
           ¿Olvidaste tu contraseña?
         </button>

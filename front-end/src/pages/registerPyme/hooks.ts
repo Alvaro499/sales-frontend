@@ -29,11 +29,14 @@ export const useRegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationError = validateRegisterPymeForm(formData);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+   const validationResult = validateRegisterPymeForm(formData);
+    if (!validationResult.isValid) {
+    const firstError = Object.values(validationResult.errors)[0] || 'Formulario inválido';
+    setError(firstError);
+    return;
+
+  }
+
 
     setIsSubmitting(true);
     setError('');
@@ -42,7 +45,7 @@ export const useRegisterForm = () => {
       const response = await handleMutation(pymeRegistrationService.register, formData);
 
       if (response.isSuccess === true && !response.errorCode && !response.message?.includes('Error')) {
-        navigate(`/verificacion?email=${encodeURIComponent(formData.email)}`);
+        navigate(`/verification?email=${encodeURIComponent(formData.email)}`);
         return;
       }
 

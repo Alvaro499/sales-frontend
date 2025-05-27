@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
-import { VerificationRequest } from '../../models/Auth.models';
+import { VerificationRequest } from '../../models/AuthPyme.models';
 import { VerificationHook } from './types';
 import { useApiHandler } from '../../hooks/useApiHandler';
 
@@ -49,7 +49,7 @@ export const useVerification = (): VerificationHook => {
 		setError('');
 
 		const response = await handleMutation(
-			pymeRegistrationService.resendVerificationCode,
+			pymeRegistrationService.requestRecovery,
 			email
 		);
 

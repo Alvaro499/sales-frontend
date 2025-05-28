@@ -51,7 +51,7 @@ export const useRegisterForm = () => {
 
       // Manejo de respuesta
       if ('status' in response && response.status === 'OK') {
-        navigate('/');
+        navigate('/login');
         return;
       }
 

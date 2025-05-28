@@ -1,19 +1,25 @@
 import { doPost } from './http.service';
 import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
+import { authStorage } from './storage.sevice';
 import { AxiosError } from 'axios';
 
 export class AuthService {
   private static BASE_PATH = '/api/public/auth';
 
-  public static async login(
+   public static async login(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
     try {
-      return await doPost<AuthCredentials, OkResponse>(
+      const response = await doPost<AuthCredentials, OkResponse>(
         credentials,
         `${this.BASE_PATH}/login`
       );
+
+     if ('token' in response && typeof response.token === 'string') {
+          authStorage.setToken(response.token);
+}
+      return response;
     } catch (error) {
       return this.handleError(error);
     }

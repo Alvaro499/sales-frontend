@@ -28,7 +28,7 @@ export const UserForm: React.FC<UserFormProps> = ({
             onChange={onChange}
             required
             className='form-control'
-            placeholder='Ej: Mi Empresa S.A.'
+            placeholder='Aarón Chacón '
           />
           <div className='invalid-feedback'>
             Por favor ingresa tu nombre
@@ -47,7 +47,7 @@ export const UserForm: React.FC<UserFormProps> = ({
             onChange={onChange}
             required
             className='form-control'
-            placeholder='Ej: contacto@empresa.com'
+            placeholder='Ej: contacto@gmail.com'
           />
           <div className='invalid-feedback'>
             Por favor ingresa un correo electrónico válido

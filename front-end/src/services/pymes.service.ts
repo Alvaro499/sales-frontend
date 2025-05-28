@@ -4,14 +4,14 @@ import {  VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
-const BASE_PATH = '/pymes';
+const BASE_PATH = 'api/pymes';
 
 export const pymeRegistrationService = {
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
       const response = await doPost<Pyme, OkResponse>(
         registrationData, 
-        `${BASE_PATH}` 
+        `${BASE_PATH}/register` 
       );
       return response;
     } catch (error) {

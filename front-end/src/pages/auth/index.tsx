@@ -7,7 +7,7 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   const handleSuccess = (data: any) => {
-    navigate('/dashboard');
+    navigate('/');
   };
 
   return (

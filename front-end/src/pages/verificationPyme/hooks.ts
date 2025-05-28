@@ -36,7 +36,7 @@ export const useVerification = (): VerificationHook => {
 		console.log(response);
 
 		if (response.isSuccess && !response.errorCode) {
-			navigate('/registro-exitoso');
+			navigate('/admin');
 		} else {
 			setError(response.message || 'Error al verificar el código');
 		}
@@ -44,21 +44,6 @@ export const useVerification = (): VerificationHook => {
 		setIsSubmitting(false);
 	};
 
-	const handleResendCode = async (): Promise<void> => {
-		setIsSubmitting(true);
-		setError('');
-
-		const response = await handleMutation(
-			pymeRegistrationService.requestRecovery,
-			email
-		);
-
-		if (!response.isSuccess) {
-			setError(response.message || 'Error al reenviar el código');
-		}
-
-		setIsSubmitting(false);
-	};
 
 	const handleBack = () => {
 		navigate('/registro', { state: { email } });
@@ -71,7 +56,6 @@ export const useVerification = (): VerificationHook => {
 		isSubmitting,
 		handleCodeChange,
 		handleVerify,
-		handleResendCode,
 		handleBack,
 	};
 };

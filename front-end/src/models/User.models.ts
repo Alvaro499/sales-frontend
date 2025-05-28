@@ -3,6 +3,3 @@ export interface User {
   email: string;
   password: string;
 }
-export interface RecoveryUserRequest {
-  email: string;
-}

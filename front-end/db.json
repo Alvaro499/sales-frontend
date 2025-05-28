@@ -1,5 +1,39 @@
 {
-  "pymes": [],
+  "pymes": [
+    {
+      "id": "240a",
+      "pymeName": "Mariano1",
+      "email": "marianoda20027@gmail.com",
+      "password": "Anakin#02",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael",
+      "description": "Bueno"
+    },
+    {
+      "id": "052a",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "9ff0",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    },
+    {
+      "id": "1d8c",
+      "pymeName": "jaisj",
+      "email": "marianoda20027@gmail.com",
+      "password": "fsdafsfadsA12#",
+      "phone": "+50671133894",
+      "address": "200 Mts sur del Cementerio de San Rafael",
+      "description": "asasas"
+    },
+    {
+      "id": "6007",
+      "email": "marianoda20027@gmail.com",
+      "verificationCode": "1234"
+    }
+  ],
   "verification": [],
   "productos": [
     {

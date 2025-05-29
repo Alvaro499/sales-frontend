@@ -7,6 +7,7 @@ import ProductPublishPanel from './pages/manageProducts';
 import Home from './pages/home';
 import AdminHome from './pages/admin';
 import AuthPage from './pages/auth';
+import RegisterUserPage from './pages/user';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -16,13 +17,15 @@ const App = () => {
       <div className='app'>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/registro' element={<RegisterPymePage />} />
-          <Route path='/verificacion' element={<VerificationPage />} />
+          <Route path='/registerPyme' element={<RegisterPymePage />} />
+          <Route path='/verification' element={<VerificationPage />} />
           <Route path='/reset-password/:token' element={<PasswordResetPage />} />
           <Route path='/newProduct' element={<ProductPublishForm />} />
           <Route path='/productPublishPanel' element={<ProductPublishPanel />} />
           <Route path='/admin' element={<AdminHome />} />
-          <Route path='/login' element={<AuthPage />} /> {/* ✅ NUEVA RUTA */}
+          <Route path='/login' element={<AuthPage />} /> 
+          <Route path='/registerUser' element={<RegisterUserPage />} />
+
         </Routes>
       </div>
     </Router>

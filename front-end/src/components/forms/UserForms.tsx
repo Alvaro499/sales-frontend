@@ -1,7 +1,7 @@
 import React from 'react';
-import { RegistrationFormProps } from './types';
+import { UserFormProps } from './types';
 
-export const RegistrationForm: React.FC<RegistrationFormProps> = ({
+export const UserForm: React.FC<UserFormProps> = ({
   formData,
   error,
   isSubmitting,
@@ -10,28 +10,28 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
 }) => {
   return (
     <div className='card-body p-md-4'>
-      <h2 className='card-title text-center mb-3 mb-md-4'>Registro de Pyme</h2>
+      <h2 className='card-title text-center mb-3 mb-md-4'>Registro de Usuario</h2>
 
       {error && <div className='alert alert-danger'>{error}</div>}
 
       <form onSubmit={onSubmit} className='needs-validation' noValidate>
         {/* Campos del formulario con clases responsivas */}
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='pymeName' className='form-label'>
-            Nombre de la empresa
+          <label htmlFor='name' className='form-label'>
+            Nombre
           </label>
           <input
-            id='pymeName'
+            id='name'
             type='text'
-            name='pymeName'  // Cambiado de companyName a pymeName
-            value={formData.pymeName}
+            name='name'  // Cambiado de companyName a pymeName
+            value={formData.name}
             onChange={onChange}
             required
             className='form-control'
-            placeholder='Ej: Mi Empresa S.A.'
+            placeholder='Aarón Chacón '
           />
           <div className='invalid-feedback'>
-            Por favor ingresa el nombre de tu empresa
+            Por favor ingresa tu nombre
           </div>
         </div>
 
@@ -47,7 +47,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             onChange={onChange}
             required
             className='form-control'
-            placeholder='Ej: contacto@empresa.com'
+            placeholder='Ej: contacto@gmail.com'
           />
           <div className='invalid-feedback'>
             Por favor ingresa un correo electrónico válido
@@ -74,54 +74,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           </div>
         </div>
 
-        <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='phone' className='form-label'>
-            Teléfono <span className='text-muted'>(opcional)</span>
-          </label>
-          <input
-            id='phone'
-            type='tel'
-            name='phone'
-            value={formData.phone || ''}
-            onChange={onChange}
-            className='form-control'
-            placeholder='Ej: +506 2552 4321'
-          />
-        </div>
-
-        <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='address' className='form-label'>
-            Dirección
-          </label>
-          <input
-            id='address'
-            type='text'
-            name='address'
-            value={formData.address}
-            onChange={onChange}
-            required
-            className='form-control'
-            placeholder='Ej: Av. Principal 1234, Santiago'
-          />
-          <div className='invalid-feedback'>Por favor ingresa una dirección válida</div>
-        </div>
-
-        {/* Nuevo campo de descripción agregado */}
-        <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='description' className='form-label'>
-            Descripción de la Pyme
-          </label>
-          <textarea
-            id='description'
-            name='description'
-            value={formData.description || ''}
-            onChange={onChange}
-            className='form-control'
-            rows={3}
-            placeholder='Describe los productos o servicios que ofrece tu empresa'
-          />
-        </div>
-
         <div className='d-grid mb-3'>
           <button
             type='submit'
@@ -138,11 +90,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 Registrando...
               </>
             ) : (
-              'Registrar Pyme'
+              'Registrar Usuario'
             )}
           </button>
         </div>
-
       </form>
     </div>
   );

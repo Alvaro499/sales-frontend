@@ -8,7 +8,7 @@ export function useAdminNavigation() {
   }
 
   function goToRegisterPyme() {
-    navigate('/registro');
+    navigate('/registerPyme');
   }
 
   return { goToProductPublishPanel, goToRegisterPyme };

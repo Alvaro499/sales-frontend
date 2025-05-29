@@ -8,6 +8,7 @@ import { useApiHandler } from '../../hooks/useApiHandler';
 export const useRegisterForm = () => {
   const navigate = useNavigate();
   const { handleMutation } = useApiHandler();
+
   const [formData, setFormData] = useState<Pyme>({
     pymeName: '',
     email: '',
@@ -20,7 +21,9 @@ export const useRegisterForm = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (error) setError('');
@@ -29,9 +32,11 @@ export const useRegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const validationError = validateRegisterPymeForm(formData);
-    if (validationError) {
-      setError(validationError);
+    const validationResult = validateRegisterPymeForm(formData);
+    if (!validationResult.isValid) {
+      const firstError =
+        Object.values(validationResult.errors)[0] || 'Formulario inválido';
+      setError(firstError);
       return;
     }
 
@@ -39,30 +44,42 @@ export const useRegisterForm = () => {
     setError('');
 
     try {
-      const response = await handleMutation(pymeRegistrationService.register, formData);
+      const response = await handleMutation(
+        pymeRegistrationService.register,
+        formData
+      );
 
-      if (response.isSuccess === true && !response.errorCode && !response.message?.includes('Error')) {
-        navigate(`/verificacion?email=${encodeURIComponent(formData.email)}`);
+      if (
+        response.isSuccess === true &&
+        !response.errorCode &&
+        !response.message?.includes('Error')
+      ) {
+        navigate(`/verification?email=${encodeURIComponent(formData.email)}`);
         return;
       }
 
-      if (response.errorCode === 'EMAIL_EXISTS') {
-        setError('El correo electrónico ya está registrado');
-      } else {
-        setError(response.message || 'Error al registrar. Por favor intenta nuevamente.');
+      switch (response.message) {
+        case 'EMAIL_ALREADY_EXISTS':
+          setError('El correo electrónico de la empresa ya está registrado');
+          break;
+        case 'NAME_ALREADY_EXISTS':
+          setError('El nombre de la empresa ya está registrado');
+          break;
+        default:
+          setError(
+            response.message || 'Error al registrar. Por favor intenta nuevamente.'
+          );
+          break;
       }
     } catch (err) {
       if (err instanceof Error && err.message === 'NETWORK_ERROR') {
         setError('Error de conexión. Verifica tu red e intenta nuevamente.');
       } else {
-        console.error('Error inesperado:', err);
         setError('Ocurrió un error inesperado. Por favor intenta más tarde.');
       }
     } finally {
       setIsSubmitting(false);
     }
-
-    if (error) return;
   };
 
   return {

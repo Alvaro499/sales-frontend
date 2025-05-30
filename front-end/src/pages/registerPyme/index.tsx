@@ -1,6 +1,5 @@
 import { useRegisterForm } from './hooks';
 import { RegistrationForm } from '../../components/forms/RegistrationForms';
-import { showRecoveryAlert } from '../../utilities/alerts/recoveryAlert';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/index.css';
 
@@ -16,7 +15,6 @@ const RegisterPymePage = () => {
 					isSubmitting={isSubmitting}
 					onChange={handleChange}
 					onSubmit={handleSubmit}
-					onRecoveryClick={showRecoveryAlert}
 				/>
 			</div>
 		</div>

@@ -5,6 +5,5 @@ export interface VerificationHook {
 	isSubmitting: boolean;
 	handleCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleVerify: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-	handleResendCode: () => Promise<void>;
 	handleBack: () => void;
 }

@@ -1,10 +1,10 @@
 import { doPost } from './http.service';
 import { Pyme } from '../models/Pymes.models';
-import { RecoveryRequest, VerificationRequest } from '../models/AuthPyme.models';
+import {  VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
-const BASE_PATH = '/api/pymes';
+const BASE_PATH = 'api/pymes';
 
 export const pymeRegistrationService = {
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
@@ -31,31 +31,6 @@ export const pymeRegistrationService = {
     }
   },
   
-
-  requestRecovery: async (email: string): Promise<OkResponse | ErrorResponse> => {
-    try {
-      const recoveryRequest: RecoveryRequest = { email };
-      const response = await doPost<RecoveryRequest, OkResponse>(
-        recoveryRequest,
-        `${BASE_PATH}/request-recovery`
-      );
-      return response;
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (!axiosError.response) {
-        return {
-          message: 'Error de conexión',
-          code: 503,
-          errorCode: 'NETWORK_ERROR',
-        };
-      }
-      return {
-        message: axiosError.response?.data?.message || 'Error al solicitar recuperación',
-        code: axiosError.response?.status || 500,
-        errorCode: axiosError.response?.data?.errorCode || 'RECOVERY_ERROR',
-      };
-    }
-  },
 
   verifyCode: async (
     verificationData: VerificationRequest

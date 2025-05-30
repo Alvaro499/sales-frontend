@@ -10,7 +10,6 @@ export const VerificationPage = () => {
 		isSubmitting,
 		handleCodeChange,
 		handleVerify,
-		handleResendCode,
 		handleBack,
 	} = useVerification();
 
@@ -24,7 +23,6 @@ export const VerificationPage = () => {
 					isSubmitting={isSubmitting}
 					onCodeChange={handleCodeChange}
 					onSubmit={handleVerify}
-					onResendCode={handleResendCode}
 					onBack={handleBack}
 				/>
 			</div>

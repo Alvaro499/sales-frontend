@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
-import { VerificationRequest } from '../../models/Auth.models';
+import { VerificationRequest } from '../../models/AuthPyme.models';
 import { VerificationHook } from './types';
 import { useApiHandler } from '../../hooks/useApiHandler';
 
@@ -36,7 +36,7 @@ export const useVerification = (): VerificationHook => {
 		console.log(response);
 
 		if (response.isSuccess && !response.errorCode) {
-			navigate('/registro-exitoso');
+			navigate('/admin');
 		} else {
 			setError(response.message || 'Error al verificar el código');
 		}
@@ -44,21 +44,6 @@ export const useVerification = (): VerificationHook => {
 		setIsSubmitting(false);
 	};
 
-	const handleResendCode = async (): Promise<void> => {
-		setIsSubmitting(true);
-		setError('');
-
-		const response = await handleMutation(
-			pymeRegistrationService.resendVerificationCode,
-			email
-		);
-
-		if (!response.isSuccess) {
-			setError(response.message || 'Error al reenviar el código');
-		}
-
-		setIsSubmitting(false);
-	};
 
 	const handleBack = () => {
 		navigate('/registro', { state: { email } });
@@ -71,7 +56,6 @@ export const useVerification = (): VerificationHook => {
 		isSubmitting,
 		handleCodeChange,
 		handleVerify,
-		handleResendCode,
 		handleBack,
 	};
 };

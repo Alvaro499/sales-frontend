@@ -1,4 +1,5 @@
 export interface Product {
+	id: string;
 	product_id: string;
 	pyme_id: string;
 	name: string;

@@ -4,6 +4,7 @@ import { createProduct } from '../../services/product.services';
 
 const usePublishProduct = () => {
 	const [product, setProduct] = useState<Product>({
+		id: '',
 		product_id: '',
 		pyme_id: '',
 		name: '',
@@ -83,6 +84,7 @@ const usePublishProduct = () => {
 			alert('Producto publicado con éxito!');
 			// Opcional: limpiar formulario o redirigir
 			setProduct({
+				id: '',
 				product_id: '',
 				pyme_id: '',
 				name: '',

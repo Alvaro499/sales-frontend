@@ -42,12 +42,6 @@ const AdminHome: React.FC = () => {
             </button>
           </div>
         </div>
-
-        {/* Botón de cerrar sesión más discreto */}
-        <button className="btn btn-outline-danger px-4 py-2">
-          <i className="bi bi-box-arrow-right me-2"></i>
-          Cerrar Sesión
-        </button>
       </div>
     </div>
   );

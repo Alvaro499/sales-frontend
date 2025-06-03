@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService } from '../../services/auth.service';
-import { useApiHandler } from '../../hooks/useApiHandler';
+import { isErrorResponse, isOkResponse } from './types';
 
 export const usePasswordReset = (token?: string) => {
   const navigate = useNavigate();
-  const { handleMutation } = useApiHandler();
   const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,12 +18,14 @@ export const usePasswordReset = (token?: string) => {
     setMessage(null);
 
     try {
-      const response = await handleMutation(
-        AuthService.resetPassword,
-        { token, newPassword }
-      );
+      const response = await AuthService.resetPassword({ token, newPassword });
 
-      if (response.isSuccess) {
+      if (isErrorResponse(response)) {
+        setMessage({
+          text: response.message,
+          isError: true
+        });
+      } else if (isOkResponse(response)) {
         setMessage({
           text: 'Contraseña cambiada exitosamente. Redirigiendo...',
           isError: false
@@ -32,10 +33,15 @@ export const usePasswordReset = (token?: string) => {
         setTimeout(() => navigate('/login'), 2000);
       } else {
         setMessage({
-          text: `${response.message || 'Error al cambiar la contraseña'}`,
+          text: 'Respuesta del servidor no reconocida',
           isError: true
         });
       }
+    } catch (error) {
+      setMessage({
+        text: 'Error de conexión. Por favor intenta nuevamente.',
+        isError: true
+      });
     } finally {
       setIsSubmitting(false);
     }

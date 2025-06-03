@@ -1,9 +1,9 @@
-import { doGet, doPost, doPut } from './http.service'; //doGet, doPut
+import { ventasApi } from './clients.service';
 import { Category, Product } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 
-const BASE_PATH = '/api/public/products'; // Cambia esto a la ruta real de tu backend
-const BASE_PATH_CATEGORIES = 'api/public/categories';
+const BASE_PATH = '/api/public/products';
+const BASE_PATH_CATEGORIES = '/api/public/categories';
 
 export const createProduct = async (product: Product): Promise<Product | ErrorResponse> => {
 	try {
@@ -18,8 +18,7 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 			stock: product.stock,
 			pymeId: product.pyme_id,
 		};
-		const response = await doPost<any, Product>(productRequest, BASE_PATH);
-		return response;
+		return await ventasApi.doPost<any, Product>(productRequest, BASE_PATH);
 	} catch (error) {
 		return {
 			message: 'Error al crear producto',
@@ -30,22 +29,19 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 };
 
 export const getProducts = async (): Promise<Product[]> => {
-	const response = await doGet<Product[]>(BASE_PATH);
-	return response;
+	return await ventasApi.doGet<Product[]>(BASE_PATH);
 };
 
 export const getCategories = async (): Promise<Category[]> => {
-	const response = await doGet<Category[]>(BASE_PATH_CATEGORIES);
-	return response;
+	return await ventasApi.doGet<Category[]>(BASE_PATH_CATEGORIES);
 };
 
 export const getProductById2 = async (id: string): Promise<Product> => {
-	const response = await doGet<Product>(`${BASE_PATH}/${id}`);
-	return response;
+	return await ventasApi.doGet<Product>(`${BASE_PATH}/${id}`);
 };
 
 export const getProductById = async (id: string): Promise<Product[]> => {
-	const response = await doGet<{ message: string; data: any[] }>(`${BASE_PATH}/by-pyme/${id}`);
+	const response = await ventasApi.doGet<{ message: string; data: any[] }>(`${BASE_PATH}/by-pyme/${id}`);
 
 	const products: Product[] = response.data.map(item => ({
 		id: item.id,
@@ -71,7 +67,7 @@ export const unpublishProduct = async (
 ): Promise<Product | ErrorResponse> => {
 	try {
 		const url = `${BASE_PATH}/unpublish/${productId}`;
-		return await doPut<Product, Product>(product, url);
+		return await ventasApi.doPut<Product, Product>(product, url);
 	} catch (error) {
 		return {
 			message: 'Error al despublicar producto',
@@ -87,7 +83,7 @@ export const updateProduct = async (
 ): Promise<Product | ErrorResponse> => {
 	try {
 		const url = `${BASE_PATH}/update-stock/${productId}`;
-		return await doPut<typeof updates, Product>(updates, url);
+		return await ventasApi.doPut<typeof updates, Product>(updates, url);
 	} catch (error) {
 		return {
 			message: 'Error al actualizar producto',

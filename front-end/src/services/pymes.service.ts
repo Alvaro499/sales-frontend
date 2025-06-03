@@ -1,6 +1,6 @@
-import { doPost } from './http.service';
+import { ventasApi } from './clients.service';
 import { Pyme } from '../models/Pymes.models';
-import {  VerificationRequest } from '../models/AuthPyme.models';
+import { VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
@@ -9,11 +9,10 @@ const BASE_PATH = 'api/pymes';
 export const pymeRegistrationService = {
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
-      const response = await doPost<Pyme, OkResponse>(
-        registrationData, 
-        `${BASE_PATH}/register` 
+      return await ventasApi.doPost<Pyme, OkResponse>(
+        registrationData,
+        `${BASE_PATH}/register`
       );
-      return response;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
       if (!axiosError.response) {
@@ -30,24 +29,21 @@ export const pymeRegistrationService = {
       };
     }
   },
-  
 
   verifyCode: async (
     verificationData: VerificationRequest
   ): Promise<OkResponse | ErrorResponse> => {
     try {
-      const response = await doPost<VerificationRequest, OkResponse>(
+      return await ventasApi.doPost<VerificationRequest, OkResponse>(
         verificationData,
         BASE_PATH
       );
-      return response;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
       if (!axiosError.response) {
         return {
           message: 'Error de conexión',
           code: 503,
-          
           errorCode: 'NETWORK_ERROR',
         };
       }
@@ -58,5 +54,4 @@ export const pymeRegistrationService = {
       };
     }
   },
-
 };

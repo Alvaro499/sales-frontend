@@ -1,18 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { AuthStorage } from './storage.sevice';
 
-// ----------------------------- TOKEN UTILS -----------------------------
-
-export const setSessionToken = (token: string) => {
-	localStorage.setItem('jwtToken', token);
-};
-
-export const getSessionToken = (): string | null => {
-	return localStorage.getItem('jwtToken');
-};
-
-export const removeSessionToken = () => {
-	localStorage.removeItem('jwtToken');
-};
 
 // ----------------------------- API FACTORY -----------------------------
 
@@ -22,7 +10,7 @@ export const createApiInstance = (baseURL: string): AxiosInstance => {
 	// Interceptor de request (agrega token si existe)
 	instance.interceptors.request.use(
 		(config: InternalAxiosRequestConfig) => {
-			const token = getSessionToken();
+			const token = AuthStorage.getToken();
 			if (token) {
 				config.headers.Authorization = `Bearer ${token}`;
 			}
@@ -36,7 +24,7 @@ export const createApiInstance = (baseURL: string): AxiosInstance => {
 		response => response,
 		error => {
 			if (error.response?.status === 401 && error.response?.data?.code === 40103) {
-				removeSessionToken();
+				AuthStorage.clearToken();
 				// window.location.href = '/login'; // opcional
 			}
 			return Promise.reject(error);

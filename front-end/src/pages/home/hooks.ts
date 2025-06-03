@@ -4,7 +4,12 @@ import { Product } from '../../models/Products.models';
 import { Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 
-export function useProducts(search?: string, selectedCategory?: string) {
+export function useProducts(
+	search?: string,
+	selectedCategory?: string,
+	precioMin?: number | null,
+	precioMax?: number | null
+) {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -44,7 +49,11 @@ export function useProducts(search?: string, selectedCategory?: string) {
 	// Búsqueda y filtrado dinámico con debounce
 	useEffect(() => {
 		const shouldSearch =
-			(search && search.trim() !== '') || (selectedCategory && selectedCategory !== 'all');
+			(search && search.trim() !== '') ||
+			(selectedCategory && selectedCategory !== 'all') ||
+			(precioMin !== undefined && precioMin !== null) ||
+			(precioMax !== undefined && precioMax !== null);
+
 		if (!shouldSearch) {
 			setFilteredProducts(products); //  Mostrar todos los productos cargados inicialmente
 			return;
@@ -56,7 +65,7 @@ export function useProducts(search?: string, selectedCategory?: string) {
 				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
 			localizationService
-				.localizarProductos(search, categoriaId)
+				.localizarProductos(search, categoriaId, precioMin, precioMax)
 				.then(data => {
 					if ('errorCode' in data) {
 						setError(data.message);
@@ -74,7 +83,7 @@ export function useProducts(search?: string, selectedCategory?: string) {
 		}, 300);
 
 		return () => clearTimeout(delayDebounceFn);
-	}, [search, selectedCategory, products]);
+	}, [search, selectedCategory, precioMin, precioMax, products]);
 
 	return { products, filteredProducts, categories, loading, error };
 }

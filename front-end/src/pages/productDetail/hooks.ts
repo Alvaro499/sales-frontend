@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../../models/Products.models';
-import { getProductById } from '../../services/product.services';
+import { getProductById2 } from '../../services/product.services';
 
 export function useProductDetail(productId: string) {
 	const [product, setProduct] = useState<Product | null>(null);
@@ -13,7 +13,7 @@ export function useProductDetail(productId: string) {
 	useEffect(() => {
 		setLoading(true);
 		setError(null);
-		getProductById(productId)
+		getProductById2(productId)
 			.then(setProduct)
 			.catch(() => setError('Error al cargar el producto'))
 			.finally(() => setLoading(false));

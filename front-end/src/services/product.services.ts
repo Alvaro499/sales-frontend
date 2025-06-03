@@ -14,7 +14,7 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 			category: [String(product.category_id)],
 			images: product.url_img ? [product.url_img] : [],
 			available: product.available,
-			promotion: product.promotion ? String(product.promotion) : '0', 
+			promotion: product.promotion ? String(product.promotion) : '0',
 			stock: product.stock,
 			pymeId: product.pyme_id,
 		};
@@ -30,12 +30,17 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 };
 
 export const getProducts = async (): Promise<Product[]> => {
-	const response = await doGet<Product[]>(BASE_PATH); 
+	const response = await doGet<Product[]>(BASE_PATH);
 	return response;
 };
 
 export const getCategories = async (): Promise<Category[]> => {
 	const response = await doGet<Category[]>(BASE_PATH_CATEGORIES);
+	return response;
+};
+
+export const getProductById2 = async (id: string): Promise<Product> => {
+	const response = await doGet<Product>(`${BASE_PATH}/${id}`);
 	return response;
 };
 

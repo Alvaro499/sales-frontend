@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from './hooks';
 import { Product } from '../../models/Products.models';
+import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
 import './Styles.css';
 
 const Home: React.FC = () => {
@@ -43,10 +44,14 @@ const Home: React.FC = () => {
 		}
 	}, []);
 
-	const handleLogout = () => {
-		localStorage.removeItem('app_auth_token');
-		setIsLoggedIn(false);
-	};
+	const handleLogout = async () => {
+    const confirmed = await confirmLogout();
+    if (confirmed) {
+      localStorage.removeItem('app_auth_token');
+      setIsLoggedIn(false); // o cualquier lógica de estado
+      window.location.reload();
+    }
+  };
 
 	return (
 		<div className='home-page'>

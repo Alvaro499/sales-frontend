@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from './hooks';
 import { Product } from '../../models/Products.models';
+import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
 import './Styles.css';
+import { AuthStorage } from '../../services/storageToken.sevice';
 
 const Home: React.FC = () => {
 	const [search, setSearch] = useState('');
 	const [selectedCategory, setSelectedCategory] = useState<string>('all');
 	const [precioMin, setPrecioMin] = useState<string>('');
 	const [precioMax, setPrecioMax] = useState<string>('');
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
 	const min = precioMin ? Number(precioMin) : null;
 	const max = precioMax ? Number(precioMax) : null;
 
@@ -20,25 +25,50 @@ const Home: React.FC = () => {
 	);
 	const navigate = useNavigate();
 
+	useEffect(() => {
+	const token = localStorage.getItem('app_auth_token');
+	if (token) {
+		try {
+			if (token && !AuthStorage.isTokenExpired()) {
+				setIsLoggedIn(true);
+			} else {
+				AuthStorage.clearToken(); // elimina el token vencido
+				setIsLoggedIn(false);
+			}
+		} catch (error) {
+			console.error('Error al verificar el token', error);
+			AuthStorage.clearToken();
+			setIsLoggedIn(false);
+		}
+	}
+}, []);
+
+	const handleLogout = async () => {
+    const confirmed = await confirmLogout();
+    if (confirmed) {
+      localStorage.removeItem('app_auth_token');
+      setIsLoggedIn(false); 
+      window.location.reload();
+    }
+  };
+
 	return (
 		<div className='home-page'>
-			{/* Enhanced Navbar */}
+			{/* Navbar */}
 			<nav className='navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top'>
 				<div className='container'>
-					<div className='d-flex align-items-center'>
-						<a className='navbar-brand' href='/'>
-							<div className='d-flex align-items-center'>
-								<img
-									src='https://d500.epimg.net/cincodias/imagenes/2015/05/08/pyme/1431098283_691735_1431098420_noticia_normal.jpg'
-									alt='Logo'
-									width='40'
-									height='40'
-									className='rounded-circle me-2 border'
-								/>
-								<span className='fw-bold fs-5 text-primary'>PYME Shop</span>
-							</div>
-						</a>
-					</div>
+					<a className='navbar-brand' href='/'>
+						<div className='d-flex align-items-center'>
+							<img
+								src='https://d500.epimg.net/cincodias/imagenes/2015/05/08/pyme/1431098283_691735_1431098420_noticia_normal.jpg'
+								alt='Logo'
+								width='40'
+								height='40'
+								className='rounded-circle me-2 border'
+							/>
+							<span className='fw-bold fs-5 text-primary'>PYME Shop</span>
+						</div>
+					</a>
 
 					<button
 						className='navbar-toggler'
@@ -100,20 +130,32 @@ const Home: React.FC = () => {
 							</div>
 
 							<div className='d-flex gap-2'>
-								<button
-									className='btn btn-outline-primary d-flex align-items-center gap-2'
-									onClick={() => navigate('/login')}
-								>
-									<i className='bi bi-box-arrow-in-right'></i>
-									<span className='d-none d-lg-inline'>Conectar</span>
-								</button>
-								<button
-									className='btn btn-primary d-flex align-items-center gap-2'
-									onClick={() => navigate('/admin')}
-								>
-									<i className='bi bi-shield-lock'></i>
-									<span className='d-none d-lg-inline'>Admin</span>
-								</button>
+								{isLoggedIn ? (
+									<>
+										<button
+											className='btn btn-outline-danger d-flex align-items-center gap-2'
+											onClick={handleLogout}
+										>
+											<i className='bi bi-box-arrow-right'></i>
+											<span className='d-none d-lg-inline'>Desconectar</span>
+										</button>
+										<button
+											className='btn btn-primary d-flex align-items-center gap-2'
+											onClick={() => navigate('/admin')}
+										>
+											<i className='bi bi-shield-lock'></i>
+											<span className='d-none d-lg-inline'>Admin</span>
+										</button>
+									</>
+								) : (
+									<button
+										className='btn btn-outline-primary d-flex align-items-center gap-2'
+										onClick={() => navigate('/login')}
+									>
+										<i className='bi bi-box-arrow-in-right'></i>
+										<span className='d-none d-lg-inline'>Conectar</span>
+									</button>
+								)}
 							</div>
 						</div>
 					</div>
@@ -127,7 +169,6 @@ const Home: React.FC = () => {
 					<p className='lead text-muted'>Descubre lo mejor para tu negocio</p>
 				</div>
 
-				{/* Status Messages */}
 				{loading && (
 					<div className='text-center py-5'>
 						<div className='spinner-border text-primary' role='status'>
@@ -152,7 +193,6 @@ const Home: React.FC = () => {
 					</div>
 				)}
 
-				{/* Products Grid */}
 				<div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4'>
 					{filteredProducts.map((product: Product) => (
 						<div key={product.product_id} className='col'>

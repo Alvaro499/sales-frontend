@@ -1,93 +1,55 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { AuthStorage } from './storageToken.sevice';
 
-// ----------------------------- TOKEN UTILS -----------------------------
 
-export const setSessionToken = (token: string) => {
-	localStorage.setItem('jwtToken', token);
-};
+// ----------------------------- API FACTORY -----------------------------
 
-export const getSessionToken = (): string | null => {
-	return localStorage.getItem('jwtToken');
-};
+export const createApiInstance = (baseURL: string): AxiosInstance => {
+	const instance = axios.create({ baseURL });
 
-export const removeSessionToken = () => {
-	localStorage.removeItem('jwtToken');
-};
+	// Interceptor de request (agrega token si existe)
+	instance.interceptors.request.use(
+		(config: InternalAxiosRequestConfig) => {
+			const token = AuthStorage.getToken();
+			if (token) {
+				config.headers.Authorization = `Bearer ${token}`;
+			}
+			return config;
+		},
+		error => Promise.reject(error)
+	);
 
-// ----------------------------- AXIOS INSTANCE -----------------------------
-
-const apiInstance: AxiosInstance = axios.create({
-	baseURL: 'http://localhost:8082', // Cambiar al backend real cuando sea necesario
-});
-
-// ----------------------------- INTERCEPTORS -----------------------------
-
-// Interceptor para agregar el token automáticamente a cada request
-apiInstance.interceptors.request.use(
-	(config: InternalAxiosRequestConfig) => {
-		const token = getSessionToken();
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
+	// Interceptor de response (manejo de errores como token expirado)
+	instance.interceptors.response.use(
+		response => response,
+		error => {
+			if (error.response?.status === 401 && error.response?.data?.code === 40103) {
+				AuthStorage.clearToken();
+				// window.location.href = '/login'; // opcional
+			}
+			return Promise.reject(error);
 		}
-		return config;
-	},
-	error => Promise.reject(error)
-);
+	);
 
-// Interceptor para manejar errores de respuesta (ej. token expirado)
-apiInstance.interceptors.response.use(
-	response => response,
-	async error => {
-		if (error.response?.status === 401 && error.response?.data?.code === 40103) {
-			removeSessionToken();
-			// window.location.href = '/login'; // Si se desea redirigir al login
+	return instance;
+};
+
+// Métodos genéricos ligados a una instancia
+export const createApiMethods = (instance: AxiosInstance) => {
+	return {
+		doGet: async <R>(path: string): Promise<R> => {
+			const response: AxiosResponse<R> = await instance.get(path);
+			return response.data;
+		},
+
+		doPost: async <I, R>(payload: I, path: string): Promise<R> => {
+			const response: AxiosResponse<R> = await instance.post(path, payload);
+			return response.data;
+		},
+
+		doPut: async <I, R>(payload: I, path: string): Promise<R> => {
+			const response: AxiosResponse<R> = await instance.put(path, payload);
+			return response.data;
 		}
-		return Promise.reject(error);
-	}
-);
-
-// ----------------------------- MÉTODOS GENÉRICOS -----------------------------
-
-export const doGet = async <R>(path: string): Promise<R> => {
-	const response: AxiosResponse<R> = await apiInstance.get(path);
-	return response.data;
-};
-
-export const doPost = async <I, R>(payload: I, path: string): Promise<R> => {
-	const response: AxiosResponse<R, I> = await apiInstance.post(path, payload);
-	return response.data;
-};
-
-export const doPut = async <I, R>(payload: I, path: string): Promise<R> => {
-	const response: AxiosResponse<R, I> = await apiInstance.put(path, payload);
-	return response.data;
-};
-
-// ------------------------ MÉTODOS CON CONTROL DE TOKEN ------------------------
-
-export const doAuthGet = async <R>(path: string, useToken: boolean = true): Promise<R> => {
-	const headers = useToken && getSessionToken()
-		? { Authorization: `Bearer ${getSessionToken()}` }
-		: {};
-
-	const response: AxiosResponse<R> = await axios.get(`${apiInstance.defaults.baseURL}${path}`, { headers });
-	return response.data;
-};
-
-export const doAuthPost = async <I, R>(payload: I, path: string, useToken: boolean = true): Promise<R> => {
-	const headers = useToken && getSessionToken()
-		? { Authorization: `Bearer ${getSessionToken()}` }
-		: {};
-
-	const response: AxiosResponse<R, I> = await axios.post(`${apiInstance.defaults.baseURL}${path}`, payload, { headers });
-	return response.data;
-};
-
-export const doAuthPut = async <I, R>(payload: I, path: string, useToken: boolean = true): Promise<R> => {
-	const headers = useToken && getSessionToken()
-		? { Authorization: `Bearer ${getSessionToken()}` }
-		: {};
-
-	const response: AxiosResponse<R, I> = await axios.put(`${apiInstance.defaults.baseURL}${path}`, payload, { headers });
-	return response.data;
+	};
 };

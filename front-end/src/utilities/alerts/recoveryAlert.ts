@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { pymeRegistrationService } from '../../services/pymes.service';
+import { AuthService } from '../../services/auth.service';
 import { ErrorResponse } from '../../models/Api.models';
 import './styles.css'; // Importa tus estilos
 
@@ -44,7 +44,7 @@ export const showRecoveryAlert = async () => {
 	if (!email) return;
 
 	try {
-		const response = await pymeRegistrationService.requestRecovery(email);
+		const response = await AuthService.recoveryRequest(email);
 
 		if ('isSuccess' in response && response.isSuccess) {
 			await MySwal.fire({

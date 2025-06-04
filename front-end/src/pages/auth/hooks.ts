@@ -29,7 +29,6 @@ export const useAuthForm = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    // Validación en tiempo real
     const error = validateField(name, value);
     setErrors(prev => ({ ...prev, [name]: error || undefined }));
   };
@@ -38,7 +37,6 @@ export const useAuthForm = () => {
     setIsSubmitting(true);
     setApiError(null);
 
-    // Validación final
     const emailError = validateField('email', formData.email);
     const passwordError = validateField('password', formData.password);
 
@@ -53,9 +51,15 @@ export const useAuthForm = () => {
 
     try {
       const response = await AuthService.login(formData);
-      return response;
+
+      if ('code' in response) {
+        setApiError('Usuario o contraseña inválido');
+        return false;
+      }
+
+      return response; 
     } catch (error) {
-      setApiError(error instanceof Error ? error.message : 'Error desconocido');
+       setApiError('Ocurrió un error al intentar iniciar sesión. Intente nuevamente.');
       return false;
     } finally {
       setIsSubmitting(false);

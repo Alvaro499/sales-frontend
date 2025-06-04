@@ -1,7 +1,7 @@
 import { authApi } from './clients.service';
 import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
-import { AuthStorage } from './storage.sevice';
+import { AuthStorage } from './storageToken.sevice';
 import { AxiosError } from 'axios';
 
 export class AuthService {

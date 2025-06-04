@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthStorage } from './storage.sevice';
+import { AuthStorage } from './storageToken.sevice';
 
 
 // ----------------------------- API FACTORY -----------------------------

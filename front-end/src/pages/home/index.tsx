@@ -4,6 +4,7 @@ import { useProducts } from './hooks';
 import { Product } from '../../models/Products.models';
 import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
 import './Styles.css';
+import { AuthStorage } from '../../services/storageToken.sevice';
 
 const Home: React.FC = () => {
 	const [search, setSearch] = useState('');
@@ -11,6 +12,7 @@ const Home: React.FC = () => {
 	const [precioMin, setPrecioMin] = useState<string>('');
 	const [precioMax, setPrecioMax] = useState<string>('');
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
 	const min = precioMin ? Number(precioMin) : null;
 	const max = precioMax ? Number(precioMax) : null;
@@ -23,32 +25,29 @@ const Home: React.FC = () => {
 	);
 	const navigate = useNavigate();
 
-	// Detectar si hay un token válido
 	useEffect(() => {
-		const token = localStorage.getItem('app_auth_token');
-		if (token) {
-			try {
-				const payload = JSON.parse(atob(token.split('.')[1]));
-				const now = Math.floor(Date.now() / 1000);
-				if (payload.exp && payload.exp > now) {
-					setIsLoggedIn(true);
-				} else {
-					localStorage.removeItem('app_auth_token');
-					setIsLoggedIn(false);
-				}
-			} catch {
+	const token = localStorage.getItem('app_auth_token');
+	if (token) {
+		try {
+			if (token && !AuthStorage.isTokenExpired()) {
+				setIsLoggedIn(true);
+			} else {
+				AuthStorage.clearToken(); // elimina el token vencido
 				setIsLoggedIn(false);
 			}
-		} else {
+		} catch (error) {
+			console.error('Error al verificar el token', error);
+			AuthStorage.clearToken();
 			setIsLoggedIn(false);
 		}
-	}, []);
+	}
+}, []);
 
 	const handleLogout = async () => {
     const confirmed = await confirmLogout();
     if (confirmed) {
       localStorage.removeItem('app_auth_token');
-      setIsLoggedIn(false); // o cualquier lógica de estado
+      setIsLoggedIn(false); 
       window.location.reload();
     }
   };

@@ -52,13 +52,12 @@ export const useAuthForm = () => {
     try {
       const response = await AuthService.login(formData);
 
-      // 🔍 Filtramos si es un error
       if ('code' in response) {
         setApiError('Usuario o contraseña inválido');
         return false;
       }
 
-      return response; // Éxito
+      return response; 
     } catch (error) {
        setApiError('Ocurrió un error al intentar iniciar sesión. Intente nuevamente.');
       return false;

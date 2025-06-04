@@ -1,89 +1,89 @@
+// useProducts.ts
 import { useState, useEffect } from 'react';
 import { getProducts, getCategories } from '../../services/product.services';
-import { Product } from '../../models/Products.models';
-import { Category } from '../../models/Products.models';
+import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 
 export function useProducts(
-	search?: string,
-	selectedCategory?: string,
-	precioMin?: number | null,
-	precioMax?: number | null
+  search?: string,
+  selectedCategory?: string,
+  minPrice?: number | null,
+  maxPrice?: number | null
 ) {
-	const [products, setProducts] = useState<Product[]>([]);
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		Promise.all([getProducts(), getCategories()])
-			.then(([productsData, categoriesData]) => {
-				setProducts(productsData);
-				setCategories(categoriesData);
-				setFilteredProducts(productsData);
-				setLoading(false);
-			})
-			.catch(() => {
-				setError('Error al cargar productos o categorías');
-				setLoading(false);
-			});
-	}, []);
+  useEffect(() => {
+    Promise.all([getProducts(), getCategories()])
+      .then(([productsData, categoriesData]) => {
+        setProducts(productsData);
+        setCategories(categoriesData);
+        setFilteredProducts(productsData);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load products or categories');
+        setLoading(false);
+      });
+  }, []);
 
-	// Carga inicial de categorías
-	useEffect(() => {
-		setLoading(true);
-		localizationService
-			.obtenerCategorias()
-			.then(data => {
-				if ('errorCode' in data) {
-					setError(data.message);
-				} else if (Array.isArray(data)) {
-					setCategories(data); // ✅ solo si es Category[]
-				}
-			})
-			.catch(() => setError('Error al obtener categorías'))
-			.finally(() => setLoading(false));
-	}, []);
+  // Initial categories loading
+  useEffect(() => {
+    setLoading(true);
+    localizationService
+      .getCategories()
+      .then(data => {
+        if ('errorCode' in data) {
+          setError(data.message);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
+        }
+      })
+      .catch(() => setError('Failed to fetch categories'))
+      .finally(() => setLoading(false));
+  }, []);
 
-	// Búsqueda y filtrado dinámico con debounce
-	useEffect(() => {
-		const shouldSearch =
-			(search && search.trim() !== '') ||
-			(selectedCategory && selectedCategory !== 'all') ||
-			(precioMin !== undefined && precioMin !== null) ||
-			(precioMax !== undefined && precioMax !== null);
+  // Dynamic search and filtering with debounce
+  useEffect(() => {
+    const shouldSearch =
+      (search && search.trim() !== '') ||
+      (selectedCategory && selectedCategory !== 'all') ||
+      (minPrice !== undefined && minPrice !== null) ||
+      (maxPrice !== undefined && maxPrice !== null);
 
-		if (!shouldSearch) {
-			setFilteredProducts(products); //  Mostrar todos los productos cargados inicialmente
-			return;
-		}
+    if (!shouldSearch) {
+      setFilteredProducts(products); // Show all initially loaded products
+      return;
+    }
 
-		setLoading(true);
-		const delayDebounceFn = setTimeout(() => {
-			const categoriaId =
-				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
+    setLoading(true);
+    const delayDebounceFn = setTimeout(() => {
+      const categoryId =
+        selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
-			localizationService
-				.localizarProductos(search, categoriaId, precioMin, precioMax)
-				.then(data => {
-					if ('errorCode' in data) {
-						setError(data.message);
-						setFilteredProducts([]);
-					} else if (Array.isArray(data)) {
-						setFilteredProducts(data);
-						setError(null);
-					}
-				})
-				.catch(() => {
-					setError('Ocurrió un error al buscar productos.');
-					setFilteredProducts([]);
-				})
-				.finally(() => setLoading(false));
-		}, 300);
+      localizationService
+        .locateProducts(search, categoryId, minPrice, maxPrice)
+        .then(data => {
+          if ('errorCode' in data) {
+            setError(data.message);
+            setFilteredProducts([]);
+          } else if (Array.isArray(data)) {
+            setFilteredProducts(data);
+            setError(null);
+          }
+        })
+        .catch(() => {
+          setError('An error occurred while searching for products.');
+          setFilteredProducts([]);
+        })
+        .finally(() => setLoading(false));
+    }, 300);
 
-		return () => clearTimeout(delayDebounceFn);
-	}, [search, selectedCategory, precioMin, precioMax, products]);
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, selectedCategory, minPrice, maxPrice, products]);
 
-	return { products, filteredProducts, categories, loading, error };
+  return { products, filteredProducts, categories, loading, error };
 }

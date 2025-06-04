@@ -17,13 +17,13 @@ export const pymeRegistrationService = {
       const axiosError = error as AxiosError<ErrorResponse>;
       if (!axiosError.response) {
         return {
-          message: 'Error de conexión',
+          message: 'Connection error',
           code: 503,
           errorCode: 'NETWORK_ERROR',
         };
       }
       return {
-        message: axiosError.response.data?.message || 'Error al registrar',
+        message: axiosError.response.data?.message || 'Error during registration',
         code: axiosError.response.status,
         errorCode: axiosError.response.data?.errorCode || 'API_ERROR',
       };
@@ -42,13 +42,13 @@ export const pymeRegistrationService = {
       const axiosError = error as AxiosError<ErrorResponse>;
       if (!axiosError.response) {
         return {
-          message: 'Error de conexión',
+          message: 'Connection error',
           code: 503,
           errorCode: 'NETWORK_ERROR',
         };
       }
       return {
-        message: axiosError.response?.data?.message || 'Error al verificar',
+        message: axiosError.response?.data?.message || 'Error during verification',
         code: axiosError.response?.status || 500,
         errorCode: axiosError.response?.data?.errorCode || 'VERIFICATION_ERROR',
       };

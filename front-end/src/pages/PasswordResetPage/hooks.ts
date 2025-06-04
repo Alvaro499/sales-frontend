@@ -27,7 +27,7 @@ export const usePasswordReset = (token?: string) => {
         });
       } else if (isOkResponse(response)) {
         setMessage({
-          text: 'Contraseña cambiada exitosamente. Redirigiendo...',
+          text: 'Contraseña cambiada exitosamente.',
           isError: false
         });
         setTimeout(() => navigate('/login'), 2000);

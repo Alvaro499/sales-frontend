@@ -2,8 +2,8 @@ import { ventasApi } from './clients.service';
 import { Category, Product } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 
-const BASE_PATH = '/api/public/products';
-const BASE_PATH_CATEGORIES = '/api/public/categories';
+const BASE_PATH = '/productos';
+const BASE_PATH_CATEGORIES = '/categories';
 
 export const createProduct = async (product: Product): Promise<Product | ErrorResponse> => {
 	try {

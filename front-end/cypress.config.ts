@@ -3,6 +3,6 @@ module.exports = {
     setupNodeEvents(on, config) {
       // código de configuración
     },
-    baseUrl: 'http://localhost:3000'
+    baseUrl: 'http://localhost:5173'
   }
 };

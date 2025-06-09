@@ -12,7 +12,7 @@ export const useRegisterForm = () => {
   const [formData, setFormData] = useState<Pyme>({
     pymeName: '',
     email: '',
-    password: '',
+
     phone: '',
     address: '',
     description: '',
@@ -65,6 +65,9 @@ export const useRegisterForm = () => {
         case 'NAME_ALREADY_EXISTS':
           setError('El nombre de la empresa ya está registrado');
           break;
+        case 'Connection error':
+          setError('Existe un error de conexión vuelve a intentarlo')
+          break;
         default:
           setError(
             response.message || 'Error al registrar. Por favor intenta nuevamente.'
@@ -72,11 +75,8 @@ export const useRegisterForm = () => {
           break;
       }
     } catch (err) {
-      if (err instanceof Error && err.message === 'NETWORK_ERROR') {
-        setError('Error de conexión. Verifica tu red e intenta nuevamente.');
-      } else {
         setError('Ocurrió un error inesperado. Por favor intenta más tarde.');
-      }
+      
     } finally {
       setIsSubmitting(false);
     }

@@ -55,26 +55,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
         </div>
 
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='password' className='form-label'>
-            Contraseña
-          </label>
-          <input
-            id='password'
-            type='password'
-            name='password'
-            value={formData.password}
-            onChange={onChange}
-            required
-            minLength={8}
-            className='form-control'
-            placeholder='Mínimo 8 caracteres'
-          />
-          <div className='invalid-feedback'>
-            La contraseña debe tener al menos 8 caracteres
-          </div>
-        </div>
-
-        <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='phone' className='form-label'>
             Teléfono <span className='text-muted'>(opcional)</span>
           </label>

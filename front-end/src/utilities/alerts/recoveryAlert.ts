@@ -1,22 +1,22 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse } from '../../models/Api.models';
-import './styles.css'; // Importa tus estilos
+import { ErrorResponse} from '../../models/Api.models';
+import './styles.css';
 
 const MySwal = withReactContent(Swal);
 
 export const showRecoveryAlert = async () => {
-	const { value: email } = await MySwal.fire({
-		customClass: {
-			popup: 'alert-popup',
-			confirmButton: 'alert-button-confirm',
-			cancelButton: 'alert-button-cancel',
-			title: 'alert-title',
-			htmlContainer: 'alert-text',
-		},
-		title: 'Recuperar contraseña',
-		html: `
+  const { value: email } = await MySwal.fire({
+    customClass: {
+      popup: 'alert-popup',
+      confirmButton: 'alert-button-confirm',
+      cancelButton: 'alert-button-cancel',
+      title: 'alert-title',
+      htmlContainer: 'alert-text',
+    },
+    title: 'Recuperar contraseña',
+    html: `
       <div class="text-left">
         <p>Por favor ingresa tu correo electrónico registrado</p>
         <input 
@@ -27,56 +27,60 @@ export const showRecoveryAlert = async () => {
         >
       </div>
     `,
-		focusConfirm: false,
-		showCancelButton: true,
-		confirmButtonText: 'Enviar solicitud',
-		cancelButtonText: 'Cancelar',
-		reverseButtons: true,
-		preConfirm: () => {
-			const inputValue = (document.getElementById('swal-input1') as HTMLInputElement).value;
-			if (!inputValue) {
-				MySwal.showValidationMessage('Debes ingresar un correo válido');
-			}
-			return inputValue;
-		},
-	});
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Enviar solicitud',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true,
+    preConfirm: () => {
+      const inputValue = (document.getElementById('swal-input1') as HTMLInputElement).value;
+      if (!inputValue) {
+        MySwal.showValidationMessage('Debes ingresar un correo válido');
+      }
+      return inputValue;
+    },
+  });
 
-	if (!email) return;
+  if (!email) return;
 
-	try {
-		const response = await AuthService.recoveryRequest(email);
+  try {
+    const response = await AuthService.recoveryRequest(email);
 
-		if ('isSuccess' in response && response.isSuccess) {
-			await MySwal.fire({
-				title: 'Éxito',
-				text: 'Correo enviado para recuperación',
-				icon: 'success',
-				customClass: {
-					popup: 'alert-popup',
-					confirmButton: 'alert-button-confirm',
-				},
-			});
-		} else {
-			const error = response as ErrorResponse;
-			await MySwal.fire({
-				title: 'Error',
-				text: error.message || 'No se pudo enviar el correo',
-				icon: 'error',
-				customClass: {
-					popup: 'alert-popup',
-					confirmButton: 'alert-button-confirm',
-				},
-			});
-		}
-	} catch (err) {
-		await MySwal.fire({
-			title: 'Error',
-			text: 'Error de red. Intenta de nuevo.',
-			icon: 'error',
-			customClass: {
-				popup: 'alert-popup',
-				confirmButton: 'alert-button-confirm',
-			},
-		});
-	}
+    // Manejo de respuesta exitosa
+    if ('status' in response && response.status === "OK") {
+      await MySwal.fire({
+        title: 'Éxito',
+        text: 'Correo de recuperación enviado correctamente',
+        icon: 'success',
+        customClass: {
+          popup: 'alert-popup',
+          confirmButton: 'alert-button-confirm',
+        },
+      });
+      return;
+    }
+
+    // Manejo de errores
+    const error = response as ErrorResponse;
+    await MySwal.fire({
+      title: 'Error',
+      text: error.message || 'No se pudo enviar el correo de recuperación',
+      icon: 'error',
+      customClass: {
+        popup: 'alert-popup',
+        confirmButton: 'alert-button-confirm',
+      },
+    });
+
+  } catch (err) {
+    await MySwal.fire({
+      title: 'Error',
+      text: 'Ocurrió un error inesperado. Por favor intenta nuevamente.',
+      icon: 'error',
+      customClass: {
+        popup: 'alert-popup',
+        confirmButton: 'alert-button-confirm',
+      },
+    });
+  }
 };

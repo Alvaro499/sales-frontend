@@ -62,7 +62,7 @@ export class AuthService {
         `${this.BASE_PATH}/recover-password`
       );
 
-      if (typeof response === "string" && response.includes("enviado correctamente")) {
+      if (typeof response === "string" && response.includes("Email enviado correctamente.")) {
         return { status: "OK", message: response };
       }
 

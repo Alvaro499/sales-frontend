@@ -34,37 +34,6 @@ export const validatePymeEmail = (email: string): ValidationResult => {
   return { isValid: true };
 };
 
-export const validatePymePassword = (password: string): ValidationResult => {
-  if (!password) {
-    return { isValid: false, error: 'La contraseña es obligatoria' };
-  }
-  
-  if (password.length < 8) {
-    return { isValid: false, error: 'La contraseña debe tener al menos 8 caracteres' };
-  }
-  
-  if (password.length > 64) {
-    return { isValid: false, error: 'La contraseña no puede exceder los 64 caracteres' };
-  }
-  
-  if (!/[A-Z]/.test(password)) {
-    return { isValid: false, error: 'La contraseña debe contener al menos una mayúscula' };
-  }
-  
-  if (!/[a-z]/.test(password)) {
-    return { isValid: false, error: 'La contraseña debe contener al menos una minúscula' };
-  }
-  
-  if (!/[0-9]/.test(password)) {
-    return { isValid: false, error: 'La contraseña debe contener al menos un número' };
-  }
-  
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    return { isValid: false, error: 'La contraseña debe contener al menos un carácter especial' };
-  }
-  
-  return { isValid: true };
-};
 
 export const validatePymeAddress = (address: string): ValidationResult => {
   if (!address || address.trim().length === 0) {
@@ -99,8 +68,6 @@ export const validateRegisterPymeForm = (formData: Pyme): { isValid: boolean; er
   const emailValidation = validatePymeEmail(formData.email);
   if (!emailValidation.isValid) errors.email = emailValidation.error!;
   
-  const passwordValidation = validatePymePassword(formData.password);
-  if (!passwordValidation.isValid) errors.password = passwordValidation.error!;
   
   const addressValidation = validatePymeAddress(formData.address);
   if (!addressValidation.isValid) errors.address = addressValidation.error!;

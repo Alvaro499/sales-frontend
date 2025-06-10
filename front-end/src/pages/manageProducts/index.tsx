@@ -41,15 +41,14 @@ const ProductPublishPanel = () => {
     };
 
     // Handler para despublicar producto
-    const handleConfirm = async () => {
-        if (selectedProduct) {
-            const updatedProduct = { ...selectedProduct, is_active: false };
-            await unpublishProductFromAPI(selectedProduct.id, updatedProduct);
-        }
-        setIsModalVisible(false);
-
-        getProductsFromAPI();
-    };
+ const handleConfirm = async () => {
+    setIsModalVisible(false);
+    if (selectedProduct) {
+        const updatedProduct = { ...selectedProduct, is_active: false };
+        await unpublishProductFromAPI(selectedProduct.id, updatedProduct);
+    }
+    getProductsFromAPI();
+};
 
     const handleCancel = () => {
         setIsModalVisible(false);

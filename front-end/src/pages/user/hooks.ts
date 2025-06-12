@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthValidations } from '../../utilities/validations/authFormValidation';
+import { ValidationFactory } from '../../utilities/validations/validationFactory';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/User.models';
 
 export const useRegisterForm = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState<User>({
     name: '',
     email: '',
@@ -30,13 +31,15 @@ export const useRegisterForm = () => {
       return;
     }
 
-    const emailValidation = AuthValidations.validateEmail(formData.email);
+    const emailValidator = ValidationFactory.create('auth.email');
+    const emailValidation = emailValidator.validate(formData.email);
     if (!emailValidation.isValid) {
       setError(emailValidation.error || 'Correo inválido');
       return;
     }
 
-    const passwordValidation = AuthValidations.validatePassword(formData.password);
+    const passwordValidator = ValidationFactory.create('auth.password');
+    const passwordValidation = passwordValidator.validate(formData.password);
     if (!passwordValidation.isValid) {
       setError(passwordValidation.error || 'Contraseña inválida');
       return;
@@ -46,16 +49,13 @@ export const useRegisterForm = () => {
     setError('');
 
     try {
-      // Llamada directa al servicio
       const response = await AuthService.registerUser(formData);
 
-      // Manejo de respuesta
       if ('status' in response && response.status === 'OK') {
         navigate('/login');
         return;
       }
 
-      // Manejo de errores
       if ('errorCode' in response) {
         if (response.errorCode === 'EMAIL_EXISTS') {
           setError('El correo electrónico ya está registrado');

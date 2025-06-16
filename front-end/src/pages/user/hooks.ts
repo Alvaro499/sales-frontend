@@ -57,7 +57,7 @@ export const useRegisterForm = () => {
       }
 
       if ('message' in response) {
-        if (response.message === 'EMAIL_ALREADY_EXISTS') {
+        if (response.message === 'User already exists') {
           setError('El correo electrónico ya está registrado');
         } else {
           setError('Error al registrar. Por favor intenta nuevamente.');

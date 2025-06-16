@@ -94,16 +94,16 @@ export class AuthService {
 
     if (!axiosError.response) {
       return {
-        message: 'Error de conexión',
+        message: 'UNKNOWN_ERROR',
         code: 503,
-        params: 'NETWORK_ERROR',
+        params: 'Error desconocido',
       };
     }
 
     return {
-      message: axiosError.response.data?.message || 'Error en la operación',
+      message: axiosError.response.data?.message || 'UNKNOWN_ERROR',
       code: axiosError.response.status || 500,
-      params: axiosError.response.data?.params || 'UNKNOWN_ERROR',
+      params: axiosError.response.data?.params || 'Error desconocido',
     };
   }
 }

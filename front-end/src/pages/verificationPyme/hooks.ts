@@ -38,29 +38,33 @@ export const useVerification = (): VerificationHook => {
       const verificationData: VerificationRequest = { userId, code };
       const response = await pymeRegistrationService.verifyCode(verificationData);
 
-      // Manejo mejorado de la respuesta
-      if (response instanceof Object) {
-        if ('status' in response && response.status === 'success') {
-          navigate('/admin');
-          return;
-        }
+      // Manejo de respuestas de error
+      if ('code' in response && response.code >= 400) {
+        let errorMessage = 'Error en la verificación';
         
-        if ('message' in response && response.message.includes('verificado correctamente')) {
-          navigate('/admin');
-          return;
+        // Caso 1: Código inválido (400)
+        if (response.code === 400 && response.message === 'INVALID_CONFIRMATION_CODE') {
+          errorMessage = response.params?.[0] || 'El código no coincide con el enviado';
+        } 
+        // Caso 2: Código ya verificado (409)
+        else if (response.code === 409 && response.message === 'CONFIRMATION_CODE_ALREADY_USED') {
+          errorMessage = response.params?.[0] || 'Este código ya fue utilizado anteriormente';
+        }
+        // Caso 3: Otros errores
+        else {
+          errorMessage = response.message || `Error en la verificación (${response.code})`;
         }
 
-        if ('message' in response) {
-          setError(response.message);
-          return;
-        }
+        setError(errorMessage);
+        return;
       }
 
-      // Respuesta inesperada pero exitosa (código 200)
+      // Si no es error, redirigir al admin
       navigate('/admin');
       
     } catch (err) {
       setError('Error de conexión. Por favor intenta nuevamente.');
+      console.error('Error en verificación:', err);
     } finally {
       setIsSubmitting(false);
     }

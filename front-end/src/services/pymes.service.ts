@@ -2,92 +2,98 @@ import { ventasApi } from './clients.service';
 import { Pyme } from '../models/Pymes.models';
 import { VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
-import { AxiosError } from 'axios';
 
 export const pymeRegistrationService = {
   BASE_PATH: 'api/pymes',
 
-  // Registro de PYME
+ verifyCode: async (verificationData: VerificationRequest): Promise<OkResponse | ErrorResponse> => {
+  try {
+    const response = await ventasApi.doPost<VerificationRequest, any>(
+      verificationData,
+      `${pymeRegistrationService.BASE_PATH}/activate`
+    );
+
+    // Si la respuesta es un error lógico del backend y no lanza excepción
+    if (response && typeof response === 'object' && response.code) {
+      return {
+        message: response.message || 'Error en la verificación',
+        code: response.code,
+        params: response.params || 'VERIFICATION_ERROR'
+      };
+    }
+
+    return { status: 'success' };
+  } catch (error: any) {
+    const status = error.response?.status;
+    const data = error.response?.data;
+
+    // Error interno del servidor (500)
+    if (status === 500) {
+      return {
+        message: data?.error || 'Error interno del servidor',
+        code: 500,
+        params: 'SERVER_ERROR'
+      };
+    }
+
+    // Error de red (sin respuesta)
+    if (!error.response) {
+      return {
+        message: 'No se pudo conectar al servidor',
+        code: 503,
+        params: 'NETWORK_ERROR'
+      };
+    }
+
+    // Otros errores conocidos del backend
+    return {
+      message: data?.error || data?.message || `Error HTTP ${status}`,
+      code: status,
+      params: data?.params || 'HTTP_ERROR'
+    };
+  }
+},
+
+
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
-      const response = await ventasApi.doPost<Pyme, OkResponse>(
+      const response = await ventasApi.doPost<Pyme, any>(
         registrationData,
         `${pymeRegistrationService.BASE_PATH}/register`
       );
-      
+
       if (!response) {
         return {
-          message: 'El servidor respondió sin datos',
+          message: 'El servidor no respondió con datos',
           code: 500,
           params: 'EMPTY_RESPONSE'
         };
       }
-      
-      return response;
-      
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      
-      if (!axiosError.response) {
+
+      return { status: 'success' };
+
+    } catch (error: any) {
+      // Manejo similar de errores para registro
+      if (error.response?.status === 500) {
         return {
-          message: 'No se pudo conectar al servidor',
-          code: 503,
-          params: 'NETWORK_ERROR',
+          message: 'Error interno del servidor durante el registro',
+          code: 500,
+          params: 'SERVER_ERROR'
         };
       }
 
-      return {
-        message: axiosError.response.data?.message || 'Error en el registro de PYME',
-        code: axiosError.response.status,
-        params: axiosError.response.data?.params || 'API_ERROR',
-      };
-    }
-  },
-
-  // Verificación de código
-  verifyCode: async (verificationData: VerificationRequest): Promise<any> => {
-    try {
-      const response = await ventasApi.doPost<VerificationRequest, any>(
-        verificationData,
-        `${pymeRegistrationService.BASE_PATH}/activate`
-      );
-
-      // Manejo de respuesta exitosa con mensaje específico
-      if (response && response.message && response.message.includes('verificado correctamente')) {
-        return { 
-          status: 'success',
-          message: response.message,
-          verified: true
-        };
-      }
-
-      // Para otras respuestas exitosas sin el mensaje específico
-      if (response && response.status === 200) {
+      if (!error.response) {
         return {
-          status: 'success',
-          message: 'Verificación exitosa',
-          verified: true
-        };
-      }
-
-      return response;
-      
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      
-      if (!axiosError.response) {
-        return {
-          message: 'Error de conexión con el servidor',
+          message: 'Error de conexión durante el registro',
           code: 503,
           params: 'NETWORK_ERROR'
         };
       }
 
-      // Manejar respuesta de error del servidor
-      return axiosError.response.data || {
-        message: 'Error en la verificación',
-        code: axiosError.response.status,
-        params: 'VERIFICATION_ERROR'
+      return {
+        message: error.response.data?.message || 'Error en el registro',
+        code: error.response.status,
+        params: error.response.data?.params || 'REGISTRATION_ERROR'
       };
     }
   }

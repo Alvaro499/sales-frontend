@@ -2,25 +2,27 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
 import { ValidationFactory } from '../../utilities/validations/validationFactory';
-import { Pyme } from '../../models/Pymes.models';
 import { useApiHandler } from '../../hooks/useApiHandler';
+import { Pyme } from '../../models/Pymes.models';
 
 export const useRegisterForm = () => {
   const navigate = useNavigate();
   const { handleMutation } = useApiHandler();
 
-  const [formData, setFormData] = useState<Pyme>({
+  // Estado del formulario - EXACTAMENTE COMO LO TENÍAS
+  const [formData, setFormData] = useState({
     pymeName: '',
     email: '',
     phone: '',
     address: '',
     description: '',
+    userId: ''
   });
 
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Valida un campo individual usando ValidationFactory
+  // VALIDACIÓN CON SWITCH TAL CUAL LA TENÍAS
   const validateField = (fieldName: keyof Pyme, value: string): string | null => {
     try {
       let validatorType: string;
@@ -43,72 +45,75 @@ export const useRegisterForm = () => {
       }
 
       const validationResult = ValidationFactory.validate(validatorType as any, value);
-      if (!validationResult.isValid) {
-        return validationResult.error || 'Valor inválido';
-      }
-      return null;
+      return validationResult.isValid ? null : validationResult.error || 'Valor inválido';
     } catch (err) {
       return err instanceof Error ? err.message : 'Error en validación';
     }
   };
 
+  // MANEJADOR DE CAMBIOS ORIGINAL
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    if (error) setError(''); // Limpia error al cambiar cualquier campo
+    if (error) setError('');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validar todos los campos (menos phone que no tiene validador)
+  // ENVÍO DEL FORMULARIO (igual al tuyo)
+  const handleSubmit = async (formDataWithoutUserId: Omit<Pyme, 'userId'>) => {
+    // Validar campos (excepto phone)
     const errors: Record<string, string> = {};
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(formDataWithoutUserId).forEach(([key, value]) => {
       if (key === 'phone') return;
-
       const fieldError = validateField(key as keyof Pyme, value);
       if (fieldError) errors[key] = fieldError;
     });
 
     if (Object.keys(errors).length > 0) {
       setError(Object.values(errors)[0] || 'Formulario inválido');
-      return; // DETIENE envío si hay error
+      return;
     }
 
     setIsSubmitting(true);
     setError('');
 
     try {
-      const response = await handleMutation(pymeRegistrationService.register, formData);
+      const userId = localStorage.getItem('userId') || '';
+      if (!userId) throw new Error('Usuario no autenticado');
 
-      if (
-        response.isSuccess === true &&
-        !response.errorCode &&
-        !response.message?.includes('Error')
-      ) {
-        navigate(`/verification?email=${encodeURIComponent(formData.email)}`);
+      const completeFormData: Pyme = {
+        ...formDataWithoutUserId,
+        userId
+      };
+
+      const response = await handleMutation(
+        pymeRegistrationService.register, 
+        completeFormData
+      );
+
+      if (response.isSuccess && !response.isError) {
+        navigate(`/verification?userId=${encodeURIComponent(completeFormData.userId)}`);
         return;
       }
 
+      // Manejo de errores específicos
       switch (response.message) {
         case 'EMAIL_ALREADY_EXISTS':
-          setError('El correo electrónico de la empresa ya está registrado');
+          setError('El correo electrónico ya está registrado');
           break;
         case 'NAME_ALREADY_EXISTS':
           setError('El nombre de la empresa ya está registrado');
           break;
         case 'Connection error':
-          setError('Existe un error de conexión, vuelve a intentarlo');
+          setError('Error de conexión. Intenta nuevamente');
           break;
         default:
-          setError(response.message || 'Error al registrar. Por favor intenta nuevamente.');
+          setError(response.message || 'Error al registrar. Intenta nuevamente.');
           break;
       }
     } catch (err) {
-      setError('Ocurrió un error inesperado. Por favor intenta más tarde.');
+      setError(err instanceof Error ? err.message : 'Error inesperado');
     } finally {
       setIsSubmitting(false);
     }

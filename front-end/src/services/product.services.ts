@@ -23,7 +23,7 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 		return {
 			message: 'Error al crear producto',
 			code: 500,
-			errorCode: 'CREATE_PRODUCT_ERROR',
+			params: 'CREATE_PRODUCT_ERROR',
 		};
 	}
 };
@@ -72,7 +72,7 @@ export const unpublishProduct = async (
 		return {
 			message: 'Error al despublicar producto',
 			code: 500,
-			errorCode: 'UNPUBLISH_PRODUCT_ERROR',
+			params: 'UNPUBLISH_PRODUCT_ERROR',
 		};
 	}
 };
@@ -88,7 +88,7 @@ export const updateProduct = async (
 		return {
 			message: 'Error al actualizar producto',
 			code: 500,
-			errorCode: 'UPDATE_PRODUCT_ERROR',
+			params: 'UPDATE_PRODUCT_ERROR',
 		};
 	}
 };

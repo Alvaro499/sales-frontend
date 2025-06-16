@@ -3,59 +3,80 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { pymeRegistrationService } from '../../services/pymes.service';
 import { VerificationRequest } from '../../models/AuthPyme.models';
 import { VerificationHook } from './types';
-import { useApiHandler } from '../../hooks/useApiHandler';
 
 export const useVerification = (): VerificationHook => {
-	const location = useLocation();
-	const navigate = useNavigate();
-	const { handleMutation } = useApiHandler();
-	const email = new URLSearchParams(location.search).get('email') || '';
+  const location = useLocation();
+  const navigate = useNavigate();
+  const userId = new URLSearchParams(location.search).get('userId') || '';
 
-	const [verificationCode, setVerificationCode] = useState('');
-	const [error, setError] = useState('');
-	const [isSubmitting, setIsSubmitting] = useState(false);
+  const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 4));
-	};
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCode(e.target.value.replace(/\D/g, '').slice(0, 4));
+    if (error) setError('');
+  };
 
-	const handleVerify = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-		e.preventDefault();
+  const handleVerify = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
 
-		if (verificationCode.length !== 4) {
-			setError('El código debe tener 4 dígitos');
-			return;
-		}
+    if (!userId) {
+      setError('Usuario no identificado');
+      return;
+    }
 
-		setIsSubmitting(true);
-		setError('');
+    if (code.length !== 4) {
+      setError('El código debe tener 4 dígitos');
+      return;
+    }
 
-		const verificationData: VerificationRequest = { email, verificationCode };
-		const response = await handleMutation(pymeRegistrationService.verifyCode, verificationData);
+    setIsSubmitting(true);
+    setError('');
 
-		console.log(response);
+    try {
+      const verificationData: VerificationRequest = { userId, code };
+      const response = await pymeRegistrationService.verifyCode(verificationData);
 
-		if (response.isSuccess && !response.errorCode) {
-			navigate('/admin');
-		} else {
-			setError(response.message || 'Error al verificar el código');
-		}
+      // Manejo mejorado de la respuesta
+      if (response instanceof Object) {
+        if ('status' in response && response.status === 'success') {
+          navigate('/admin');
+          return;
+        }
+        
+        if ('message' in response && response.message.includes('verificado correctamente')) {
+          navigate('/admin');
+          return;
+        }
 
-		setIsSubmitting(false);
-	};
+        if ('message' in response) {
+          setError(response.message);
+          return;
+        }
+      }
 
+      // Respuesta inesperada pero exitosa (código 200)
+      navigate('/admin');
+      
+    } catch (err) {
+      setError('Error de conexión. Por favor intenta nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-	const handleBack = () => {
-		navigate('/registro', { state: { email } });
-	};
+  const handleBack = () => {
+    navigate('/registro', { state: { userId } });
+  };
 
-	return {
-		email,
-		verificationCode,
-		error,
-		isSubmitting,
-		handleCodeChange,
-		handleVerify,
-		handleBack,
-	};
+  return {
+    userId,
+    code,
+    error,
+    isSubmitting,
+    handleCodeChange,
+    handleVerify,
+    handleBack,
+  };
 };

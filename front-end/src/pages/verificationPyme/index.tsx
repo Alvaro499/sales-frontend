@@ -4,8 +4,7 @@ import './styles/index.css';
 
 export const VerificationPage = () => {
 	const {
-		email,
-		verificationCode,
+		code,
 		error,
 		isSubmitting,
 		handleCodeChange,
@@ -17,8 +16,7 @@ export const VerificationPage = () => {
 		<div className='verification-page-container'>
 			<div className='verification-wrapper'>
 				<VerificationForm
-					email={email}
-					verificationCode={verificationCode}
+					code={code}
 					error={error}
 					isSubmitting={isSubmitting}
 					onCodeChange={handleCodeChange}

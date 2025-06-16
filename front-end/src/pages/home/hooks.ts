@@ -36,7 +36,7 @@ export function useProducts(
     localizationService
       .getCategories()
       .then(data => {
-        if ('errorCode' in data) {
+        if ('params' in data) {
           setError(data.message);
         } else if (Array.isArray(data)) {
           setCategories(data);
@@ -67,7 +67,7 @@ export function useProducts(
       localizationService
         .locateProducts(search, categoryId, minPrice, maxPrice)
         .then(data => {
-          if ('errorCode' in data) {
+          if ('params' in data) {
             setError(data.message);
             setFilteredProducts([]);
           } else if (Array.isArray(data)) {

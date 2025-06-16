@@ -4,54 +4,91 @@ import { VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AxiosError } from 'axios';
 
-const BASE_PATH = 'api/pymes';
-
 export const pymeRegistrationService = {
+  BASE_PATH: 'api/pymes',
+
+  // Registro de PYME
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
-      return await ventasApi.doPost<Pyme, OkResponse>(
+      const response = await ventasApi.doPost<Pyme, OkResponse>(
         registrationData,
-        `${BASE_PATH}/register`
+        `${pymeRegistrationService.BASE_PATH}/register`
       );
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (!axiosError.response) {
+      
+      if (!response) {
         return {
-          message: 'Connection error',
-          code: 503,
-          errorCode: 'NETWORK_ERROR',
+          message: 'El servidor respondió sin datos',
+          code: 500,
+          params: 'EMPTY_RESPONSE'
         };
       }
+      
+      return response;
+      
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      
+      if (!axiosError.response) {
+        return {
+          message: 'No se pudo conectar al servidor',
+          code: 503,
+          params: 'NETWORK_ERROR',
+        };
+      }
+
       return {
-        message: axiosError.response.data?.message || 'Error during registration',
+        message: axiosError.response.data?.message || 'Error en el registro de PYME',
         code: axiosError.response.status,
-        errorCode: axiosError.response.data?.errorCode || 'API_ERROR',
+        params: axiosError.response.data?.params || 'API_ERROR',
       };
     }
   },
 
-  verifyCode: async (
-    verificationData: VerificationRequest
-  ): Promise<OkResponse | ErrorResponse> => {
+  // Verificación de código
+  verifyCode: async (verificationData: VerificationRequest): Promise<any> => {
     try {
-      return await ventasApi.doPost<VerificationRequest, OkResponse>(
+      const response = await ventasApi.doPost<VerificationRequest, any>(
         verificationData,
-        BASE_PATH
+        `${pymeRegistrationService.BASE_PATH}/activate`
       );
-    } catch (error) {
-      const axiosError = error as AxiosError<ErrorResponse>;
-      if (!axiosError.response) {
-        return {
-          message: 'Connection error',
-          code: 503,
-          errorCode: 'NETWORK_ERROR',
+
+      // Manejo de respuesta exitosa con mensaje específico
+      if (response && response.message && response.message.includes('verificado correctamente')) {
+        return { 
+          status: 'success',
+          message: response.message,
+          verified: true
         };
       }
-      return {
-        message: axiosError.response?.data?.message || 'Error during verification',
-        code: axiosError.response?.status || 500,
-        errorCode: axiosError.response?.data?.errorCode || 'VERIFICATION_ERROR',
+
+      // Para otras respuestas exitosas sin el mensaje específico
+      if (response && response.status === 200) {
+        return {
+          status: 'success',
+          message: 'Verificación exitosa',
+          verified: true
+        };
+      }
+
+      return response;
+      
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      
+      if (!axiosError.response) {
+        return {
+          message: 'Error de conexión con el servidor',
+          code: 503,
+          params: 'NETWORK_ERROR'
+        };
+      }
+
+      // Manejar respuesta de error del servidor
+      return axiosError.response.data || {
+        message: 'Error en la verificación',
+        code: axiosError.response.status,
+        params: 'VERIFICATION_ERROR'
       };
     }
-  },
+  }
 };

@@ -27,7 +27,7 @@ export const localizationService = {
       return {
         message: 'Error locating products',
         code: 500,
-        errorCode: 'LOCALIZATION_ERROR',
+        params: 'LOCALIZATION_ERROR',
       };
     }
   },
@@ -39,7 +39,7 @@ export const localizationService = {
       return {
         message: 'Error retrieving categories',
         code: 500,
-        errorCode: 'CATEGORIES_ERROR',
+        params: 'CATEGORIES_ERROR',
       };
     }
   },

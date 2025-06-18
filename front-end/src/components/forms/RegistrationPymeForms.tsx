@@ -8,13 +8,25 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onChange,
   onSubmit,
 }) => {
+  // Obtener el userId del localStorage
+  const userId = localStorage.getItem('userId') || '';
+  
+  // Modificar el onSubmit para incluir el userId
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      ...formData,
+      userId: userId // Añadir el userId al objeto formData
+    });
+  };
+
   return (
     <div className='card-body p-md-4'>
       <h2 className='card-title text-center mb-3 mb-md-4'>Registro de Pyme</h2>
 
       {error && <div className='alert alert-danger'>{error}</div>}
 
-      <form onSubmit={onSubmit} className='needs-validation' noValidate>
+      <form onSubmit={handleSubmit} className='needs-validation' noValidate>
         {/* Campos del formulario con clases responsivas */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='pymeName' className='form-label'>
@@ -23,7 +35,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <input
             id='pymeName'
             type='text'
-            name='pymeName'  // Cambiado de companyName a pymeName
+            name='pymeName'
             value={formData.pymeName}
             onChange={onChange}
             required
@@ -86,7 +98,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <div className='invalid-feedback'>Por favor ingresa una dirección válida</div>
         </div>
 
-        {/* Nuevo campo de descripción agregado */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='description' className='form-label'>
             Descripción de la Pyme
@@ -122,7 +133,6 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             )}
           </button>
         </div>
-
       </form>
     </div>
   );

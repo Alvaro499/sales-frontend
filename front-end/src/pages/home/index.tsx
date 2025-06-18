@@ -22,6 +22,7 @@ const Home: React.FC = () => {
     minPrice,
     maxPrice
   );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const Home: React.FC = () => {
   const handleLogout = async () => {
     const confirmed = await confirmLogout();
     if (confirmed) {
-      localStorage.removeItem('app_auth_token');
+      AuthStorage.clearToken();
       setIsLoggedIn(false);
       setTimeout(() => window.location.reload(), 1000);
     }
@@ -132,12 +133,14 @@ const Home: React.FC = () => {
                 {isLoggedIn ? (
                   <>
                     <button
-                      className='btn btn-outline-danger d-flex align-items-center gap-2'
+                      className='btn btn-outline-danger d-flex align-items-center gap-2 py-2'
                       onClick={handleLogout}
+                      style={{ whiteSpace: 'nowrap' }}
                     >
                       <i className='bi bi-box-arrow-right'></i>
-                      <span className='d-none d-lg-inline'>Desconectar</span>
+                      <span className='d-none d-lg-inline'>Cerrar Sesión</span>
                     </button>
+
                     <button
                       className='btn btn-primary d-flex align-items-center gap-2'
                       onClick={() => navigate('/admin')}
@@ -150,9 +153,10 @@ const Home: React.FC = () => {
                   <button
                     className='btn btn-outline-primary d-flex align-items-center gap-2'
                     onClick={() => navigate('/login')}
+                    style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', whiteSpace: 'nowrap' }}
                   >
                     <i className='bi bi-box-arrow-in-right'></i>
-                    <span className='d-none d-lg-inline'>Conectar</span>
+                    <span className='d-none d-lg-inline'>Iniciar Sesión</span>
                   </button>
                 )}
               </div>

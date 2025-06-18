@@ -2,8 +2,7 @@ import React from 'react';
 import { VerificationFormProps } from './types';
 
 export const VerificationForm: React.FC<VerificationFormProps> = ({
-	email,
-	verificationCode,
+	code,
 	error,
 	isSubmitting,
 	onCodeChange,
@@ -18,8 +17,7 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 				<form onSubmit={onSubmit}>
 					{/* Encabezado con email */}
 					<div className='mb-3 text-center'>
-						<p className='text-muted mb-1'>Ingresa el código enviado a:</p>
-						<p className='fw-bold text-break'>{email}</p>
+						<p className='text-muted mb-1'>Ingresa el código enviado:</p>
 					</div>
 
 					{/* Campo de código */}
@@ -34,7 +32,7 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 							pattern='[0-9]*'
 							maxLength={4}
 							name='verificationCode'
-							value={verificationCode}
+							value={code}
 							onChange={onCodeChange}
 							required
 							className='form-control form-control-lg text-center'
@@ -54,7 +52,7 @@ export const VerificationForm: React.FC<VerificationFormProps> = ({
 						<button
 							type='submit'
 							className='btn btn-primary btn-lg'
-							disabled={isSubmitting || verificationCode.length !== 4}
+							disabled={isSubmitting || code.length !== 4}
 						>
 							{isSubmitting ? (
 								<>

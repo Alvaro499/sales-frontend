@@ -1,16 +1,14 @@
 export interface Product {
 	id: string;
-	product_id: string;
-	pyme_id: string;
 	name: string;
 	description: string;
 	price: number;
+	category: string[]; 
+	urlImg: string[];
 	available: boolean;
-	promotion?: number | null;
+	promotion?: string | null;
 	stock: number;
-	url_img: string;
-	is_active: boolean;
-	category_id: number | null;
+	pyme_id: string;
 }
 
 export interface Category {

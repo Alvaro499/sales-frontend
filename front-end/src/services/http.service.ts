@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthStorage } from '../hooks/storageToken.sevice';
+import { AuthStorage } from '../hooks/useLocalStorage';
 
 // ----------------------------- API FACTORY -----------------------------
 

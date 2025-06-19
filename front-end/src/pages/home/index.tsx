@@ -4,7 +4,7 @@ import { useProducts } from './hooks';
 import { Product } from '../../models/Products.models';
 import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
 import './Styles.css';
-import { AuthStorage } from '../../hooks/storageToken.sevice';
+import { AuthStorage } from '../../hooks/useLocalStorage';
 
 const Home: React.FC = () => {
 	const [search, setSearch] = useState('');

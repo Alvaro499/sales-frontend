@@ -1,35 +1,29 @@
 // useProducts.ts
 import { useState, useEffect } from 'react';
-import { getProducts, getCategories } from '../../services/product.services';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 
+interface UseProductsReturn {
+  products: Product[];
+  filteredProducts: Product[];
+  categories: Category[];
+  loading: boolean;
+  error: string | null;
+}
+
 export function useProducts(
-	search?: string,
-	selectedCategory?: string,
-	minPrice?: number | null,
-	maxPrice?: number | null
-) {
-	const [products, setProducts] = useState<Product[]>([]);
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+  search: string = '',
+  selectedCategory: string = 'all',
+  minPrice: number | null = null,
+  maxPrice: number | null = null
+): UseProductsReturn {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		getProducts()
-			.then(productsData => {
-				setProducts(productsData);
-				setFilteredProducts(productsData);
-				setLoading(false);
-			})
-			.catch(() => {
-				setError('Failed to load products');
-				setLoading(false);
-			});
-	}, []);
-
-  // Initial categories loading
+  // Cargar categorías al montar
   useEffect(() => {
     setLoading(true);
     localizationService
@@ -39,30 +33,48 @@ export function useProducts(
           setError(data.message);
         } else if (Array.isArray(data)) {
           setCategories(data);
+          setError(null);
         }
       })
       .catch(() => setError('Failed to fetch categories'))
       .finally(() => setLoading(false));
   }, []);
 
+  // Cargar todos los productos al montar
+  useEffect(() => {
+    setLoading(true);
+    localizationService
+      .locateProducts('', null, null, null)
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+          setFilteredProducts(data);
+          setError(null);
+        } else if ('params' in data) {
+          setError(data.message);
+        }
+      })
+      .catch(() => setError('Failed to load products'))
+      .finally(() => setLoading(false));
+  }, []);
 
-	// Dynamic search and filtering with debounce
-	useEffect(() => {
-		const shouldSearch =
-			(search && search.trim() !== '') ||
-			(selectedCategory && selectedCategory !== 'all') ||
-			(minPrice !== undefined && minPrice !== null) ||
-			(maxPrice !== undefined && maxPrice !== null);
+  // Buscar y filtrar productos con debounce
+  useEffect(() => {
+    const shouldSearch =
+      search.trim() !== '' ||
+      selectedCategory !== 'all' ||
+      minPrice !== null ||
+      maxPrice !== null;
 
-		if (!shouldSearch) {
-			setFilteredProducts(products); // Show all initially loaded products
-			return;
-		}
+    if (!shouldSearch) {
+      setFilteredProducts(products);
+      return;
+    }
 
-		setLoading(true);
-		const delayDebounceFn = setTimeout(() => {
-			const categoryId =
-				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
+    setLoading(true);
+
+    const delayDebounceFn = setTimeout(() => {
+      const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
       localizationService
         .locateProducts(search, categoryId, minPrice, maxPrice)
@@ -82,9 +94,8 @@ export function useProducts(
         .finally(() => setLoading(false));
     }, 300);
 
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, selectedCategory, minPrice, maxPrice, products]);
 
-		return () => clearTimeout(delayDebounceFn);
-	}, [search, selectedCategory, minPrice, maxPrice, products]);
-
-	return { products, filteredProducts, categories, loading, error };
+  return { products, filteredProducts, categories, loading, error };
 }

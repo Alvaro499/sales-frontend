@@ -1,8 +1,10 @@
 // useProducts.ts
 import { useState, useEffect } from 'react';
-import { getProducts, getCategories } from '../../services/product.services';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
+import { useNavigate } from 'react-router-dom';
+import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
+import { AuthStorage } from '../../hooks/useLocalStorage';
 
 export function useProducts(
   search?: string,
@@ -16,6 +18,53 @@ export function useProducts(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Efecto para cargar categorías
+  useEffect(() => {
+    setLoading(true);
+    localizationService
+      .getCategories()
+      .then(data => {
+        if ('params' in data) {
+          setError(data.message);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
+        }
+      })
+      .catch(() => setError('Failed to fetch categories'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Efecto para filtrar productos
+  useEffect(() => {
+    setLoading(true);
+    const delayDebounceFn = setTimeout(() => {
+      const categoryId = selectedCategory && selectedCategory !== 'all' 
+        ? Number(selectedCategory) 
+        : null;
+
+      localizationService
+        .locateProducts(search, categoryId, minPrice, maxPrice)
+        .then(data => {
+          if ('params' in data) {
+            setError(data.message);
+            setFilteredProducts([]);
+          } else if (Array.isArray(data)) {
+            setFilteredProducts(data);
+            setError(null);
+          }
+        })
+        .catch(() => {
+          setError('An error occurred while searching for products.');
+          setFilteredProducts([]);
+        })
+        .finally(() => setLoading(false));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, selectedCategory, minPrice, maxPrice, products]);
+
+  return { products, filteredProducts, categories, loading, error };
+}
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -35,23 +84,6 @@ const Home: React.FC = () => {
   );
 
   const navigate = useNavigate();
-
-  // Initial categories loading
-  useEffect(() => {
-    setLoading(true);
-    localizationService
-      .getCategories()
-      .then(data => {
-        if ('params' in data) {
-          setError(data.message);
-        } else if (Array.isArray(data)) {
-          setCategories(data);
-        }
-      })
-      .catch(() => setError('Failed to fetch categories'))
-      .finally(() => setLoading(false));
-  }, []);
-
 
   const handleLogout = async () => {
     const confirmed = await confirmLogout();
@@ -208,15 +240,15 @@ const Home: React.FC = () => {
 
         <div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4'>
           {filteredProducts.map((product: Product) => (
-            <div key={product.product_id} className='col'>
+            <div key={product.id} className='col'>
               <div
                 className='card h-100 border-0 shadow-sm transition-all product-card'
-                onClick={() => navigate(`/producto/${product.product_id}`)}
+                onClick={() => navigate(`/producto/${product.id}`)}
                 role='button'
               >
                 <div className='position-relative overflow-hidden' style={{ height: '200px' }}>
                   <img
-                    src={product.url_img}
+                    src={product.images[0]}
                     alt={product.name}
                     className='card-img-top h-100 object-fit-cover'
                   />
@@ -241,7 +273,7 @@ const Home: React.FC = () => {
                       className='btn btn-sm btn-outline-primary'
                       onClick={e => {
                         e.stopPropagation();
-                        navigate(`/producto/${product.product_id}`);
+                        navigate(`/producto/${product.id}`);
                       }}
                     >
                       Ver más
@@ -257,32 +289,4 @@ const Home: React.FC = () => {
   );
 };
 
-
-    setLoading(true);
-    const delayDebounceFn = setTimeout(() => {
-      const categoryId =
-        selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
-
-      localizationService
-        .locateProducts(search, categoryId, minPrice, maxPrice)
-        .then(data => {
-          if ('params' in data) {
-            setError(data.message);
-            setFilteredProducts([]);
-          } else if (Array.isArray(data)) {
-            setFilteredProducts(data);
-            setError(null);
-          }
-        })
-        .catch(() => {
-          setError('An error occurred while searching for products.');
-          setFilteredProducts([]);
-        })
-        .finally(() => setLoading(false));
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [search, selectedCategory, minPrice, maxPrice, products]);
-
-  return { products, filteredProducts, categories, loading, error };
-}
+export default Home;

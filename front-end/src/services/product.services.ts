@@ -2,8 +2,7 @@ import { ventasApi } from './clients.service';
 import { Category, Product } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 
-
-const BASE_PATH = 'api/products';
+const BASE_PATH = '/api/product';
 const BASE_PATH_CATEGORIES = 'api/categories';
 
 export const createProduct = async (product: Product): Promise<Product | ErrorResponse> => {
@@ -30,16 +29,22 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 };
 
 export const getProducts = async (): Promise<Product[]> => {
-    const url = `${BASE_PATH}/search`;  // URL correcta de la API
-    const response = await ventasApi.doGet<{ message: string; data: Product[] }>(url);
-    console.log('Respuesta de productos:', response); // Verifica la respuesta en la consola
-    return response.data;  // Aquí estamos accediendo a la propiedad 'data' que contiene los productos
+	const url = `${BASE_PATH}`;
+	const response = await ventasApi.doGet<{ message: string; data: Product[] }>(url);
+	console.log('Respuesta de productos:', response);
+	return response.data;
 };
 
-
-
-export const getCategories = async (): Promise<Category[]> => {
-	return await ventasApi.doGet<Category[]>(BASE_PATH_CATEGORIES);
+export const getCategories = async (): Promise<Category[] | ErrorResponse> => {
+	try {
+		return await ventasApi.doGet<Category[]>(`/${BASE_PATH_CATEGORIES}`);
+	} catch (error) {
+		return {
+			message: 'Error retrieving categories',
+			code: 500,
+			params: 'CATEGORIES_ERROR',
+		};
+	}
 };
 
 export const getProductById2 = async (id: string): Promise<Product> => {
@@ -47,9 +52,11 @@ export const getProductById2 = async (id: string): Promise<Product> => {
 };
 
 export const getProductById = async (id: string): Promise<Product[]> => {
-	const response = await ventasApi.doGet<{ message: string; data: any[] }>(`${BASE_PATH}/by-pyme/${id}`);
+	const response = await ventasApi.doGet<{ message: string; data: any[] }>(
+		`${BASE_PATH}/by-pyme/${id}`
+	);
 
-	const products: Product[] = response.data.map(item => ({
+	const products: Product[] = response.data.map((item) => ({
 		id: item.id,
 		name: item.name,
 		description: item.description,
@@ -61,9 +68,9 @@ export const getProductById = async (id: string): Promise<Product[]> => {
 		stock: item.stock,
 		pyme_id: item.pyme_id,
 	}));
+
 	return products;
 };
-
 
 export const unpublishProduct = async (
 	productId: string,

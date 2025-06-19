@@ -1,7 +1,7 @@
-// useProducts.ts
 import { useState, useEffect } from 'react';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
+import { getCategories } from '../../services/product.services';
 
 interface UseProductsReturn {
   products: Product[];
@@ -23,79 +23,59 @@ export function useProducts(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar categorías al montar
+  // Cargar categorías al inicio
   useEffect(() => {
-    setLoading(true);
-    localizationService
-      .getCategories()
-      .then(data => {
-        if ('params' in data) {
-          setError(data.message);
-        } else if (Array.isArray(data)) {
-          setCategories(data);
-          setError(null);
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await getCategories();
+        if (Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+        } else {
+          setError('Error consiguiendo las categorías');
         }
-      })
-      .catch(() => setError('Failed to fetch categories'))
-      .finally(() => setLoading(false));
+      } catch {
+        setError('Error al cargar las categorías');
+      }
+    };
+    loadCategories();
   }, []);
 
-  // Cargar todos los productos al montar
+  // Buscar productos con filtros o sin filtros (todos)
   useEffect(() => {
-    setLoading(true);
-    localizationService
-      .locateProducts('', null, null, null)
-      .then(data => {
-        if (Array.isArray(data)) {
-          setProducts(data);
-          setFilteredProducts(data);
-          setError(null);
-        } else if ('params' in data) {
-          setError(data.message);
-        }
-      })
-      .catch(() => setError('Failed to load products'))
-      .finally(() => setLoading(false));
-  }, []);
+    const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
-  // Buscar y filtrar productos con debounce
-  useEffect(() => {
-    const shouldSearch =
-      search.trim() !== '' ||
-      selectedCategory !== 'all' ||
-      minPrice !== null ||
-      maxPrice !== null;
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
 
-    if (!shouldSearch) {
-      setFilteredProducts(products);
-      return;
-    }
+      try {
+        // localizationService.locateProducts debe devolver todos si no recibe filtros
+        const results = await localizationService.locateProducts(
+          search,
+          categoryId,
+          minPrice,
+          maxPrice
+        );
 
-    setLoading(true);
-
-    const delayDebounceFn = setTimeout(() => {
-      const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
-
-      localizationService
-        .locateProducts(search, categoryId, minPrice, maxPrice)
-        .then(data => {
-          if ('params' in data) {
-            setError(data.message);
-            setFilteredProducts([]);
-          } else if (Array.isArray(data)) {
-            setFilteredProducts(data);
-            setError(null);
-          }
-        })
-        .catch(() => {
-          setError('An error occurred while searching for products.');
+        if ('params' in results) {
+          setError(results.message || 'Error en la búsqueda de productos');
           setFilteredProducts([]);
-        })
-        .finally(() => setLoading(false));
-    }, 300);
+          setProducts([]);
+        } else if (Array.isArray(results)) {
+          setFilteredProducts(results);
+          setProducts(results);
+        }
+      } catch {
+        setError('Error al cargar los productos');
+        setFilteredProducts([]);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [search, selectedCategory, minPrice, maxPrice, products]);
+    fetchProducts();
+  }, [search, selectedCategory, minPrice, maxPrice]);
 
   return { products, filteredProducts, categories, loading, error };
 }

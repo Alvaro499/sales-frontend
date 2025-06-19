@@ -9,8 +9,8 @@ const ProductPublishForm = () => {
     error,
     isLoading,
     handleInputChange,
-    handleCheckboxChange,
     handleCategoryChange,
+    handleImageUrlChange,
     handlePublish,
   } = usePublishProduct();
 
@@ -24,6 +24,7 @@ const ProductPublishForm = () => {
           handlePublish();
         }}
       >
+        {/* Nombre */}
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
             Nombre del Producto
@@ -39,6 +40,7 @@ const ProductPublishForm = () => {
           />
         </div>
 
+        {/* Descripción */}
         <div className="mb-3">
           <label htmlFor="description" className="form-label">
             Descripción
@@ -54,6 +56,7 @@ const ProductPublishForm = () => {
           ></textarea>
         </div>
 
+        {/* Precio */}
         <div className="mb-3">
           <label htmlFor="price" className="form-label">
             Precio
@@ -71,21 +74,52 @@ const ProductPublishForm = () => {
           />
         </div>
 
+        {/* Categoría (Selección múltiple) */}
         <div className="mb-3">
-          <label htmlFor="url_img" className="form-label">
-            Imágenes (URL)
+          <label htmlFor="category" className="form-label">
+            Categorías
+          </label>
+          <div>
+            {categories.length === 0 ? (
+              <p>No se encontraron categorías.</p> // Muestra un mensaje si no hay categorías
+            ) : (
+              categories.map((cat) => (
+                <div key={cat.id} className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`category-${cat.id}`}
+                    value={cat.id}
+                    checked={product.category.includes(cat.id)}
+                    onChange={handleCategoryChange}
+                  />
+                  <label className="form-check-label" htmlFor={`category-${cat.id}`}>
+                    {cat.name}
+                  </label>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* URLs imágenes */}
+        <div className="mb-3">
+          <label htmlFor="images" className="form-label">
+            URLs de Imágenes
           </label>
           <input
             type="text"
             className="form-control"
-            id="url_img"
-            name="url_img"
-            value={product.url_img}
-            onChange={handleInputChange}
-            placeholder="https://example.com/images/product1.jpg"
+            id="images"
+            name="images"
+            value={product.urlImg.join(', ')}
+            onChange={handleImageUrlChange} // Llamada para manejar la URL de las imágenes
+            placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
           />
+          <small className="form-text text-muted">Separadas por coma.</small>
         </div>
 
+        {/* Stock */}
         <div className="mb-3">
           <label htmlFor="stock" className="form-label">
             Stock
@@ -102,6 +136,7 @@ const ProductPublishForm = () => {
           />
         </div>
 
+        {/* Promoción */}
         <div className="mb-3">
           <label htmlFor="promotion" className="form-label">
             Promoción
@@ -113,47 +148,27 @@ const ProductPublishForm = () => {
             name="promotion"
             value={product.promotion || ''}
             onChange={handleInputChange}
-            placeholder="20% off this product"
+            placeholder="20% off"
           />
         </div>
 
+        {/* Pyme ID */}
         <div className="mb-3">
-          <label htmlFor="pyme_id" className="form-label">
+          <label htmlFor="pymeId" className="form-label">
             Pyme ID
           </label>
           <input
             type="text"
             className="form-control"
-            id="pyme_id"
+            id="pymeId"
             name="pyme_id"
-            value={product.pyme_id || ''}
+            value={product.pyme_id}
             onChange={handleInputChange}
-            placeholder="123e4567-e89b-12d3-a456-426614174000"
+            placeholder="uuid..."
           />
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="category_id" className="form-label">
-            Categoría
-          </label>
-          <select
-            id="category_id"
-            name="category_id"
-            className="form-select"
-            value={product.category_id || ''}
-            onChange={(e) => handleCategoryChange(Number(e.target.value))}
-          >
-            <option value="" disabled>
-              Selecciona una categoría
-            </option>
-            {categories.map((cat) => (
-              <option key={cat.category_id} value={cat.category_id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
+        {/* Disponible */}
         <div className="form-check mb-3">
           <input
             className="form-check-input"
@@ -161,15 +176,17 @@ const ProductPublishForm = () => {
             id="available"
             name="available"
             checked={product.available}
-            onChange={handleCheckboxChange}
+            onChange={(e) => handleInputChange(e)}
           />
           <label className="form-check-label" htmlFor="available">
             Disponible
           </label>
         </div>
 
+        {/* Error */}
         {error && <p className="text-danger">{error}</p>}
 
+        {/* Botones */}
         <div className="d-flex justify-content-between">
           <button
             type="button"
@@ -179,7 +196,6 @@ const ProductPublishForm = () => {
           >
             Cancelar
           </button>
-
           <button type="submit" className="btn btn-primary" disabled={isLoading}>
             {isLoading ? (
               <span

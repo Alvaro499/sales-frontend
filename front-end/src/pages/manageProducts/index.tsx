@@ -94,32 +94,32 @@ const ProductPublishPanel = () => {
             <br />
             <div className="row">
                 {products.map((product) => (
-                    <div key={product.product_id} className="col-12 col-sm-6 col-md-4 mb-4">
+                    <div key={product.id} className="col-12 col-sm-6 col-md-4 mb-4">
                         <div className="card h-100 product-card">
                           <img
-									src={product.url_img}
+									src={product.urlImg[0]}
 									alt={`Imagen de ${product.name}`}
 									className='card-img-top rounded-top'
 									style={{ objectFit: 'cover', height: '200px' }}
 							/>
                             <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{product.name}</h5>
-                                <p className="card-text">Estado: {product.is_active ? 'Publicado' : 'Despublicado'}</p>
+                                <p className="card-text">Estado: {product.available ? 'Publicado' : 'Despublicado'}</p>
                                 <p className="card-text">Precio: ${product.price}</p>
                                 <p className="card-text">Stock: {product.stock}</p>
                                 <div className="mt-auto">
                                     <button className="btn btn-link p-0 me-2" onClick={() => showViewModal(product)}>
                                         Ver
                                     </button>
-                                    {product.is_active && (
+                                    {product.available && (
                                         <button className="btn btn-link p-0 me-2">Promoción</button>
                                     )}
-                                    {product.is_active && (
+                                    {product.available && (
                                         <button className="btn btn-link p-0 me-2" onClick={() => showModal(product)}>
                                             Despublicar
                                         </button>
                                     )}
-                                    {product.is_active && (
+                                    {product.available && (
                                     <button className="btn btn-link p-0" onClick={() => showStockModal(product)}>
                                         Administrar producto
                                     </button>
@@ -141,7 +141,7 @@ const ProductPublishPanel = () => {
                         </div>
                         <div className="modal-body">
                             <p>Producto: {selectedProduct?.name}</p>
-                            <p>Estado: {selectedProduct?.is_active ? 'Publicado' : 'Despublicado'}</p>
+                            <p>Estado: {selectedProduct?.available ? 'Publicado' : 'Despublicado'}</p>
                             <p>¿Confirmar despublicación?</p>
                         </div>
                         <div className="modal-footer">
@@ -162,8 +162,8 @@ const ProductPublishPanel = () => {
                         </div>
                         <div className="modal-body">
                             <p>Producto: {selectedProduct?.name}</p>
-                            <p>Estado actual: {selectedProduct?.is_active ? 'Publicado' : 'Despublicado'}</p>
-                            {selectedProduct?.is_active ? (
+                            <p>Estado actual: {selectedProduct?.available ? 'Publicado' : 'Despublicado'}</p>
+                            {selectedProduct?.available ? (
                                 <p>¡Este producto está visible para los clientes!</p>
                             ) : (
                                 <p>¡Este producto ya no está visible para los clientes!</p>

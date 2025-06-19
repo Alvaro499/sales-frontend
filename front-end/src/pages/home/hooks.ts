@@ -2,14 +2,8 @@ import { useState, useEffect } from 'react';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 import { getCategories } from '../../services/product.services';
+import { UseProductsReturn } from './types';
 
-interface UseProductsReturn {
-  products: Product[];
-  filteredProducts: Product[];
-  categories: Category[];
-  loading: boolean;
-  error: string | null;
-}
 
 export function useProducts(
   search: string = '',

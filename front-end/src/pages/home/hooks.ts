@@ -1,90 +1,75 @@
-// useProducts.ts
 import { useState, useEffect } from 'react';
-import { getProducts, getCategories } from '../../services/product.services';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
+import { getCategories } from '../../services/product.services';
+import { UseProductsReturn } from './types';
+
 
 export function useProducts(
-	search?: string,
-	selectedCategory?: string,
-	minPrice?: number | null,
-	maxPrice?: number | null
-) {
-	const [products, setProducts] = useState<Product[]>([]);
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+  search: string = '',
+  selectedCategory: string = 'all',
+  minPrice: number | null = null,
+  maxPrice: number | null = null
+): UseProductsReturn {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		getProducts()
-			.then(productsData => {
-				setProducts(productsData);
-				setFilteredProducts(productsData);
-				setLoading(false);
-			})
-			.catch(() => {
-				setError('Failed to load products');
-				setLoading(false);
-			});
-	}, []);
-
-  // Initial categories loading
+  // Cargar categorías al inicio
   useEffect(() => {
-    setLoading(true);
-    localizationService
-      .getCategories()
-      .then(data => {
-        if ('params' in data) {
-          setError(data.message);
-        } else if (Array.isArray(data)) {
-          setCategories(data);
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await getCategories();
+        if (Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+        } else {
+          setError('Error consiguiendo las categorías');
         }
-      })
-      .catch(() => setError('Failed to fetch categories'))
-      .finally(() => setLoading(false));
+      } catch {
+        setError('Error al cargar las categorías');
+      }
+    };
+    loadCategories();
   }, []);
 
+  // Buscar productos con filtros o sin filtros (todos)
+  useEffect(() => {
+    const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
-	// Dynamic search and filtering with debounce
-	useEffect(() => {
-		const shouldSearch =
-			(search && search.trim() !== '') ||
-			(selectedCategory && selectedCategory !== 'all') ||
-			(minPrice !== undefined && minPrice !== null) ||
-			(maxPrice !== undefined && maxPrice !== null);
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
 
-		if (!shouldSearch) {
-			setFilteredProducts(products); // Show all initially loaded products
-			return;
-		}
+      try {
+        // localizationService.locateProducts debe devolver todos si no recibe filtros
+        const results = await localizationService.locateProducts(
+          search,
+          categoryId,
+          minPrice,
+          maxPrice
+        );
 
-		setLoading(true);
-		const delayDebounceFn = setTimeout(() => {
-			const categoryId =
-				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
-
-      localizationService
-        .locateProducts(search, categoryId, minPrice, maxPrice)
-        .then(data => {
-          if ('params' in data) {
-            setError(data.message);
-            setFilteredProducts([]);
-          } else if (Array.isArray(data)) {
-            setFilteredProducts(data);
-            setError(null);
-          }
-        })
-        .catch(() => {
-          setError('An error occurred while searching for products.');
+        if ('params' in results) {
+          setError(results.message || 'Error en la búsqueda de productos');
           setFilteredProducts([]);
-        })
-        .finally(() => setLoading(false));
-    }, 300);
+          setProducts([]);
+        } else if (Array.isArray(results)) {
+          setFilteredProducts(results);
+          setProducts(results);
+        }
+      } catch {
+        setError('Error al cargar los productos');
+        setFilteredProducts([]);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchProducts();
+  }, [search, selectedCategory, minPrice, maxPrice]);
 
-		return () => clearTimeout(delayDebounceFn);
-	}, [search, selectedCategory, minPrice, maxPrice, products]);
-
-	return { products, filteredProducts, categories, loading, error };
+  return { products, filteredProducts, categories, loading, error };
 }

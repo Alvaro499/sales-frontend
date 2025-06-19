@@ -5,30 +5,29 @@ import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 
 export function useProducts(
-  search?: string,
-  selectedCategory?: string,
-  minPrice?: number | null,
-  maxPrice?: number | null
+	search?: string,
+	selectedCategory?: string,
+	minPrice?: number | null,
+	maxPrice?: number | null
 ) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+	const [products, setProducts] = useState<Product[]>([]);
+	const [categories, setCategories] = useState<Category[]>([]);
+	const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    Promise.all([getProducts(), getCategories()])
-      .then(([productsData, categoriesData]) => {
-        setProducts(productsData);
-        setCategories(categoriesData);
-        setFilteredProducts(productsData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load products or categories');
-        setLoading(false);
-      });
-  }, []);
+	useEffect(() => {
+		getProducts()
+			.then(productsData => {
+				setProducts(productsData);
+				setFilteredProducts(productsData);
+				setLoading(false);
+			})
+			.catch(() => {
+				setError('Failed to load products');
+				setLoading(false);
+			});
+	}, []);
 
   // Initial categories loading
   useEffect(() => {
@@ -46,23 +45,24 @@ export function useProducts(
       .finally(() => setLoading(false));
   }, []);
 
-  // Dynamic search and filtering with debounce
-  useEffect(() => {
-    const shouldSearch =
-      (search && search.trim() !== '') ||
-      (selectedCategory && selectedCategory !== 'all') ||
-      (minPrice !== undefined && minPrice !== null) ||
-      (maxPrice !== undefined && maxPrice !== null);
 
-    if (!shouldSearch) {
-      setFilteredProducts(products); // Show all initially loaded products
-      return;
-    }
+	// Dynamic search and filtering with debounce
+	useEffect(() => {
+		const shouldSearch =
+			(search && search.trim() !== '') ||
+			(selectedCategory && selectedCategory !== 'all') ||
+			(minPrice !== undefined && minPrice !== null) ||
+			(maxPrice !== undefined && maxPrice !== null);
 
-    setLoading(true);
-    const delayDebounceFn = setTimeout(() => {
-      const categoryId =
-        selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
+		if (!shouldSearch) {
+			setFilteredProducts(products); // Show all initially loaded products
+			return;
+		}
+
+		setLoading(true);
+		const delayDebounceFn = setTimeout(() => {
+			const categoryId =
+				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
       localizationService
         .locateProducts(search, categoryId, minPrice, maxPrice)
@@ -82,8 +82,9 @@ export function useProducts(
         .finally(() => setLoading(false));
     }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [search, selectedCategory, minPrice, maxPrice, products]);
 
-  return { products, filteredProducts, categories, loading, error };
+		return () => clearTimeout(delayDebounceFn);
+	}, [search, selectedCategory, minPrice, maxPrice, products]);
+
+	return { products, filteredProducts, categories, loading, error };
 }

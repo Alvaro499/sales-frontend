@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useProducts } from './hooks';
-import { Product } from '../../models/Products.models';
-import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
-import './Styles.css';
-import { AuthStorage } from '../../services/storageToken.sevice';
+// useProducts.ts
+import { useState, useEffect } from 'react';
+import { getProducts, getCategories } from '../../services/product.services';
+import { Product, Category } from '../../models/Products.models';
+import { localizationService } from '../../services/localization.service';
+
+export function useProducts(
+  search?: string,
+  selectedCategory?: string,
+  minPrice?: number | null,
+  maxPrice?: number | null
+) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -25,23 +36,22 @@ const Home: React.FC = () => {
 
   const navigate = useNavigate();
 
+  // Initial categories loading
   useEffect(() => {
-    const token = localStorage.getItem('app_auth_token');
-    if (token) {
-      try {
-        if (!AuthStorage.isTokenExpired()) {
-          setIsLoggedIn(true);
-        } else {
-          AuthStorage.clearToken();
-          setIsLoggedIn(false);
+    setLoading(true);
+    localizationService
+      .getCategories()
+      .then(data => {
+        if ('params' in data) {
+          setError(data.message);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
         }
-      } catch (error) {
-        console.error('Error verifying token', error);
-        AuthStorage.clearToken();
-        setIsLoggedIn(false);
-      }
-    }
+      })
+      .catch(() => setError('Failed to fetch categories'))
+      .finally(() => setLoading(false));
   }, []);
+
 
   const handleLogout = async () => {
     const confirmed = await confirmLogout();
@@ -247,4 +257,32 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+
+    setLoading(true);
+    const delayDebounceFn = setTimeout(() => {
+      const categoryId =
+        selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
+
+      localizationService
+        .locateProducts(search, categoryId, minPrice, maxPrice)
+        .then(data => {
+          if ('params' in data) {
+            setError(data.message);
+            setFilteredProducts([]);
+          } else if (Array.isArray(data)) {
+            setFilteredProducts(data);
+            setError(null);
+          }
+        })
+        .catch(() => {
+          setError('An error occurred while searching for products.');
+          setFilteredProducts([]);
+        })
+        .finally(() => setLoading(false));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [search, selectedCategory, minPrice, maxPrice, products]);
+
+  return { products, filteredProducts, categories, loading, error };
+}

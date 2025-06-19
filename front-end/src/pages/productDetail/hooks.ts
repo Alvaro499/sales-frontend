@@ -32,7 +32,7 @@ export function useProductDetail(productId: string) {
 		const cart = cartString ? JSON.parse(cartString) : [];
 
 		// Buscar si producto ya está en carrito
-		const existingIndex = cart.findIndex((item: any) => item.product_id === product.product_id);
+		const existingIndex = cart.findIndex((item: any) => item.product_id === product.id);
 
 		if (existingIndex >= 0) {
 			cart[existingIndex].quantity += quantity;

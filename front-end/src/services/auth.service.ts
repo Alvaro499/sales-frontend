@@ -18,6 +18,7 @@ export class AuthService {
 
       if ('token' in response && typeof response.token === 'string') {
         AuthStorage.setToken(response.token);
+        AuthStorage.storeDecodedToken();
       }
 
       return response;
@@ -49,9 +50,7 @@ export class AuthService {
     }
   }
 
-  public static async logout(): Promise<void> {
-    AuthStorage.clearToken();
-  }
+
 
   public static async recoveryRequest(
     email: string
@@ -62,15 +61,15 @@ export class AuthService {
         `${this.BASE_PATH}/recover-password`
       );
 
-      if (typeof response === "string" && response.includes("Email enviado correctamente.")) {
-        return { status: "OK", message: response };
+      if (typeof response === 'string' && response.includes('Email enviado correctamente.')) {
+        return { status: 'OK', message: response };
       }
 
-      if (typeof response === "object" && response.status === "OK") {
+      if (typeof response === 'object' && response.status === 'OK') {
         return response;
       }
 
-      throw new Error("Formato de respuesta inesperado");
+      throw new Error('Formato de respuesta inesperado');
     } catch (error) {
       return this.handleError(error);
     }
@@ -89,29 +88,22 @@ export class AuthService {
     }
   }
 
-  private static handleError(error: unknown): ErrorResponse {
-    if (error instanceof Error && !('response' in error)) {
-      return {
-        message: 'Error de conexión',
-        code: 503,
-        errorCode: 'NETWORK_ERROR',
-      };
-    }
 
+  private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
 
     if (!axiosError.response) {
       return {
-        message: 'Error de conexión',
+        message: 'UNKNOWN_ERROR',
         code: 503,
-        errorCode: 'NETWORK_ERROR',
+        params: 'Error desconocido',
       };
     }
 
     return {
-      message: axiosError.response.data?.message || 'Error en la operación',
+      message: axiosError.response.data?.message || 'UNKNOWN_ERROR',
       code: axiosError.response.status || 500,
-      errorCode: axiosError.response.data?.errorCode || 'UNKNOWN_ERROR',
+      params: axiosError.response.data?.params || 'Error desconocido',
     };
   }
 }

@@ -56,11 +56,11 @@ export const useRegisterForm = () => {
         return;
       }
 
-      if ('errorCode' in response) {
-        if (response.errorCode === 'EMAIL_EXISTS') {
+      if ('message' in response) {
+        if (response.message === 'User already exists') {
           setError('El correo electrónico ya está registrado');
         } else {
-          setError(response.message || 'Error al registrar. Por favor intenta nuevamente.');
+          setError('Error al registrar. Por favor intenta nuevamente.');
         }
       } else {
         setError('Respuesta inesperada del servidor');

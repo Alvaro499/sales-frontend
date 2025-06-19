@@ -6,7 +6,6 @@ interface ApiResponse<T> {
 	isSuccess: boolean;
 	isError: boolean;
 	message: string;
-	errorCode?: string;
 }
 
 export const useApiHandler = () => {
@@ -24,7 +23,6 @@ export const useApiHandler = () => {
 					isSuccess: false,
 					isError: true,
 					message: result.message,
-					errorCode: result.errorCode || 'API_ERROR',
 				};
 			}
 
@@ -53,7 +51,6 @@ export const useApiHandler = () => {
 				isSuccess: false,
 				isError: true,
 				message: 'Error inesperado',
-				errorCode: 'UNKNOWN_ERROR',
 			};
 		}
 	};
@@ -64,7 +61,6 @@ export const useApiHandler = () => {
 		isSuccess: false,
 		isError: true,
 		message: 'Error de conexión',
-		errorCode: 'NETWORK_ERROR',
 	});
 
 	const axiosErrorResponse = (error: AxiosError<ErrorResponse>): ApiResponse<never> => ({
@@ -72,7 +68,6 @@ export const useApiHandler = () => {
 		isSuccess: false,
 		isError: true,
 		message: error.response?.data?.message || 'Error en la solicitud',
-		errorCode: error.response?.data?.errorCode || 'API_ERROR',
 	});
 
 	// Type guard para ErrorResponse

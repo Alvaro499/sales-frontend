@@ -13,13 +13,13 @@ export const localizationService = {
     maxPrice?: number | null
   ): Promise<Product[] | ErrorResponse> => {
     try {
-      const params = new URLSearchParams();
-      if (term) params.append('term', term);
-      if (categoryId !== null && categoryId !== undefined) params.append('categoryId', categoryId.toString());
-      if (minPrice !== null && minPrice !== undefined) params.append('priceMin', minPrice.toString());
-      if (maxPrice !== null && maxPrice !== undefined) params.append('priceMax', maxPrice.toString());
+      const queryParams = new URLSearchParams();
+      if (term) queryParams.append('term', term);
+      if (categoryId !== null && categoryId !== undefined) queryParams.append('categoryId', categoryId.toString());
+      if (minPrice !== null && minPrice !== undefined) queryParams.append('priceMin', minPrice.toString());
+      if (maxPrice !== null && maxPrice !== undefined) queryParams.append('priceMax', maxPrice.toString());
 
-      const query = params.toString();
+      const query =   queryParams.toString();
       const url = query ? `${BASE_PATH}/search?${query}` : `${BASE_PATH}/search`;
 
       return await ventasApi.doGet<Product[]>(url);
@@ -27,7 +27,7 @@ export const localizationService = {
       return {
         message: 'Error locating products',
         code: 500,
-        errorCode: 'LOCALIZATION_ERROR',
+        params: 'LOCALIZATION_ERROR',
       };
     }
   },
@@ -39,7 +39,7 @@ export const localizationService = {
       return {
         message: 'Error retrieving categories',
         code: 500,
-        errorCode: 'CATEGORIES_ERROR',
+        params: 'CATEGORIES_ERROR',
       };
     }
   },

@@ -29,21 +29,22 @@ export function useProducts(
 			});
 	}, []);
 
-	// Initial categories loading
-	useEffect(() => {
-		setLoading(true);
-		localizationService
-			.getCategories()
-			.then(data => {
-				if ('errorCode' in data) {
-					setError(data.message);
-				} else if (Array.isArray(data)) {
-					setCategories(data);
-				}
-			})
-			.catch(() => setError('Failed to fetch categories'))
-			.finally(() => setLoading(false));
-	}, []);
+  // Initial categories loading
+  useEffect(() => {
+    setLoading(true);
+    localizationService
+      .getCategories()
+      .then(data => {
+        if ('params' in data) {
+          setError(data.message);
+        } else if (Array.isArray(data)) {
+          setCategories(data);
+        }
+      })
+      .catch(() => setError('Failed to fetch categories'))
+      .finally(() => setLoading(false));
+  }, []);
+
 
 	// Dynamic search and filtering with debounce
 	useEffect(() => {
@@ -63,23 +64,24 @@ export function useProducts(
 			const categoryId =
 				selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
-			localizationService
-				.locateProducts(search, categoryId, minPrice, maxPrice)
-				.then(data => {
-					if ('errorCode' in data) {
-						setError(data.message);
-						setFilteredProducts([]);
-					} else if (Array.isArray(data)) {
-						setFilteredProducts(data);
-						setError(null);
-					}
-				})
-				.catch(() => {
-					setError('An error occurred while searching for products.');
-					setFilteredProducts([]);
-				})
-				.finally(() => setLoading(false));
-		}, 300);
+      localizationService
+        .locateProducts(search, categoryId, minPrice, maxPrice)
+        .then(data => {
+          if ('params' in data) {
+            setError(data.message);
+            setFilteredProducts([]);
+          } else if (Array.isArray(data)) {
+            setFilteredProducts(data);
+            setError(null);
+          }
+        })
+        .catch(() => {
+          setError('An error occurred while searching for products.');
+          setFilteredProducts([]);
+        })
+        .finally(() => setLoading(false));
+    }, 300);
+
 
 		return () => clearTimeout(delayDebounceFn);
 	}, [search, selectedCategory, minPrice, maxPrice, products]);

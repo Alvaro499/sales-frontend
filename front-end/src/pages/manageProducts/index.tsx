@@ -97,7 +97,7 @@ const ProductPublishPanel = () => {
                     <div key={product.id} className="col-12 col-sm-6 col-md-4 mb-4">
                         <div className="card h-100 product-card">
                           <img
-									src={product.urlImg[0]}
+									src={product.images[0]}
 									alt={`Imagen de ${product.name}`}
 									className='card-img-top rounded-top'
 									style={{ objectFit: 'cover', height: '200px' }}

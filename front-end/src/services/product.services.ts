@@ -2,6 +2,7 @@ import { ventasApi } from './clients.service';
 import { Category, Product } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 
+
 const BASE_PATH = 'api/products';
 const BASE_PATH_CATEGORIES = 'api/categories';
 
@@ -11,8 +12,8 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 			name: product.name,
 			description: product.description,
 			price: product.price,
-			category: [String(product.category)],
-			images: product.urlImg ? [product.urlImg] : [],
+			category: product.category,
+			images: product.images,
 			available: product.available,
 			promotion: product.promotion ? String(product.promotion) : '0',
 			stock: product.stock,
@@ -54,7 +55,7 @@ export const getProductById = async (id: string): Promise<Product[]> => {
 		description: item.description,
 		price: item.price,
 		category: item.category ? item.category.map((cat: { name: string }) => cat.name) : null,
-		urlImg: item.urlImg ? item.urlImg.map((img: { url: string }) => img.url) : [],
+		images: item.images ? item.images.map((img: { url: string }) => img.url) : [],
 		available: item.available,
 		promotion: item.promotion,
 		stock: item.stock,

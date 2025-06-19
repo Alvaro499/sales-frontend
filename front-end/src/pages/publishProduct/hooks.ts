@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Product } from '../../models/Products.models';
 import { createProduct, getCategories } from '../../services/product.services';
+import { showProductSuccessAlert, showProductErrorAlert } from '../../utilities/alerts/productAlerts';
 
 const usePublishProduct = () => {
 	const [product, setProduct] = useState<Product>({
@@ -10,7 +11,7 @@ const usePublishProduct = () => {
 		description: '',
 		price: 0,
 		category: [],
-		urlImg: [],
+		images: [],
 		available: true,
 		promotion: null,
 		stock: 0,
@@ -24,8 +25,7 @@ const usePublishProduct = () => {
 		const fetchCategories = async () => {
 			try {
 				const categoriesData = await getCategories();
-				console.log('Categories data:', categoriesData); // Verifica la respuesta de la API
-				setCategories(categoriesData); // Guardar las categorías en el estado
+				setCategories(categoriesData);
 			} catch (error) {
 				setError('Error al cargar las categorías.');
 				console.error(error);
@@ -36,30 +36,27 @@ const usePublishProduct = () => {
 	}, []);
 
 	const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const categoryId = Number(e.target.value); // Asegurarse de que el ID es un número
-		const isChecked = e.target.checked; // Si el checkbox está marcado o desmarcado
+		const categoryId = e.target.value;
+		const isChecked = e.target.checked;
 
 		setProduct(prev => {
 			let updatedCategories = [...prev.category];
 
 			if (isChecked) {
-				// Si el checkbox está marcado, agregar el categoryId si no está ya en el arreglo
 				if (!updatedCategories.includes(categoryId)) {
 					updatedCategories.push(categoryId);
 				}
 			} else {
-				// Si está desmarcado, eliminar el categoryId del arreglo
 				updatedCategories = updatedCategories.filter(id => id !== categoryId);
 			}
 
 			return {
 				...prev,
-				category: updatedCategories, // Actualizar las categorías seleccionadas
+				category: updatedCategories,
 			};
 		});
 	};
 
-	// Manejar inputs de texto, number, textarea
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value, type } = e.target;
 		setProduct(prev => ({
@@ -68,7 +65,6 @@ const usePublishProduct = () => {
 		}));
 	};
 
-	// Manejar checkbox disponible
 	const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = e.target;
 		setProduct(prev => ({
@@ -77,15 +73,18 @@ const usePublishProduct = () => {
 		}));
 	};
 
-	// Manejar cambio URLs imágenes
 	const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  const imageUrls = value.split(',').map(url => url.trim()); // Esto convierte las URLs en un arreglo plano
-  setProduct(prev => ({
-    ...prev,
-    urlImg: imageUrls, // Actualiza `urlImg` como un arreglo plano
-  }));
-};
+		const value = e.target.value.trim();
+		const urls = value
+			.split(',')
+			.map(url => url.trim())
+			.filter(url => url !== '');
+
+		setProduct(prev => ({
+			...prev,
+			images: urls, // Ya es un array plano
+		}));
+	};
 
 	// Validar formulario
 	const validateForm = () => {
@@ -94,7 +93,7 @@ const usePublishProduct = () => {
 			!product.description ||
 			!product.price ||
 			!product.stock ||
-			!product.urlImg.length ||
+			product.images.length === 0 ||
 			product.category.length === 0
 		) {
 			setError('Todos los campos son obligatorios.');
@@ -115,12 +114,19 @@ const usePublishProduct = () => {
 		setIsLoading(true);
 		setError('');
 		try {
+			const imagesToSend = Array.isArray(product.images[0])
+				? product.images.flat()
+				: product.images;
+
 			const productData = {
 				...product,
-				category: product.category, // Enviar array de IDs
-				urlImg: product.urlImg,
+				category: product.category.map(String),
+				images: imagesToSend,
 			};
+
 			await createProduct(productData);
+			await showProductSuccessAlert(product.name);
+
 			setProduct({
 				id: '',
 				pyme_id: '',
@@ -128,14 +134,25 @@ const usePublishProduct = () => {
 				description: '',
 				price: 0,
 				category: [],
-				urlImg: [],
+				images: [],
 				available: true,
 				promotion: null,
 				stock: 0,
 			});
-		} catch (e) {
-			setError('Error al publicar el producto.');
-			throw new Error(String(e));
+		} catch (error: any) {
+			let errorMessage = 'Error al publicar el producto';
+
+			if (error?.response) {
+				errorMessage =
+					error.response.data?.message ||
+					`Error ${error.response.status}: ${error.response.statusText}`;
+			} else if (error?.message) {
+				errorMessage = error.message;
+			}
+
+			setError(errorMessage);
+			await showProductErrorAlert(errorMessage);
+			throw error;
 		} finally {
 			setIsLoading(false);
 		}

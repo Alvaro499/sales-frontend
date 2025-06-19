@@ -19,13 +19,11 @@ export function useProducts(
 	useEffect(() => {
 		getProducts()
 			.then(productsData => {
-        console.log(productsData + ' products loaded form hooks');
 				setProducts(productsData);
 				setFilteredProducts(productsData);
 				setLoading(false);
 			})
 			.catch(() => {
-        console.error("Error al cargar los productos:", error);
 				setError('Failed to load products');
 				setLoading(false);
 			});

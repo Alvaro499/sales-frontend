@@ -201,7 +201,7 @@ const Home: React.FC = () => {
 									style={{ height: '200px' }}
 								>
 									<img
-										src={product.urlImg[0]} // Usando la primera imagen del producto
+										src={product.images[0]} // Usando la primera imagen del producto
 										alt={product.name}
 										className='card-img-top h-100 object-fit-cover'
 									/>

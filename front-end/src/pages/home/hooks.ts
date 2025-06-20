@@ -2,13 +2,10 @@ import { useState, useEffect } from 'react';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 import { getCategories } from '../../services/product.services';
+import { ErrorResponse } from '../../models/Api.models';
+import { UseProductsReturn } from './types';
 
-// Tipo para respuesta de error
-interface ErrorResponse {
-  message?: string;
-  code?: number;
-  params?: any;
-}
+
 
 function isErrorResponse(response: any): response is ErrorResponse {
   return response && typeof response === 'object' && 'message' in response;
@@ -87,9 +84,4 @@ export function useProducts(
   };
 }
 
-interface UseProductsReturn {
-  filteredProducts: Product[];
-  categories: Category[];
-  loading: boolean;
-  error: string | null;
-}
+

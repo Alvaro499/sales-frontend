@@ -3,7 +3,7 @@ import { Category } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 import { RawProduct } from '../adapters/productAdapter'; // Importa RawProduct
 
-const BASE_PATH = 'productos';
+const BASE_PATH = '/api/products';
 
 export const localizationService = {
   locateProducts: async (

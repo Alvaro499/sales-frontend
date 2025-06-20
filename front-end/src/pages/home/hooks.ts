@@ -2,8 +2,14 @@ import { useState, useEffect } from 'react';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 import { getCategories } from '../../services/product.services';
+import { ErrorResponse } from '../../models/Api.models';
 import { UseProductsReturn } from './types';
 
+
+
+function isErrorResponse(response: any): response is ErrorResponse {
+  return response && typeof response === 'object' && 'message' in response;
+}
 
 export function useProducts(
   search: string = '',
@@ -13,19 +19,18 @@ export function useProducts(
 ): UseProductsReturn {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar categorías al inicio
+  // Cargar categorías
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const categoriesData = await getCategories();
         if (Array.isArray(categoriesData)) {
           setCategories(categoriesData);
-        } else {
-          setError('Error consiguiendo las categorías');
+        } else if (isErrorResponse(categoriesData)) {
+          setError(categoriesData.message || 'Error obteniendo categorías');
         }
       } catch {
         setError('Error al cargar las categorías');
@@ -34,7 +39,7 @@ export function useProducts(
     loadCategories();
   }, []);
 
-  // Buscar productos con filtros o sin filtros (todos)
+  // Buscar productos
   useEffect(() => {
     const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
@@ -43,25 +48,25 @@ export function useProducts(
       setError(null);
 
       try {
-        // localizationService.locateProducts debe devolver todos si no recibe filtros
-        const results = await localizationService.locateProducts(
+        const response = await localizationService.locateProducts(
           search,
           categoryId,
           minPrice,
           maxPrice
         );
 
-        if ('params' in results) {
-          setError(results.message || 'Error en la búsqueda de productos');
-          setFilteredProducts([]);
+        if (isErrorResponse(response)) {
+          setError(response.message || 'Error en la búsqueda');
           setProducts([]);
-        } else if (Array.isArray(results)) {
-          setFilteredProducts(results);
-          setProducts(results);
+          return;
         }
-      } catch {
+
+        // Aquí no se adapta, porque ya viene adaptado desde el servicio
+        setProducts(response as Product[]);
+        console.log(response);
+
+      } catch (err) {
         setError('Error al cargar los productos');
-        setFilteredProducts([]);
         setProducts([]);
       } finally {
         setLoading(false);
@@ -71,5 +76,12 @@ export function useProducts(
     fetchProducts();
   }, [search, selectedCategory, minPrice, maxPrice]);
 
-  return { products, filteredProducts, categories, loading, error };
+  return { 
+    filteredProducts: products,
+    categories, 
+    loading, 
+    error 
+  };
 }
+
+

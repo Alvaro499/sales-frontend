@@ -1,9 +1,9 @@
-// localization.service.ts
 import { ventasApi } from './clients.service';
-import { Product, Category } from '../models/Products.models';
+import { Category } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
+import { RawProduct, adaptProduct } from '../adapters/productAdapter';
 
-const BASE_PATH = '/api/products';
+const BASE_PATH = 'api/products/search';
 
 export const localizationService = {
   locateProducts: async (
@@ -11,7 +11,7 @@ export const localizationService = {
     categoryId?: number | null,
     minPrice?: number | null,
     maxPrice?: number | null
-  ): Promise<Product[] | ErrorResponse> => {
+  ): Promise<any[] | ErrorResponse> => {
     try {
       const queryParams = new URLSearchParams();
 
@@ -20,12 +20,41 @@ export const localizationService = {
       if (minPrice != null) queryParams.append('priceMin', minPrice.toString());
       if (maxPrice != null) queryParams.append('priceMax', maxPrice.toString());
 
-      const url = `${BASE_PATH}/search${queryParams.toString() ? `?${queryParams}` : ''}`;
-      return await ventasApi.doGet<Product[]>(url);
+      const url = `${BASE_PATH}${queryParams.toString() ? `?${queryParams}` : ''}`;
+
+      const response = await ventasApi.doGet<any>(url);
+
+      let rawProducts: RawProduct[] = [];
+
+      if (Array.isArray(response)) {
+        rawProducts = response;
+      } else if (Array.isArray(response.data)) {
+        rawProducts = response.data;
+      } else if (Array.isArray(response.productos)) {
+        rawProducts = response.productos;
+      } else {
+        return {
+          message: 'Formato de respuesta inesperado',
+          code: 500,
+          params: 'UNEXPECTED_FORMAT',
+        };
+      }
+
+      // Adaptar todos los productos antes de devolverlos
+      const adapted = rawProducts.map((item: RawProduct) =>
+        adaptProduct({
+          ...item,
+          urlImg: item.urlImg || [],
+          categories: item.categories || [],
+          createdAt: item.createdAt || new Date().toISOString(),
+        })
+      );
+
+      return adapted;
     } catch (error) {
       console.error('Error locating products:', error);
       return {
-        message: 'Error locating products',
+        message: 'Error al localizar productos',
         code: 500,
         params: 'LOCALIZATION_ERROR',
       };
@@ -38,7 +67,7 @@ export const localizationService = {
     } catch (error) {
       console.error('Error retrieving categories:', error);
       return {
-        message: 'Error retrieving categories',
+        message: 'Error al obtener categorías',
         code: 500,
         params: 'CATEGORIES_ERROR',
       };

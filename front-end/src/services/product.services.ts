@@ -31,7 +31,6 @@ export const createProduct = async (product: Product): Promise<Product | ErrorRe
 export const getProducts = async (): Promise<Product[]> => {
 	const url = `${BASE_PATH}`;
 	const response = await ventasApi.doGet<{ message: string; data: Product[] }>(url);
-	console.log('Respuesta de productos:', response);
 	return response.data;
 };
 

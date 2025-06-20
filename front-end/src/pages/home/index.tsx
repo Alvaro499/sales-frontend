@@ -138,7 +138,7 @@ const Home: React.FC = () => {
                       onClick={handleLogout}
                     >
                       <i className='bi bi-box-arrow-right'></i>
-                      <span className='d-none d-lg-inline'>Desconectar</span>
+                      <span className='d-none d-lg-inline'>Cerrar Sesión</span>
                     </button>
                     <button
                       className='btn btn-primary d-flex align-items-center gap-2'
@@ -154,7 +154,7 @@ const Home: React.FC = () => {
                     onClick={() => navigate('/login')}
                   >
                     <i className='bi bi-box-arrow-in-right'></i>
-                    <span className='d-none d-lg-inline'>Conectar</span>
+                    <span className='d-none d-lg-inline'>Iniciar Sesión</span>
                   </button>
                 )}
               </div>

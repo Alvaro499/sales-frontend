@@ -1,9 +1,9 @@
 import { ventasApi } from './clients.service';
 import { Category } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
-import { RawProduct } from '../adapters/productAdapter'; // Importa RawProduct
+import { RawProduct, adaptProduct } from '../adapters/productAdapter';
 
-const BASE_PATH = '/api/products';
+const BASE_PATH = 'api/products/search';
 
 export const localizationService = {
   locateProducts: async (
@@ -11,7 +11,7 @@ export const localizationService = {
     categoryId?: number | null,
     minPrice?: number | null,
     maxPrice?: number | null
-  ): Promise<RawProduct[] | ErrorResponse> => { // Cambia el tipo de retorno
+  ): Promise<any[] | ErrorResponse> => {
     try {
       const queryParams = new URLSearchParams();
 
@@ -21,24 +21,40 @@ export const localizationService = {
       if (maxPrice != null) queryParams.append('priceMax', maxPrice.toString());
 
       const url = `${BASE_PATH}${queryParams.toString() ? `?${queryParams}` : ''}`;
-      
-      // Cambia el tipo genérico a RawProduct[]
-      const response = await ventasApi.doGet<RawProduct[]>(url);
-      
-      // Asegúrate de que la respuesta tenga el formato correcto
+
+      const response = await ventasApi.doGet<any>(url);
+
+      let rawProducts: RawProduct[] = [];
+
       if (Array.isArray(response)) {
-        return response.map(item => ({
-          ...item,
-          urlImg: item.urlImg || [], // Asegura que urlImg sea un array
-          categories: item.categories || [], // Asegura que categories sea un array
-          createdAt: item.createdAt || new Date().toISOString() // Valor por defecto
-        }));
+        rawProducts = response;
+      } else if (Array.isArray(response.data)) {
+        rawProducts = response.data;
+      } else if (Array.isArray(response.productos)) {
+        rawProducts = response.productos;
+      } else {
+        return {
+          message: 'Formato de respuesta inesperado',
+          code: 500,
+          params: 'UNEXPECTED_FORMAT',
+        };
       }
-      return response;
+
+      // Adaptar todos los productos antes de devolverlos
+      const adapted = rawProducts.map((item: RawProduct) =>
+        adaptProduct({
+          ...item,
+          urlImg: item.urlImg || [],
+          categories: item.categories || [],
+          createdAt: item.createdAt || new Date().toISOString(),
+        })
+      );
+
+      return adapted;
     } catch (error) {
       console.error('Error locating products:', error);
       return {
-        message: 'Error locating products',
+        message: 'Error al localizar productos',
         code: 500,
         params: 'LOCALIZATION_ERROR',
       };
@@ -51,7 +67,7 @@ export const localizationService = {
     } catch (error) {
       console.error('Error retrieving categories:', error);
       return {
-        message: 'Error retrieving categories',
+        message: 'Error al obtener categorías',
         code: 500,
         params: 'CATEGORIES_ERROR',
       };

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
 import { getCategories } from '../../services/product.services';
-import { adaptProduct } from '../../adapters/productAdapter';
 
 // Tipo para respuesta de error
 interface ErrorResponse {
@@ -59,16 +58,15 @@ export function useProducts(
           maxPrice
         );
 
-        // Manejar respuesta de error
         if (isErrorResponse(response)) {
           setError(response.message || 'Error en la búsqueda');
           setProducts([]);
           return;
         }
 
-        // Adaptar productos
-        const adaptedProducts = response.map(raw => adaptProduct(raw));
-        setProducts(adaptedProducts);
+        // Aquí no se adapta, porque ya viene adaptado desde el servicio
+        setProducts(response as Product[]);
+        console.log(response);
 
       } catch (err) {
         setError('Error al cargar los productos');

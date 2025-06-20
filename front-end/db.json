@@ -5,7 +5,7 @@
       "name": "T-shirt",
       "description": "Camiseta cómoda de algodón",
       "price": 29.99,
-      "category": ["ropa", "moda"],
+      "categories": ["ropa", "moda"],
       "images": [
         "https://example.com/tshirt.jpg"
       ],

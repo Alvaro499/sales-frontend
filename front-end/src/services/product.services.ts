@@ -104,3 +104,19 @@ export const updateProduct = async (
 		};
 	}
 };
+
+export const applyPromotion = async (
+	productId: string,
+	promotion: string
+): Promise<Product | ErrorResponse> => {
+	try {
+		const url = `${BASE_PATH}/promotion/${productId}`;
+		return await ventasApi.doPut<{ promotion: string }, Product>({ promotion }, url);
+	} catch (error) {
+		return {
+			message: 'Error al aplicar promoción',
+			code: 500,
+			params: 'APPLY_PROMOTION_ERROR',
+		};
+	}
+};

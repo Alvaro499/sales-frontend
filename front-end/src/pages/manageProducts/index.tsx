@@ -10,7 +10,8 @@ const ProductPublishPanel = () => {
         getProductsFromAPI,
         updateProductFromAPI,
         unpublishProductFromAPI,
-        error
+        error,
+        applyPromotionFromAPI
     } = useProductManagement();
 
     useEffect(() => {
@@ -102,10 +103,13 @@ const ProductPublishPanel = () => {
         setPromoForm({ ...promoForm, [e.target.name]: e.target.value });
     };
 
-    const handlePromoSubmit = (e: React.FormEvent) => {
+    const handlePromoSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Aquí va la lógica para guardar la promoción
-        setIsPromoModalVisible(false);
+        if (selectedProduct && promoForm.discountValue !== '') {
+            await applyPromotionFromAPI(selectedProduct.id, promoForm.discountValue);
+            setIsPromoModalVisible(false);
+            getProductsFromAPI();
+        }
     };
 
     return (

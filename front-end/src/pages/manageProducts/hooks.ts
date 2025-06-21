@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
+import { applyPromotion, getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
 import { Product } from '../../models/Products.models';
 
 const useProductManagement = () => {
@@ -8,6 +8,8 @@ const useProductManagement = () => {
 
     const getProductsFromAPI = async () => {
         try {
+            
+            // Se necesita el ID de la pyme para obtener los productos
             const userId = localStorage.getItem('userId') || '';
             // if (!userId) throw new Error('Usuario no autenticado');
 
@@ -42,8 +44,18 @@ const useProductManagement = () => {
         }
     };
 
+    const applyPromotionFromAPI = async (productId: string, promotion: string) => {
+        try {
+            const updatedProduct = await applyPromotion(productId, promotion);
+            setProducts((prev) =>
+                prev.map((p) => (p.id === productId ? updatedProduct as Product : p))
+            );
+        } catch (err) {
+            setError('Error al aplicar la promoción: ' + err);
+        }
+    };
 
-    return { products, getProductsFromAPI, updateProductFromAPI, unpublishProductFromAPI, error }; // Exporta los datos y funciones necesarias
+    return { products, getProductsFromAPI, updateProductFromAPI, unpublishProductFromAPI, applyPromotionFromAPI, error }; // Exporta los datos y funciones necesarias
 };
 
 export default useProductManagement;

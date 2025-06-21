@@ -9,6 +9,7 @@ export interface Product {
 	promotion?: string | null;
 	stock: number;
 	pyme_id: string;
+	active: boolean;
 }
 
 export interface Category {

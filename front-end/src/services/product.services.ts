@@ -55,19 +55,21 @@ export const getProductById = async (id: string): Promise<Product[]> => {
 		`${BASE_PATH}/by-pyme/${id}`
 	);
 
+	const imagenDefault: string = 'https://www.creativefabrica.com/wp-content/uploads/2019/01/Picture-by-Iconika.jpg'; // URL de imagen por defecto
+
 	const products: Product[] = response.data.map((item) => ({
 		id: item.id,
 		name: item.name,
 		description: item.description,
 		price: item.price,
-		category: item.category ? item.category.map((cat: { name: string }) => cat.name) : null,
-		images: item.images ? item.images.map((img: { url: string }) => img.url) : [],
+		category: item.category ? item.category.map((cat: { name: string }) => cat.name) : [],
+		images: item.urlImg ? item.urlImg : [imagenDefault],
 		available: item.available,
 		promotion: item.promotion,
 		stock: item.stock,
 		pyme_id: item.pyme_id,
+		active: item.active
 	}));
-
 	return products;
 };
 

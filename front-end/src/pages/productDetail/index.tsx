@@ -15,7 +15,7 @@ const ProductDetailPage: React.FC = () => {
 	return (
 		<div className='container py-5'>
 			<h1>{product.name}</h1>
-			<img src={product.urlImg[0]} alt={product.name} style={{ maxWidth: '100%' }} />
+			<img src={product.images[0]} alt={product.name} style={{ maxWidth: '100%' }} />
 			<p>{product.description}</p>
 			<p>
 				<strong>Precio:</strong> ${product.price.toFixed(2)}

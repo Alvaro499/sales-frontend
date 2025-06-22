@@ -22,3 +22,7 @@ export interface ProductCategory {
 	product_id: string;
 	category_id: number;
 }
+
+export interface CartItem extends Product {
+  quantity: number;  // Añadir el campo quantity
+}

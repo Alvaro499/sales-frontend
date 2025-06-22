@@ -1,0 +1,92 @@
+/* Contenedor del formulario */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f7fa; /* Fondo suave */
+  padding: 20px;
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  box-sizing: border-box; /* Asegura que el tamaño sea calculado correctamente */
+}
+
+/* Estilo para los mensajes de error */
+.error-message {
+  color: #e53e3e; /* Color rojo para mensajes de error */
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Ajustar el contenedor del carrito */
+.container {
+  max-width: 1200px;
+}
+
+/* Estilo para el título */
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Estilo de la tabla */
+.table {
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Borde redondeado */
+}
+
+.table th, .table td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  font-size: 1rem; /* Ajustar tamaño de texto */
+}
+
+/* Estilo para las celdas de imágenes */
+.table img {
+  border-radius: 5px;
+  object-fit: cover;
+  width: 100px;  /* Aumenta el tamaño de las imágenes */
+  height: auto;
+}
+
+/* Estilo de los botones */
+.btn-success {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.btn-danger {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* Espaciado entre los elementos */
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
+.d-flex {
+  justify-content: space-between;
+  margin-top: 20px;
+  align-items: center;
+}
+
+/* Ajustes de la tabla para dispositivos móviles */
+@media (max-width: 768px) {
+  .table th, .table td {
+    font-size: 0.8rem;
+  }
+
+  .table img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+}

@@ -1,5 +1,4 @@
 import { ventasApi } from './clients.service';
-import { Category } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
 import { RawProduct, adaptProduct } from '../adapters/productAdapter';
 
@@ -61,16 +60,4 @@ export const localizationService = {
     }
   },
 
-  getCategories: async (): Promise<Category[] | ErrorResponse> => {
-    try {
-      return await ventasApi.doGet<Category[]>('/api/categories');
-    } catch (error) {
-      console.error('Error retrieving categories:', error);
-      return {
-        message: 'Error al obtener categorías',
-        code: 500,
-        params: 'CATEGORIES_ERROR',
-      };
-    }
-  },
 };

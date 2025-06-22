@@ -129,9 +129,9 @@ const ProductPublishPanel = () => {
             <div className="row">
                 {products.map((product) => (
                     <div key={product.id} className="col-12 col-sm-6 col-md-4 mb-4">
-                        <div className="card h-100 product-card">
+                        <div className="card h-100 border-0 shadow-sm transition-all product-card">
                           <img
-                                src={product.images[0]}
+                                src={product.images && product.images.length > 0 ? product.images[0] : ''}
                                 alt={product.name}
                                 className="card-img-top"
                                 style={{

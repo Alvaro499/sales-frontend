@@ -47,9 +47,10 @@ export const getCategories = async (): Promise<Category[] | ErrorResponse> => {
 };
 
 export const getProductById2 = async (id: string): Promise<Product> => {
-	return await ventasApi.doGet<Product>(`${BASE_PATH}/${id}`);
+	return await ventasApi.doGet<Product>(`${BASE_PATH}/info/${id}`);
 };
 
+//cambiar el nombre del método a getProductById por una más representativo que es por pymeId
 export const getProductById = async (id: string): Promise<Product[]> => {
 	const response = await ventasApi.doGet<{ message: string; data: any[] }>(
 		`${BASE_PATH}/by-pyme/${id}`

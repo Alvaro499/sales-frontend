@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
+import { getProductBypymeId, unpublishProduct, updateProduct } from '../../services/product.services';
 import { Product } from '../../models/Products.models';
 
 const useProductManagement = () => {
@@ -8,7 +8,7 @@ const useProductManagement = () => {
 
     const getProductsFromAPI = async () => {
         try {
-            const products = await getProductById("52b92464-90d5-485a-96bd-47c6256df231"); // Obtener ID de la pyme
+            const products = await getProductBypymeId("52b92464-90d5-485a-96bd-47c6256df231"); // Obtener ID de la pyme
             
             setProducts(products); // Actualiza el estado con los productos obtenidos
         } catch (err) {

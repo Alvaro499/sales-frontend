@@ -2,7 +2,7 @@
 import { ventasApi } from './clients.service'; // Suponiendo que tienes un cliente API configurado
 
 import { ErrorResponse, OkResponse } from '../models/Api.models'; // Modelos para respuesta de éxito o error
-import { CreateOrderRequest, PaymentMethod, ShippingMethod } from '../models/Order.models';
+import { CreateOrderRequest} from '../models/Order.models';
 
 const BASE_PATH = 'api/orders'; // Ruta base para órdenes
 
@@ -22,7 +22,7 @@ export const createOrder = async (order: CreateOrderRequest): Promise<OkResponse
 };
 
 // Función para obtener los métodos de pago disponibles
-export const getPaymentMethods = async (): Promise<PaymentMethod[] | ErrorResponse> => {
+/*export const getPaymentMethods = async (): Promise<PaymentMethod[] | ErrorResponse> => {
   try {
     const response = await ventasApi.doGet<PaymentMethod[]>(`${BASE_PATH}/payment-methods`);
     return response;
@@ -47,4 +47,4 @@ export const getShippingMethods = async (): Promise<ShippingMethod[] | ErrorResp
       params: 'SHIPPING_METHODS_ERROR',
     };
   }
-};
+};*/

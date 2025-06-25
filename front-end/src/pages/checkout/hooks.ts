@@ -1,17 +1,13 @@
 // useCheckout.ts
 import { useState, useEffect } from 'react';
-import { CreateOrderRequest, PaymentMethod, ShippingMethod } from '../../models/Order.models';
-import {
-	createOrder,
-	getPaymentMethods,
-	getShippingMethods,
-} from '../../services/checkout.services';
+import { CreateOrderRequest } from '../../models/Order.models';
+import { createOrder } from '../../services/checkout.services';
 
 const useCheckout = () => {
 	// Estado para almacenar los métodos de pago y envío disponibles
-	const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-	const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+	const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
+	const [shippingMethods, setShippingMethods] = useState<string[]>([]);
+	const [errorMessage, setErrorMessage] = useState<string>('');
 
 	// Estado para la orden
 	const [order, setOrder] = useState<CreateOrderRequest>({
@@ -21,30 +17,18 @@ const useCheckout = () => {
 		phone: '',
 		shippingAddress: '',
 		products: [],
-		paymentMethod: { name: '', description: '', isActive: false },
-		shippingMethod: { name: '', description: '', price: 0, isActive: false },
+		paymentMethod: '',
+		shippingMethod: '',
 	});
 
-	// Llamada a la API para obtener los métodos de pago y envío
 	useEffect(() => {
-		// Obtener métodos de pago
-		const fetchPaymentMethods = async () => {
-			const response = await getPaymentMethods();
-			if (Array.isArray(response)) {
-				setPaymentMethods(response);
-			}
-		};
+		// Datos de métodos de pago
+		const paymentData = ['EFECTIVO', 'SINPE', 'DEBITO'];
+		setPaymentMethods(paymentData);
 
-		// Obtener métodos de envío
-		const fetchShippingMethods = async () => {
-			const response = await getShippingMethods();
-			if (Array.isArray(response)) {
-				setShippingMethods(response);
-			}
-		};
-
-		fetchPaymentMethods();
-		fetchShippingMethods();
+		// Datos de métodos de envío
+		const shippingData = ['ENTREGA_LOCAL', 'CORREOS_CR', 'ENVIOS_EXPRESS'];
+		setShippingMethods(shippingData);
 	}, []);
 
 	const validateForm = () => {
@@ -59,12 +43,12 @@ const useCheckout = () => {
 			return false;
 		}
 
-		if (!order.paymentMethod.name) {
+		if (!order.paymentMethod) {
 			setErrorMessage('Debe seleccionar un método de pago.');
 			return false;
 		}
 
-		if (!order.shippingMethod.name) {
+		if (!order.shippingMethod) {
 			setErrorMessage('Debe seleccionar un método de envío.');
 			return false;
 		}
@@ -72,9 +56,10 @@ const useCheckout = () => {
 		setErrorMessage('');
 		return true;
 	};
+	
 	// Función para manejar el envío del formulario
 	const handleSubmit = async () => {
-     if (!validateForm()) return;
+		if (!validateForm()) return;
 		const response = await createOrder(order);
 		console.log('Orden creada:', response);
 	};
@@ -91,7 +76,7 @@ const useCheckout = () => {
 		order,
 		paymentMethods,
 		shippingMethods,
-    errorMessage,
+		errorMessage,
 		updateOrder,
 		handleSubmit,
 	};

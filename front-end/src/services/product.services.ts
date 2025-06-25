@@ -56,19 +56,21 @@ export const getProductById = async (id: string): Promise<Product[]> => {
 		`${BASE_PATH}/by-pyme/${id}`
 	);
 
+	const imagenDefault: string = 'https://www.creativefabrica.com/wp-content/uploads/2019/01/Picture-by-Iconika.jpg'; // URL de imagen por defecto
+
 	const products: Product[] = response.data.map((item) => ({
 		id: item.id,
 		name: item.name,
 		description: item.description,
 		price: item.price,
-		category: item.category ? item.category.map((cat: { name: string }) => cat.name) : null,
-		images: item.images ? item.images.map((img: { url: string }) => img.url) : [],
+		category: item.category ? item.category.map((cat: { name: string }) => cat.name) : [],
+		images: item.urlImg ? item.urlImg : [imagenDefault],
 		available: item.available,
 		promotion: item.promotion,
 		stock: item.stock,
 		pyme_id: item.pyme_id,
+		active: item.active
 	}));
-
 	return products;
 };
 
@@ -100,6 +102,22 @@ export const updateProduct = async (
 			message: 'Error al actualizar producto',
 			code: 500,
 			params: 'UPDATE_PRODUCT_ERROR',
+		};
+	}
+};
+
+export const applyPromotion = async (
+	productId: string,
+	promotion: string
+): Promise<Product | ErrorResponse> => {
+	try {
+		const url = `${BASE_PATH}/promotion/${productId}`;
+		return await ventasApi.doPut<{ promotion: string }, Product>({ promotion }, url);
+	} catch (error) {
+		return {
+			message: 'Error al aplicar promoción',
+			code: 500,
+			params: 'APPLY_PROMOTION_ERROR',
 		};
 	}
 };

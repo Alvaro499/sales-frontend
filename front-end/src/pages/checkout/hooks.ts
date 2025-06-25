@@ -8,17 +8,20 @@ const useCheckout = () => {
 	const [paymentMethods, setPaymentMethods] = useState<string[]>([]);
 	const [shippingMethods, setShippingMethods] = useState<string[]>([]);
 	const [errorMessage, setErrorMessage] = useState<string>('');
+	const [isProcessing, setIsProcessing] = useState(false);
 
 	// Estado para la orden
 	const [order, setOrder] = useState<CreateOrderRequest>({
+		guestUserId: '',
+		buyerType: 'CLIENT',
 		email: '',
 		firstName: '',
 		lastName: '',
 		phone: '',
 		shippingAddress: '',
 		products: [],
-		paymentMethod: '',
 		shippingMethod: '',
+		paymentMethod: '',
 	});
 
 	useEffect(() => {
@@ -31,6 +34,48 @@ const useCheckout = () => {
 		setShippingMethods(shippingData);
 	}, []);
 
+	// Este useEffect se ejecuta al inicio para configurar los valores correctos
+	useEffect(() => {
+		// Obtener el userId desde localStorage
+		const userId = localStorage.getItem('userId');
+
+		// Si el userId existe, lo agregamos al order y cambiamos el buyerType a USER
+		setOrder(prevState => ({
+			...prevState,
+			guestUserId: userId ?? '', // Si no existe, se usa cadena vacía o null
+			buyerType: userId ? 'USER' : 'CLIENT', // BuyerType es USER si existe el userId, CLIENT si no
+		}));
+
+		// Obtener los productos del carrito y agregarlo al estado
+		const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+		const mappedProducts = storedCart.map((item: any) => ({
+			productId: item.productId,
+			quantity: item.quantity,
+		}));
+		setOrder(prevState => ({
+			...prevState,
+			products: mappedProducts,
+		}));
+	}, []);
+
+	useEffect(() => {
+		// Obtener el carrito desde localStorage
+		const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+		// Mapear productos, asegurando que cada uno tenga productId y quantity
+		const mappedProducts = storedCart.map((item: any) => {
+			return {
+				productId: item.productId, // Esto debe existir
+				quantity: item.quantity,
+			};
+		});
+
+		// Actualizar el estado de la orden con los productos mapeados
+		setOrder(prevState => ({
+			...prevState,
+			products: mappedProducts,
+		}));
+	}, []);
 	const validateForm = () => {
 		if (
 			!order.email ||
@@ -56,12 +101,37 @@ const useCheckout = () => {
 		setErrorMessage('');
 		return true;
 	};
-	
+
 	// Función para manejar el envío del formulario
 	const handleSubmit = async () => {
 		if (!validateForm()) return;
-		const response = await createOrder(order);
-		console.log('Orden creada:', response);
+		setIsProcessing(true);
+
+		try {
+			const response = await createOrder(order);
+
+			if (response && response.userId) {
+				// Eliminar el carrito de localStorage después de la compra exitosa
+				localStorage.removeItem('cart');
+				setOrder({
+					guestUserId: '',
+					buyerType: 'CLIENT',
+					email: '',
+					firstName: '',
+					lastName: '',
+					phone: '',
+					shippingAddress: '',
+					products: [],
+					shippingMethod: '',
+					paymentMethod: '',
+				});
+			}
+		} catch (error) {
+			console.error('Error al crear la orden:', error);
+		} finally {
+			// Rehabilitar el botón después de que termine el proceso
+			setIsProcessing(false);
+		}
 	};
 
 	// Función para actualizar el estado del formulario
@@ -79,6 +149,7 @@ const useCheckout = () => {
 		errorMessage,
 		updateOrder,
 		handleSubmit,
+		isProcessing,
 	};
 };
 

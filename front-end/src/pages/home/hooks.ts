@@ -63,7 +63,6 @@ export function useProducts(
 
 				// Aquí no se adapta, porque ya viene adaptado desde el servicio
 				setProducts(response as Product[]);
-				console.log(response);
 			} catch (err) {
 				setError('Error al cargar los productos');
 				setProducts([]);

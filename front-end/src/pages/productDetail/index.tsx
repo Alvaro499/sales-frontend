@@ -11,13 +11,11 @@ const ProductDetailPage: React.FC = () => {
 	const { product: productFromState } = location.state || {}; // Accedemos a los datos del producto
 	const productToDisplay = productFromState || product;
 	const navigate = useNavigate();
-	
-	console.log('Product to display:', productToDisplay.data);
+
 	const imageUrl =
 		productToDisplay.data.urlImg && productToDisplay.data.urlImg[0]
 			? productToDisplay.data.urlImg[0]
 			: null;
-	console.log('Image URL:', imageUrl);
 
 	if (loading) return <p className='text-center'>Cargando producto...</p>;
 	if (error) return <p className='text-center text-danger'>{error}</p>;

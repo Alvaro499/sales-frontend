@@ -18,12 +18,14 @@ export interface ShippingMethod {
 }
 
 export interface CreateOrderRequest {
+  guestUserId?: string;
+  buyerType: 'CLIENT' | 'USER';
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
   shippingAddress: string;
   products: OrderProduct[];
-  paymentMethod: string;
   shippingMethod: string;
+  paymentMethod: string;
 }

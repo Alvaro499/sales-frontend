@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 const CheckoutPage: React.FC = () => {
-	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit } =
+	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit, isProcessing  } =
 		useCheckout();
 	const navigate = useNavigate();
 	const formatMethodName = (name: string) => {
@@ -126,8 +126,13 @@ const CheckoutPage: React.FC = () => {
 
 				{errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-				<button type="button" className="btn btn-success" onClick={handleSubmit}>
-					Comprar
+				<button
+					type="button"
+					className="btn btn-success"
+					onClick={handleSubmit}
+					disabled={isProcessing}  // Deshabilita el botón cuando está procesando
+				>
+					{isProcessing ? 'Procesando...' : 'Comprar'}
 				</button>
 			</form>
 		</div>

@@ -30,18 +30,19 @@ export function useProductDetail(productId: string) {
 		// Ejemplo simple: guardamos en localStorage (puedes cambiar a contexto, redux, API, etc)
 		const cartString = localStorage.getItem('cart');
 		const cart = cartString ? JSON.parse(cartString) : [];
+		const productId = product.data.id;
 
 		// Buscar si producto ya está en carrito
-		const existingIndex = cart.findIndex((item: any) => item.product_id === product.id);
+		const existingIndex = cart.findIndex((item: any) => item.product_id === productId);
 
 		if (existingIndex >= 0) {
 			cart[existingIndex].quantity += quantity;
 		} else {
-			cart.push({ ...product, quantity });
+			cart.push({ ...product, productId, quantity });
 		}
 
 		localStorage.setItem('cart', JSON.stringify(cart));
-		alert(`Añadido ${quantity} x ${product.name} al carrito`);
+		alert(`Añadido ${quantity} x ${product.data.name} al carrito`);
 	};
 
 	return {

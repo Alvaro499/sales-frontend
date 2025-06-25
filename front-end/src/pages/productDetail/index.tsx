@@ -61,12 +61,15 @@ const ProductDetailPage: React.FC = () => {
 				) : (
 					<p>No hay imagen disponible</p>
 				)}
-				<p>{productToDisplay.data.description}</p>
 				<p>
+				<p><strong>Descripción:</strong> {productToDisplay.data.description}</p>
 					<strong>Precio:</strong> ${productToDisplay.data.price.toFixed(2)}
 				</p>
 				<p>
-					<strong>Stock:</strong> {productToDisplay.stock}
+					<strong>Stock:</strong> {productToDisplay.data.stock}
+				</p>
+				<p>
+					<strong>Promoción:</strong> {productToDisplay.data.promotion}
 				</p>
 
 				<div className='mb-3' style={{ maxWidth: '120px' }}>

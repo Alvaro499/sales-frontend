@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { CreateOrderRequest } from '../../models/Order.models';
 import { createOrder } from '../../services/checkout.services';
+import { showPurchaseSuccessAlert } from '../../utilities/alerts/purcharseComplete';
 
 const useCheckout = () => {
 	// Estado para almacenar los métodos de pago y envío disponibles
@@ -29,9 +30,21 @@ const useCheckout = () => {
 		const paymentData = ['EFECTIVO', 'SINPE', 'DEBITO'];
 		setPaymentMethods(paymentData);
 
+		// Establecer el primer método de pago como valor predeterminado
+		setOrder(prevState => ({
+			...prevState,
+			paymentMethod: paymentData[0], // Establecer el primer método de pago
+		}));
+
 		// Datos de métodos de envío
 		const shippingData = ['ENTREGA_LOCAL', 'CORREOS_CR', 'ENVIOS_EXPRESS'];
 		setShippingMethods(shippingData);
+
+		// Establecer el primer método de envío como valor predeterminado
+		setOrder(prevState => ({
+			...prevState,
+			shippingMethod: shippingData[0], // Establecer el primer método de envío
+		}));
 	}, []);
 
 	// Este useEffect se ejecuta al inicio para configurar los valores correctos
@@ -113,6 +126,7 @@ const useCheckout = () => {
 			if (response && response.userId) {
 				// Eliminar el carrito de localStorage después de la compra exitosa
 				localStorage.removeItem('cart');
+				showPurchaseSuccessAlert();
 				setOrder({
 					guestUserId: '',
 					buyerType: 'CLIENT',

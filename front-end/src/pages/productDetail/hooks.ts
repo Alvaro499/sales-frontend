@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../../models/Products.models';
 import { getProductById } from '../../services/product.services';
+import { showAddToCartSuccessAlert } from '../../utilities/alerts/addCart';
 
 export function useProductDetail(productId: string) {
 	const [product, setProduct] = useState<Product | null>(null);
@@ -42,7 +43,7 @@ export function useProductDetail(productId: string) {
 		}
 
 		localStorage.setItem('cart', JSON.stringify(cart));
-		alert(`Añadido ${quantity} x ${product.data.name} al carrito`);
+		showAddToCartSuccessAlert(product.data.name);
 	};
 
 	return {

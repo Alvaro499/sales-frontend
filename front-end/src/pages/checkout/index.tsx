@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 const CheckoutPage: React.FC = () => {
-	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit, isProcessing  } =
+	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit, isProcessing } =
 		useCheckout();
 	const navigate = useNavigate();
 	const formatMethodName = (name: string) => {
@@ -100,6 +100,7 @@ const CheckoutPage: React.FC = () => {
 						value={order.paymentMethod}
 						onChange={(e) => updateOrder('paymentMethod', e.target.value)}
 					>
+						<option value="" disabled>Seleccionar método de pago</option>  {/* Opción predeterminada */}
 						{paymentMethods.map((method, index) => (
 							<option key={index} value={method}>
 								{method}
@@ -116,9 +117,10 @@ const CheckoutPage: React.FC = () => {
 						value={order.shippingMethod}
 						onChange={(e) => updateOrder('shippingMethod', e.target.value)}
 					>
+						<option value="" disabled>Seleccionar método de envío</option>  {/* Opción predeterminada */}
 						{shippingMethods.map((method, index) => (
 							<option key={index} value={method}>
-								{formatMethodName(method)} {/* Mostramos el método sin guiones bajos */}
+								{formatMethodName(method)} {/* Mostrar el método sin guiones bajos */}
 							</option>
 						))}
 					</select>

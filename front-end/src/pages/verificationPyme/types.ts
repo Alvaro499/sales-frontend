@@ -1,6 +1,6 @@
 export interface VerificationHook {
-	email: string;
-	verificationCode: string;
+	userId: string;
+	code: string;
 	error: string;
 	isSubmitting: boolean;
 	handleCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

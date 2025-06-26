@@ -1,89 +1,87 @@
-// useProducts.ts
 import { useState, useEffect } from 'react';
-import { getProducts, getCategories } from '../../services/product.services';
 import { Product, Category } from '../../models/Products.models';
 import { localizationService } from '../../services/localization.service';
+import { getCategories } from '../../services/product.services';
+import { ErrorResponse } from '../../models/Api.models';
+import { UseProductsReturn } from './types';
+
+
+
+function isErrorResponse(response: any): response is ErrorResponse {
+  return response && typeof response === 'object' && 'message' in response;
+}
 
 export function useProducts(
-  search?: string,
-  selectedCategory?: string,
-  minPrice?: number | null,
-  maxPrice?: number | null
-) {
+  search: string = '',
+  selectedCategory: string = 'all',
+  minPrice: number | null = null,
+  maxPrice: number | null = null
+): UseProductsReturn {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Cargar categorías
   useEffect(() => {
-    Promise.all([getProducts(), getCategories()])
-      .then(([productsData, categoriesData]) => {
-        setProducts(productsData);
-        setCategories(categoriesData);
-        setFilteredProducts(productsData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load products or categories');
-        setLoading(false);
-      });
-  }, []);
-
-  // Initial categories loading
-  useEffect(() => {
-    setLoading(true);
-    localizationService
-      .getCategories()
-      .then(data => {
-        if ('errorCode' in data) {
-          setError(data.message);
-        } else if (Array.isArray(data)) {
-          setCategories(data);
+    const loadCategories = async () => {
+      try {
+        const categoriesData = await getCategories();
+        if (Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+        } else if (isErrorResponse(categoriesData)) {
+          setError(categoriesData.message || 'Error obteniendo categorías');
         }
-      })
-      .catch(() => setError('Failed to fetch categories'))
-      .finally(() => setLoading(false));
+      } catch {
+        setError('Error al cargar las categorías');
+      }
+    };
+    loadCategories();
   }, []);
 
-  // Dynamic search and filtering with debounce
+  // Buscar productos
   useEffect(() => {
-    const shouldSearch =
-      (search && search.trim() !== '') ||
-      (selectedCategory && selectedCategory !== 'all') ||
-      (minPrice !== undefined && minPrice !== null) ||
-      (maxPrice !== undefined && maxPrice !== null);
+    const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
-    if (!shouldSearch) {
-      setFilteredProducts(products); // Show all initially loaded products
-      return;
-    }
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
 
-    setLoading(true);
-    const delayDebounceFn = setTimeout(() => {
-      const categoryId =
-        selectedCategory && selectedCategory !== 'all' ? Number(selectedCategory) : null;
+      try {
+        const response = await localizationService.locateProducts(
+          search,
+          categoryId,
+          minPrice,
+          maxPrice
+        );
 
-      localizationService
-        .locateProducts(search, categoryId, minPrice, maxPrice)
-        .then(data => {
-          if ('errorCode' in data) {
-            setError(data.message);
-            setFilteredProducts([]);
-          } else if (Array.isArray(data)) {
-            setFilteredProducts(data);
-            setError(null);
-          }
-        })
-        .catch(() => {
-          setError('An error occurred while searching for products.');
-          setFilteredProducts([]);
-        })
-        .finally(() => setLoading(false));
-    }, 300);
+        if (isErrorResponse(response)) {
+          setError(response.message || 'Error en la búsqueda');
+          setProducts([]);
+          return;
+        }
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [search, selectedCategory, minPrice, maxPrice, products]);
+        // Aquí no se adapta, porque ya viene adaptado desde el servicio
+        setProducts(response as Product[]);
+        console.log(response);
 
-  return { products, filteredProducts, categories, loading, error };
+      } catch (err) {
+        setError('Error al cargar los productos');
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [search, selectedCategory, minPrice, maxPrice]);
+
+  return { 
+    filteredProducts: products,
+    categories, 
+    loading, 
+    error 
+  };
 }
+
+

@@ -10,7 +10,8 @@ const ProductPublishPanel = () => {
         getProductsFromAPI,
         updateProductFromAPI,
         unpublishProductFromAPI,
-        error
+        error,
+        applyPromotionFromAPI
     } = useProductManagement();
 
     useEffect(() => {
@@ -20,8 +21,18 @@ const ProductPublishPanel = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isViewModalVisible, setIsViewModalVisible] = useState(false);
     const [isStockModalVisible, setIsStockModalVisible] = useState(false);
+    const [isPromoModalVisible, setIsPromoModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [newStock, setNewStock] = useState<number>(0);
+    const [promoForm, setPromoForm] = useState({
+        title: '',
+        description: '',
+        productId: '',
+        discountType: '',
+        discountValue: '',
+        startDate: '',
+        endDate: ''
+    });
     const navigate = useNavigate();
 
     const showModal = (product: Product) => {
@@ -40,15 +51,21 @@ const ProductPublishPanel = () => {
         setIsStockModalVisible(true);
     };
 
+    const handlePromoOpen = (product: Product) => {
+        setSelectedProduct(product); // <-- Agrega esta línea
+        setPromoForm({ ...promoForm, productId: product.id });
+        setIsPromoModalVisible(true);
+    };
+
     // Handler para despublicar producto
- const handleConfirm = async () => {
-    setIsModalVisible(false);
-    if (selectedProduct) {
-        const updatedProduct = { ...selectedProduct, is_active: false };
-        await unpublishProductFromAPI(selectedProduct.id, updatedProduct);
-    }
-    getProductsFromAPI();
-};
+    const handleConfirm = async () => {
+        setIsModalVisible(false);
+        if (selectedProduct) {
+            const updatedProduct = { ...selectedProduct, is_active: false };
+            await unpublishProductFromAPI(selectedProduct.id, updatedProduct);
+        }
+        getProductsFromAPI();
+    };
 
     const handleCancel = () => {
         setIsModalVisible(false);
@@ -61,6 +78,8 @@ const ProductPublishPanel = () => {
     const handleStockModalClose = () => {
         setIsStockModalVisible(false);
     };
+
+    const handlePromoClose = () => setIsPromoModalVisible(false);
 
     const handleStockChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewStock(Number(e.target.value));
@@ -80,10 +99,25 @@ const ProductPublishPanel = () => {
         getProductsFromAPI();
     };
 
+    const handlePromoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setPromoForm({ ...promoForm, [e.target.name]: e.target.value });
+    };
+
+    const handlePromoSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (selectedProduct && promoForm.discountValue !== '') {
+            await applyPromotionFromAPI(selectedProduct.id, promoForm.discountValue);
+            setIsPromoModalVisible(false);
+            getProductsFromAPI();
+        }
+    };
+
     return (
         <div className="container panel-container mt-4">
-            <h2>Panel de Productos Publicados</h2>
-            <p>Bienvenido Pyme X</p>
+            <div className="text-center">
+              <h2>Panel de Productos Publicados</h2>
+              <p className="fw-light small mb-2">Bienvenido Pyme X</p>
+            </div>
             <button
                 className='btn btn-primary'
                 onClick={() => navigate('/newProduct')}
@@ -94,37 +128,64 @@ const ProductPublishPanel = () => {
             <br />
             <div className="row">
                 {products.map((product) => (
-                    <div key={product.product_id} className="col-12 col-sm-6 col-md-4 mb-4">
-                        <div className="card h-100 product-card">
+                    <div key={product.id} className="col-12 col-sm-6 col-md-4 mb-4">
+                        <div className="card h-100 border-0 shadow-sm transition-all product-card">
                           <img
-									src={product.url_img}
-									alt={`Imagen de ${product.name}`}
-									className='card-img-top rounded-top'
-									style={{ objectFit: 'cover', height: '200px' }}
-							/>
+                                src={product.images && product.images.length > 0 ? product.images[0] : ''}
+                                alt={product.name}
+                                className="card-img-top"
+                                style={{
+                                  objectFit: 'cover',
+                                  height: '180px',
+                                  borderTopLeftRadius: '0.5rem',
+                                  borderTopRightRadius: '0.5rem',
+                                  background: '#f8f9fa',
+                                }}
+                            />
                             <div className="card-body d-flex flex-column">
-                                <h5 className="card-title">{product.name}</h5>
-                                <p className="card-text">Estado: {product.is_active ? 'Publicado' : 'Despublicado'}</p>
-                                <p className="card-text">Precio: ${product.price}</p>
-                                <p className="card-text">Stock: {product.stock}</p>
-                                <div className="mt-auto">
-                                    <button className="btn btn-link p-0 me-2" onClick={() => showViewModal(product)}>
-                                        Ver
-                                    </button>
-                                    {product.is_active && (
-                                        <button className="btn btn-link p-0 me-2">Promoción</button>
-                                    )}
-                                    {product.is_active && (
-                                        <button className="btn btn-link p-0 me-2" onClick={() => showModal(product)}>
-                                            Despublicar
-                                        </button>
-                                    )}
-                                    {product.is_active && (
-                                    <button className="btn btn-link p-0" onClick={() => showStockModal(product)}>
-                                        Administrar producto
-                                    </button>
-                                    )}
+                              <h3 className="card-title h5 mb-2">{product.name}</h3>
+                              <p className="card-text text-muted small flex-grow-1">
+                                {product.description && product.description.length > 100
+                                  ? `${product.description.substring(0, 100)}...`
+                                  : product.description}
+                              </p>
+                              <div className="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                  <span className="fw-bold fs-5 text-primary">
+                                    ₡{product.price?.toLocaleString('es-CR')}
+                                  </span>
+                                    {product.active && product?.promotion && Number(product.promotion) > 0 ? (
+                                    <div className="mt-1">
+                                      <span className="badge bg-success">
+                                      Promoción actual: {product.promotion}%
+                                      </span>
+                                    </div>
+                                    ) : null}
                                 </div>
+                                <button
+                                  className="btn btn-sm btn-outline-primary"
+                                  onClick={() => showViewModal(product)}
+                                >
+                                  Ver más
+                                </button>
+                              </div>
+                            </div>
+                            <div className="d-flex gap-2 mt-2 px-3 pb-3">
+                              {product.active && (
+                                <button className="btn btn-sm btn-outline-success" onClick={() => handlePromoOpen(product)}>
+                                  Promoción
+                                </button>
+                              )}
+                              {product.active && (
+                                <button className="btn btn-sm btn-outline-secondary" onClick={() => showStockModal(product)}>
+                                  Administrar producto
+                                </button>
+                              )}
+                              {product.active && (
+                                <button className="btn btn-sm btn-outline-danger" onClick={() => showModal(product)}>
+                                  Despublicar
+                                </button>
+                              )}
                             </div>
                         </div>
                     </div>
@@ -141,7 +202,7 @@ const ProductPublishPanel = () => {
                         </div>
                         <div className="modal-body">
                             <p>Producto: {selectedProduct?.name}</p>
-                            <p>Estado: {selectedProduct?.is_active ? 'Publicado' : 'Despublicado'}</p>
+                            <p>Estado: {selectedProduct?.active ? 'Publicado' : 'Despublicado'}</p>
                             <p>¿Confirmar despublicación?</p>
                         </div>
                         <div className="modal-footer">
@@ -162,8 +223,8 @@ const ProductPublishPanel = () => {
                         </div>
                         <div className="modal-body">
                             <p>Producto: {selectedProduct?.name}</p>
-                            <p>Estado actual: {selectedProduct?.is_active ? 'Publicado' : 'Despublicado'}</p>
-                            {selectedProduct?.is_active ? (
+                            <p>Estado actual: {selectedProduct?.active ? 'Publicado' : 'Despublicado'}</p>
+                            {selectedProduct?.active ? (
                                 <p>¡Este producto está visible para los clientes!</p>
                             ) : (
                                 <p>¡Este producto ya no está visible para los clientes!</p>
@@ -220,6 +281,79 @@ const ProductPublishPanel = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Modal para crear o editar promoción */}
+            <div className={`modal fade ${isPromoModalVisible ? 'show d-block' : ''}`} tabIndex={-1} style={{ background: isPromoModalVisible ? 'rgba(0,0,0,0.5)' : 'transparent' }}>
+              <div className="modal-dialog modal-lg">
+                <div className="modal-content">
+                  <form onSubmit={handlePromoSubmit}>
+                    <div className="modal-header">
+                      <h5 className="modal-title">Aplicar Promoción</h5>
+                      <button type="button" className="btn-close" onClick={handlePromoClose}></button>
+                    </div>
+                    <div className="modal-body">
+                      <div className="row mb-3">
+                        <div className="col-12 col-md-6 mb-2 mb-md-0">
+                          <strong>Producto:</strong> {selectedProduct?.name}
+                        </div>
+                        <div className="col-12 col-md-6 text-md-end">
+                          <strong>Precio actual:</strong> ₡{selectedProduct?.price?.toLocaleString('es-CR')}
+                          {selectedProduct?.promotion && (
+                            <div className="mt-1">
+                              <span className="badge bg-success">
+                                Promoción actual: {selectedProduct.promotion}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="row mb-3 align-items-end">
+                        <div className="col-12 col-md-9 mb-2 mb-md-0">
+                          <label className="form-label">Valor:</label>
+                          <input
+                            className="form-control"
+                            name="discountValue"
+                            value={promoForm.discountValue}
+                            onChange={handlePromoChange}
+                            required
+                            placeholder="_"
+                            type="number"
+                            min="0"
+                            max="90"
+                          />
+                          {Number(promoForm.discountValue) < 0 && (
+                            <span className="text-warning ms-2">
+                              &#9888; El valor no puede ser negativo.
+                            </span>
+                          )}
+                          {Number(promoForm.discountValue) > 90 && (
+                            <span className="text-warning ms-2">
+                              &#9888; El valor no puede ser mayor que 90.
+                            </span>
+                          )}
+                        </div>
+                        <div className="col-12 col-md-3">
+                          <button
+                            type="submit"
+                            className="btn btn-primary w-100 mt-3 mt-md-0"
+                            disabled={
+                              promoForm.discountValue === '' ||
+                              Number(promoForm.discountValue) < 0 ||
+                              Number(promoForm.discountValue) > 90
+                            }
+                          >
+                            Aplicar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-secondary" onClick={handlePromoClose}>Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
         </div>
     );

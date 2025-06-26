@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
+import { applyPromotion, getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
 import { Product } from '../../models/Products.models';
 
 const useProductManagement = () => {
@@ -8,7 +8,12 @@ const useProductManagement = () => {
 
     const getProductsFromAPI = async () => {
         try {
-            const products = await getProductById("52b92464-90d5-485a-96bd-47c6256df231"); // Obtener ID de la pyme
+            
+            // Se necesita el ID de la pyme para obtener los productos
+            const userId = localStorage.getItem('userId') || '';
+            // if (!userId) throw new Error('Usuario no autenticado');
+
+            const products = await getProductById("cb4a1a63-b716-4604-a2b1-c232e3abe0e6"); // Obtener ID de la pyme
             
             setProducts(products); // Actualiza el estado con los productos obtenidos
         } catch (err) {
@@ -20,7 +25,7 @@ const useProductManagement = () => {
         try {
             const updatedProduct = await unpublishProduct(productId, product);
             setProducts((prev) =>
-                prev.map((p) => (p.product_id === productId ? updatedProduct : p))
+                prev.map((p) => (p.id === productId ? updatedProduct as Product : p))
             );
         } catch (err) {
             setError('Error al despublicar el producto: ' + err);
@@ -32,15 +37,25 @@ const useProductManagement = () => {
         try {
             const updatedProduct = await updateProduct(productId, product);
             setProducts((prev) =>
-                prev.map((p) => (p.product_id === productId ? updatedProduct : p))
+                prev.map((p) => (p.id === productId ? updatedProduct as Product : p))
             );
         } catch (err) {
             setError('Error al actualizar el producto: ' + err);
         }
     };
 
+    const applyPromotionFromAPI = async (productId: string, promotion: string) => {
+        try {
+            const updatedProduct = await applyPromotion(productId, promotion);
+            setProducts((prev) =>
+                prev.map((p) => (p.id === productId ? updatedProduct as Product : p))
+            );
+        } catch (err) {
+            setError('Error al aplicar la promoción: ' + err);
+        }
+    };
 
-    return { products, getProductsFromAPI, updateProductFromAPI, unpublishProductFromAPI, error }; // Exporta los datos y funciones necesarias
+    return { products, getProductsFromAPI, updateProductFromAPI, unpublishProductFromAPI, applyPromotionFromAPI, error }; // Exporta los datos y funciones necesarias
 };
 
 export default useProductManagement;

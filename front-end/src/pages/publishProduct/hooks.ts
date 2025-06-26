@@ -1,42 +1,70 @@
-import { useState } from 'react';
-import { Product } from './types'; // Ajusta esta importación según tu proyecto
-import { createProduct } from '../../services/product.services';
+import { useEffect, useState } from 'react';
+import { Product } from '../../models/Products.models';
+import { createProduct, getCategories } from '../../services/product.services';
+import { showProductSuccessAlert, showProductErrorAlert } from '../../utilities/alerts/productAlerts';
 
 const usePublishProduct = () => {
 	const [product, setProduct] = useState<Product>({
 		id: '',
-		product_id: '',
 		pyme_id: '',
 		name: '',
 		description: '',
 		price: 0,
+		category: [],
+		images: [],
 		available: true,
 		promotion: null,
 		stock: 0,
-		url_img: '',
-		is_active: true,
-		category_id: null,
 	});
 
+	const [categories, setCategories] = useState<{ category_id: number; name: string }[]>([]);
 	const [error, setError] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const categories = [
-		{ category_id: 1, name: 'Electronics' },
-		{ category_id: 2, name: 'Clothing' },
-		{ category_id: 3, name: 'Food' },
-	];
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const categoriesData = await getCategories();
+				setCategories(categoriesData);
+			} catch (error) {
+				setError('Error al cargar las categorías.');
+				console.error(error);
+			}
+		};
 
-	// Manejar inputs de texto, number, textarea
+		fetchCategories();
+	}, []);
+
+	const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const categoryId = e.target.value;
+		const isChecked = e.target.checked;
+
+		setProduct(prev => {
+			let updatedCategories = [...prev.category];
+
+			if (isChecked) {
+				if (!updatedCategories.includes(categoryId)) {
+					updatedCategories.push(categoryId);
+				}
+			} else {
+				updatedCategories = updatedCategories.filter(id => id !== categoryId);
+			}
+
+			return {
+				...prev,
+				category: updatedCategories,
+			};
+		});
+	};
+
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value, type } = e.target;
 		setProduct(prev => ({
 			...prev,
-			[name]: type === 'number' ? Number(value) : value,
+			[name]: type === 'number' ? (isNaN(Number(value)) ? 0 : Number(value)) : value,
 		}));
 	};
 
-	// Manejar checkbox disponible
 	const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, checked } = e.target;
 		setProduct(prev => ({
@@ -45,22 +73,28 @@ const usePublishProduct = () => {
 		}));
 	};
 
-	// Manejar select categoría
-	const handleCategoryChange = (value: number) => {
+	const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value.trim();
+		const urls = value
+			.split(',')
+			.map(url => url.trim())
+			.filter(url => url !== '');
+
 		setProduct(prev => ({
 			...prev,
-			category_id: value,
+			images: urls, // Ya es un array plano
 		}));
 	};
 
+	// Validar formulario
 	const validateForm = () => {
 		if (
 			!product.name ||
 			!product.description ||
 			!product.price ||
 			!product.stock ||
-			!product.url_img ||
-			product.category_id === null
+			product.images.length === 0 ||
+			product.category.length === 0
 		) {
 			setError('Todos los campos son obligatorios.');
 			return false;
@@ -73,33 +107,52 @@ const usePublishProduct = () => {
 		return true;
 	};
 
+	// Publicar producto
 	const handlePublish = async () => {
 		if (!validateForm()) return;
 
 		setIsLoading(true);
 		setError('');
 		try {
-			// Aquí la llamada real a la API
-			await createProduct(product);
-			alert('Producto publicado con éxito!');
-			// Opcional: limpiar formulario o redirigir
+			const imagesToSend = Array.isArray(product.images[0])
+				? product.images.flat()
+				: product.images;
+
+			const productData = {
+				...product,
+				category: product.category.map(String),
+				images: imagesToSend,
+			};
+
+			await createProduct(productData);
+			await showProductSuccessAlert(product.name);
+
 			setProduct({
 				id: '',
-				product_id: '',
 				pyme_id: '',
 				name: '',
 				description: '',
 				price: 0,
+				category: [],
+				images: [],
 				available: true,
 				promotion: null,
 				stock: 0,
-				url_img: '',
-				is_active: true,
-				category_id: null,
 			});
-		} catch (e) {
-			setError('Error al publicar el producto.');
-			throw new Error(String(e));
+		} catch (error: any) {
+			let errorMessage = 'Error al publicar el producto';
+
+			if (error?.response) {
+				errorMessage =
+					error.response.data?.message ||
+					`Error ${error.response.status}: ${error.response.statusText}`;
+			} else if (error?.message) {
+				errorMessage = error.message;
+			}
+
+			setError(errorMessage);
+			await showProductErrorAlert(errorMessage);
+			throw error;
 		} finally {
 			setIsLoading(false);
 		}
@@ -113,6 +166,7 @@ const usePublishProduct = () => {
 		handleInputChange,
 		handleCheckboxChange,
 		handleCategoryChange,
+		handleImageUrlChange,
 		handlePublish,
 	};
 };

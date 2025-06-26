@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { PasswordResetForm } from '../../components/forms/PasswordResetForms';
 import { usePasswordReset } from './hooks';
 
-export const PasswordResetPage: React.FC = () => {
+
+export const passwordReset: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const { resetPassword, message, isSubmitting } = usePasswordReset(token);
 

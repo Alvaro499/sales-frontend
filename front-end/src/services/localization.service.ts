@@ -1,9 +1,8 @@
-// localization.service.ts
 import { ventasApi } from './clients.service';
-import { Product, Category } from '../models/Products.models';
 import { ErrorResponse } from '../models/Api.models';
+import { RawProduct, adaptProduct } from '../adapters/productAdapter';
 
-const BASE_PATH = '/api/localization';
+const BASE_PATH = 'api/products/search';
 
 export const localizationService = {
   locateProducts: async (
@@ -11,36 +10,54 @@ export const localizationService = {
     categoryId?: number | null,
     minPrice?: number | null,
     maxPrice?: number | null
-  ): Promise<Product[] | ErrorResponse> => {
+  ): Promise<any[] | ErrorResponse> => {
     try {
-      const params = new URLSearchParams();
-      if (term) params.append('term', term);
-      if (categoryId !== null && categoryId !== undefined) params.append('categoryId', categoryId.toString());
-      if (minPrice !== null && minPrice !== undefined) params.append('priceMin', minPrice.toString());
-      if (maxPrice !== null && maxPrice !== undefined) params.append('priceMax', maxPrice.toString());
+      const queryParams = new URLSearchParams();
 
-      const query = params.toString();
-      const url = query ? `${BASE_PATH}/search?${query}` : `${BASE_PATH}/search`;
+      if (term) queryParams.append('term', term);
+      if (categoryId != null) queryParams.append('categoryId', categoryId.toString());
+      if (minPrice != null) queryParams.append('priceMin', minPrice.toString());
+      if (maxPrice != null) queryParams.append('priceMax', maxPrice.toString());
 
-      return await ventasApi.doGet<Product[]>(url);
+      const url = `${BASE_PATH}${queryParams.toString() ? `?${queryParams}` : ''}`;
+
+      const response = await ventasApi.doGet<any>(url);
+
+      let rawProducts: RawProduct[] = [];
+
+      if (Array.isArray(response)) {
+        rawProducts = response;
+      } else if (Array.isArray(response.data)) {
+        rawProducts = response.data;
+      } else if (Array.isArray(response.productos)) {
+        rawProducts = response.productos;
+      } else {
+        return {
+          message: 'Formato de respuesta inesperado',
+          code: 500,
+          params: 'UNEXPECTED_FORMAT',
+        };
+      }
+
+      // Adaptar todos los productos antes de devolverlos
+      const adapted = rawProducts.map((item: RawProduct) =>
+        adaptProduct({
+          ...item,
+          urlImg: item.urlImg || [],
+          categories: item.categories || [],
+          createdAt: item.createdAt || new Date().toISOString(),
+        })
+      );
+
+      return adapted;
     } catch (error) {
+      console.error('Error locating products:', error);
       return {
-        message: 'Error locating products',
+        message: 'Error al localizar productos',
         code: 500,
-        errorCode: 'LOCALIZATION_ERROR',
+        params: 'LOCALIZATION_ERROR',
       };
     }
   },
 
-  getCategories: async (): Promise<Category[] | ErrorResponse> => {
-    try {
-      return await ventasApi.doGet<Category[]>('/api/categories');
-    } catch (error) {
-      return {
-        message: 'Error retrieving categories',
-        code: 500,
-        errorCode: 'CATEGORIES_ERROR',
-      };
-    }
-  },
 };

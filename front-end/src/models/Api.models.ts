@@ -1,7 +1,7 @@
 export interface ErrorResponse {
 	message: string;
 	code: number;
-	errorCode?: string;
+	params?: string;
 }
 export type OkResponse = {
 	status: string;

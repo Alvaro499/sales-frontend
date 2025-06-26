@@ -4,7 +4,7 @@ import { useProducts } from './hooks';
 import { Product } from '../../models/Products.models';
 import { confirmLogout } from '../../utilities/alerts/logoutConfirm';
 import './Styles.css';
-import { AuthStorage } from '../../services/storageToken.sevice';
+import { AuthStorage } from '../../hooks/useLocalStorage';
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -16,12 +16,14 @@ const Home: React.FC = () => {
   const minPrice = minPriceInput ? Number(minPriceInput) : null;
   const maxPrice = maxPriceInput ? Number(maxPriceInput) : null;
 
+  // Obtener productos ya adaptados del hook
   const { filteredProducts, categories, loading, error } = useProducts(
     search,
     selectedCategory,
     minPrice,
     maxPrice
   );
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -136,7 +138,7 @@ const Home: React.FC = () => {
                       onClick={handleLogout}
                     >
                       <i className='bi bi-box-arrow-right'></i>
-                      <span className='d-none d-lg-inline'>Desconectar</span>
+                      <span className='d-none d-lg-inline'>Cerrar Sesión</span>
                     </button>
                     <button
                       className='btn btn-primary d-flex align-items-center gap-2'
@@ -152,7 +154,7 @@ const Home: React.FC = () => {
                     onClick={() => navigate('/login')}
                   >
                     <i className='bi bi-box-arrow-in-right'></i>
-                    <span className='d-none d-lg-inline'>Conectar</span>
+                    <span className='d-none d-lg-inline'>Iniciar Sesión</span>
                   </button>
                 )}
               </div>
@@ -194,15 +196,18 @@ const Home: React.FC = () => {
 
         <div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4'>
           {filteredProducts.map((product: Product) => (
-            <div key={product.product_id} className='col'>
+            <div key={product.id} className='col'>
               <div
                 className='card h-100 border-0 shadow-sm transition-all product-card'
-                onClick={() => navigate(`/producto/${product.product_id}`)}
+                onClick={() => navigate(`/products/${product.id}`)}
                 role='button'
               >
-                <div className='position-relative overflow-hidden' style={{ height: '200px' }}>
+                <div
+                  className='position-relative overflow-hidden'
+                  style={{ height: '200px' }}
+                >
                   <img
-                    src={product.url_img}
+                    src={product.images[0]}
                     alt={product.name}
                     className='card-img-top h-100 object-fit-cover'
                   />
@@ -227,7 +232,7 @@ const Home: React.FC = () => {
                       className='btn btn-sm btn-outline-primary'
                       onClick={e => {
                         e.stopPropagation();
-                        navigate(`/producto/${product.product_id}`);
+                        navigate(`/products/${product.id}`);
                       }}
                     >
                       Ver más

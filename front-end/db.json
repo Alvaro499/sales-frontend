@@ -1,149 +1,49 @@
 {
-  "pymes": [
-    {
-      "id": "240a",
-      "pymeName": "Mariano1",
-      "email": "marianoda20027@gmail.com",
-      "password": "Anakin#02",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael",
-      "description": "Bueno"
-    },
-    {
-      "id": "052a",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "9ff0",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    },
-    {
-      "id": "1d8c",
-      "pymeName": "jaisj",
-      "email": "marianoda20027@gmail.com",
-      "password": "fsdafsfadsA12#",
-      "phone": "+50671133894",
-      "address": "200 Mts sur del Cementerio de San Rafael",
-      "description": "asasas"
-    },
-    {
-      "id": "6007",
-      "email": "marianoda20027@gmail.com",
-      "verificationCode": "1234"
-    }
-  ],
-  "verification": [],
   "productos": [
     {
       "id": "a1aa",
-      "product_id": "a1aa",
-      "pyme_id": "a0f8",
       "name": "T-shirt",
       "description": "Camiseta cómoda de algodón",
       "price": 29.99,
+      "categories": ["ropa", "moda"],
+      "images": [
+        "https://example.com/tshirt.jpg"
+      ],
       "available": true,
-      "promotion": "20%",
-      "stock": 4,
-      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": true,
-      "category_id": 2
+      "promotion": "summer-sale",
+      "stock": 100,
+      "pyme_id": "pyme1"
     },
     {
       "id": "b2bb",
-      "product_id": "b2bb",
-      "pyme_id": "b1f9",
       "name": "Sneakers",
       "description": "Zapatillas deportivas ligeras",
       "price": 59.99,
+      "category": ["calzado", "deportes"],
+      "images": [
+        "https://example.com/sneakers.jpg"
+      ],
       "available": true,
       "promotion": null,
-      "stock": 7,
-      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": true,
-      "category_id": 1
-    },
-    {
-      "id": "c3cc",
-      "product_id": "c3cc",
-      "pyme_id": "c2g0",
-      "name": "Coffee Mug",
-      "description": "Taza para café con diseño moderno",
-      "price": 9.99,
-      "available": true,
-      "promotion": null,
-      "stock": 7,
-      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": false,
-      "category_id": 3
-    },
-    {
-      "id": "d4dd",
-      "product_id": "d4dd",
-      "pyme_id": "d3h1",
-      "name": "Jeans",
-      "description": "Pantalones vaqueros clásicos",
-      "price": 49.99,
-      "available": true,
-      "promotion": "15%",
-      "stock": 7,
-      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": true,
-      "category_id": 2
-    },
-    {
-      "id": "e5ee",
-      "product_id": "e5ee",
-      "pyme_id": "e4i2",
-      "name": "Headphones",
-      "description": "Auriculares con cancelación de ruido",
-      "price": 79.99,
-      "available": true,
-      "promotion": null,
-      "stock": 5,
-      "url_img": "https://extremetechcr.com/tienda/36820-large_default/xiaomi-a24i-ips-100hz.jpg",
-      "is_active": true,
-      "category_id": 1
+      "stock": 50,
+      "pyme_id": "pyme2"
     }
   ],
   "categories": [
     {
-      "category_id": 1,
-      "name": "Calzado",
-      "description": "Zapatos, zapatillas y otros tipos de calzado",
-      "id": "0561"
-    },
-    {
-      "category_id": 2,
+      "category_id": "cat1",
       "name": "Ropa",
-      "description": "Prendas de vestir como camisetas, jeans y más",
-      "id": "d8bf"
+      "description": "Prendas de vestir"
     },
     {
-      "category_id": 3,
-      "name": "Accesorios",
-      "description": "Artículos como tazas, auriculares y otros accesorios",
-      "id": "0dd5"
+      "category_id": "cat2",
+      "name": "Calzado",
+      "description": "Zapatos y zapatillas"
     },
     {
-      "category_id": 4,
+      "category_id": "cat3",
       "name": "Electrónica",
-      "description": "Dispositivos electrónicos y gadgets",
-      "id": "3f2f"
-    },
-    {
-      "category_id": 5,
-      "name": "Hogar",
-      "description": "Artículos para el hogar y decoración",
-      "id": "3335"
-    }
-  ],
-  "login": [
-    {
-      "id": "42df",
-      "email": "marianoda20027@gmail.com",
-      "password": "adsdasdasdasda"
+      "description": "Dispositivos electrónicos"
     }
   ]
 }

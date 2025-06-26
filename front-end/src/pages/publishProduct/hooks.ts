@@ -119,7 +119,6 @@ const usePublishProduct = () => {
 		return true;
 	};
 
-	// Publicar producto
 	const handlePublish = async () => {
 		if (!validateForm()) return;
 

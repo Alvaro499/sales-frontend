@@ -1,15 +1,11 @@
 import React from 'react';
 import useCheckout from './hooks';
-import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 const CheckoutPage: React.FC = () => {
-	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit, isProcessing } =
+	const { order, paymentMethods, shippingMethods, errorMessage, updateOrder, handleSubmit, isProcessing, navigate, formatMethodName} =
 		useCheckout();
-	const navigate = useNavigate();
-	const formatMethodName = (name: string) => {
-		return name.replace(/_/g, ' '); // Reemplaza todos los guiones bajos por espacios
-	};
+	
 	return (
 		<div className="container mt-5">
 			{/* Navbar */}
@@ -30,7 +26,7 @@ const CheckoutPage: React.FC = () => {
 					<div className="d-flex ms-auto">
 						<button
 							className="btn btn-outline-primary"
-							onClick={() => navigate('/')} // Redirige a la página de inicio
+							onClick={() => navigate('/')} 
 						>
 							<i className="bi bi-house-door"></i> Home
 						</button>
@@ -100,7 +96,7 @@ const CheckoutPage: React.FC = () => {
 						value={order.paymentMethod}
 						onChange={(e) => updateOrder('paymentMethod', e.target.value)}
 					>
-						<option value="" disabled>Seleccionar método de pago</option>  {/* Opción predeterminada */}
+						<option value="" disabled>Seleccionar método de pago</option> 
 						{paymentMethods.map((method, index) => (
 							<option key={index} value={method}>
 								{method}
@@ -117,10 +113,10 @@ const CheckoutPage: React.FC = () => {
 						value={order.shippingMethod}
 						onChange={(e) => updateOrder('shippingMethod', e.target.value)}
 					>
-						<option value="" disabled>Seleccionar método de envío</option>  {/* Opción predeterminada */}
+						<option value="" disabled>Seleccionar método de envío</option>  
 						{shippingMethods.map((method, index) => (
 							<option key={index} value={method}>
-								{formatMethodName(method)} {/* Mostrar el método sin guiones bajos */}
+								{formatMethodName(method)} 
 							</option>
 						))}
 					</select>
@@ -132,7 +128,7 @@ const CheckoutPage: React.FC = () => {
 					type="button"
 					className="btn btn-success"
 					onClick={handleSubmit}
-					disabled={isProcessing}  // Deshabilita el botón cuando está procesando
+					disabled={isProcessing}
 				>
 					{isProcessing ? 'Procesando...' : 'Comprar'}
 				</button>

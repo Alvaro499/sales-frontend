@@ -7,7 +7,7 @@ const BASE_PATH = 'api/products/search';
 export const localizationService = {
   locateProducts: async (
     term?: string,
-    categoryId?: number | null,
+    categoryId?: number, // Siempre número (0, 1, 2...)
     minPrice?: number | null,
     maxPrice?: number | null
   ): Promise<any[] | ErrorResponse> => {

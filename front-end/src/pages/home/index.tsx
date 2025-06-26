@@ -8,8 +8,8 @@ import { AuthStorage } from '../../hooks/useLocalStorage';
 
 const Home: React.FC = () => {
 	const [search, setSearch] = useState('');
-	const [selectedCategory, setSelectedCategory] = useState<string>('all');
-	const [minPriceInput, setMinPriceInput] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<number>(0); // 0 = "Todas"
+  const [minPriceInput, setMinPriceInput] = useState<string>('');
 	const [maxPriceInput, setMaxPriceInput] = useState<string>('');
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -94,19 +94,21 @@ const Home: React.FC = () => {
 									<i className='bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted'></i>
 								</div>
 
-								<select
-									className='form-select flex-shrink-0'
-									style={{ width: '200px' }}
-									value={selectedCategory}
-									onChange={e => setSelectedCategory(e.target.value)}
-								>
-									<option value='all'>Todas las categorías</option>
-									{categories.map(cat => (
-										<option key={cat.category_id} value={cat.category_id}>
-											{cat.name}
-										</option>
-									))}
-								</select>
+							       <select
+                  className='form-select'
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    const selectedIndex = e.target.selectedIndex;
+                    setSelectedCategory(selectedIndex);
+                  }}
+                >
+                  <option value={0}>Todas las categorías</option>
+                  {categories.map((cat, index) => (
+                    <option key={index} value={index + 1}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
 							</div>
 
 							<div className='d-flex gap-2 align-items-center'>

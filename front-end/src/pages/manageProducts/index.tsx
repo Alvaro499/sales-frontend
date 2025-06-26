@@ -116,7 +116,31 @@ const ProductPublishPanel = () => {
     };
 
     return (
-        <div className="container panel-container mt-4">
+              <div className="container panel-container mt-4">
+                <nav className='navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top'>
+              <div className='container'>
+                <a className='navbar-brand' href='/'>
+                  <div className='d-flex align-items-center'>
+                    <img
+                      src='https://d500.epimg.net/cincodias/imagenes/2015/05/08/pyme/1431098283_691735_1431098420_noticia_normal.jpg'
+                      alt='Logo'
+                      width='40'
+                      height='40'
+                      className='rounded-circle me-2 border'
+                    />
+                    <span className='fw-bold fs-5 text-primary'>PYME Shop</span>
+                  </div>
+                </a>
+                <div className='d-flex ms-auto'>
+                  <button
+                    className='btn btn-outline-primary'
+                    onClick={() => navigate('/')} 
+                  >
+                    Home
+                  </button>
+                </div>
+              </div>
+            </nav>
             <div className="text-center">
               <h2>Panel de Productos Publicados</h2>
               <p className="fw-light small mb-2">Bienvenido Pyme X</p>
@@ -164,16 +188,18 @@ const ProductPublishPanel = () => {
                                       </span>
                                     </div>
                                     ) : null}
-                                    {product.available ? (
-                                      <div className="mt-1">
-                                        <span className="text-secondary small">Stock: {product.stock}</span>
-                                      </div>
-                                    ) : (
-                                      <div className="mt-1">
-                                        <span className="badge bg-danger">
-                                          No disponible (Stock: {product.stock})
-                                        </span>
-                                      </div>
+                                    {product.active && (
+                                      product.available ? (
+                                        <div className="mt-1">
+                                          <span className="text-secondary small">Stock: {product.stock}</span>
+                                        </div>
+                                      ) : (
+                                        <div className="mt-1">
+                                          <span className="badge bg-danger">
+                                            No disponible (Stock: {product.stock})
+                                          </span>
+                                        </div>
+                                      )
                                     )}
                                 </div>
                                 <button

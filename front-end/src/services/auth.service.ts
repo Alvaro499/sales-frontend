@@ -3,31 +3,47 @@ import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AuthStorage } from '../hooks/useLocalStorage';
 import { AxiosError } from 'axios';
+
 export class AuthService {
+  // Ruta base común para las solicitudes de autenticación
   private static BASE_PATH = '/api/public/auth';
 
-  /** Realiza el login con las credenciales y almacena el token si es exitoso */
+  /**
+   * Realiza el inicio de sesión enviando las credenciales al backend.
+   * En caso de éxito, almacena el token y otros datos en el almacenamiento local.
+   * Devuelve la respuesta con el token o un error si falla.
+   */
   public static async login(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
     try {
       const response = await authApi.doPost<AuthCredentials, OkResponse>(
         credentials,
-        `${this.BASE_PATH}/login`
+        `${this.BASE_PATH}/loginUser`
       );
 
       if ('token' in response && typeof response.token === 'string') {
         AuthStorage.setToken(response.token);
         AuthStorage.storeDecodedToken();
       }
-      
+
+      if ('pymeId' in response && typeof response.pymeId === 'string') {
+        AuthStorage.setPymeId(response.pymeId);
+      } else {
+        AuthStorage.setPymeId('');
+      }
+
       return response;
     } catch (error) {
       return this.handleError(error);
     }
   }
 
-  /** Registra un nuevo usuario con las credenciales proporcionadas */
+  /**
+   * Registra un nuevo usuario con las credenciales proporcionadas.
+   * Maneja diferentes formatos de respuesta esperados del backend.
+   * Retorna el resultado exitoso o un error en caso de fallo.
+   */
   public static async registerUser(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -51,7 +67,10 @@ export class AuthService {
     }
   }
 
-  /** Solicita el envío del correo para recuperación de contraseña */
+  /**
+   * Solicita el envío de un correo para recuperación de contraseña.
+   * Valida la respuesta del backend para asegurar que el correo fue enviado correctamente.
+   */
   public static async recoveryRequest(
     email: string
   ): Promise<OkResponse | ErrorResponse> {
@@ -75,7 +94,10 @@ export class AuthService {
     }
   }
 
-  /** Realiza el cambio de contraseña con el token y la nueva contraseña */
+  /**
+   * Realiza el cambio de contraseña enviando los datos necesarios.
+   * Devuelve la respuesta del backend o el error correspondiente.
+   */
   public static async resetPassword(
     data: PasswordResetRequest
   ): Promise<OkResponse | ErrorResponse> {
@@ -89,7 +111,10 @@ export class AuthService {
     }
   }
 
-  /** Maneja y normaliza los errores provenientes de axios */
+  /**
+   * Método privado para manejar errores en las peticiones HTTP.
+   * Extrae la información relevante del error de Axios para devolver una estructura consistente.
+   */
   private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
 

@@ -2,6 +2,7 @@ import { ventasApi } from './clients.service';
 import { Pyme } from '../models/Pymes.models';
 import { VerificationRequest } from '../models/AuthPyme.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
+import { AuthStorage } from '../hooks/useLocalStorage';
 
 export const pymeRegistrationService = {
   BASE_PATH: 'api/pymes',
@@ -61,6 +62,12 @@ export const pymeRegistrationService = {
         registrationData,
         `${pymeRegistrationService.BASE_PATH}/register`
       );
+
+if ('id' in response && typeof response.id === 'string') {
+              AuthStorage.setPymeId(response.id);
+            }else{
+              AuthStorage.setPymeId('');
+            }
 
       if (!response) {
         return {

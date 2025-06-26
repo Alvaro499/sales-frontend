@@ -5,14 +5,9 @@ import { AuthStorage } from '../hooks/useLocalStorage';
 import { AxiosError } from 'axios';
 
 export class AuthService {
-  // Ruta base común para las solicitudes de autenticación
   private static BASE_PATH = '/api/public/auth';
 
-  /**
-   * Realiza el inicio de sesión enviando las credenciales al backend.
-   * En caso de éxito, almacena el token y otros datos en el almacenamiento local.
-   * Devuelve la respuesta con el token o un error si falla.
-   */
+  // Inicia sesión con credenciales y guarda token/pymeId si es válido
   public static async login(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -29,7 +24,7 @@ export class AuthService {
 
       if ('pymeId' in response && typeof response.pymeId === 'string') {
         AuthStorage.setPymeId(response.pymeId);
-      } else {
+      }else{
         AuthStorage.setPymeId('');
       }
 
@@ -39,11 +34,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Registra un nuevo usuario con las credenciales proporcionadas.
-   * Maneja diferentes formatos de respuesta esperados del backend.
-   * Retorna el resultado exitoso o un error en caso de fallo.
-   */
+  // Registra un nuevo usuario con email y contraseña
   public static async registerUser(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -67,10 +58,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Solicita el envío de un correo para recuperación de contraseña.
-   * Valida la respuesta del backend para asegurar que el correo fue enviado correctamente.
-   */
+  // Solicita recuperación de contraseña enviando el email
   public static async recoveryRequest(
     email: string
   ): Promise<OkResponse | ErrorResponse> {
@@ -94,10 +82,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Realiza el cambio de contraseña enviando los datos necesarios.
-   * Devuelve la respuesta del backend o el error correspondiente.
-   */
+  // Restablece la contraseña con token y nueva contraseña
   public static async resetPassword(
     data: PasswordResetRequest
   ): Promise<OkResponse | ErrorResponse> {
@@ -111,10 +96,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Método privado para manejar errores en las peticiones HTTP.
-   * Extrae la información relevante del error de Axios para devolver una estructura consistente.
-   */
+  // Maneja errores de red o del backend y los normaliza
   private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
 

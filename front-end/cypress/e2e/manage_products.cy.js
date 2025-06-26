@@ -1,12 +1,16 @@
 describe('Panel de Productos Publicados', () => {
   beforeEach(() => {
+    window.localStorage.setItem('app_auth_pymeId', 'cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
     cy.visit('/productPublishPanel');
   });
 
   it('Muestra listado de productos con stock y disponibilidad', () => {
     cy.contains('Panel de Productos Publicados');
-    cy.get('.product-card').should('have.length.at.least', 1);
-    cy.get('.product-card').first().should('contain.text', 'Stock:');
+    cy.get('.product-card')
+    .filter(':contains("Stock:")')
+    .first()
+    .should('exist')
+    .and('contain.text', 'Stock:');
   });
 
   it('Abre y cierra el modal de Ver producto', () => {
@@ -32,7 +36,8 @@ describe('Panel de Productos Publicados', () => {
   });
 
   it('Actualiza el stock del producto a cero y lo marca como no disponible', () => {
-    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().as('targetCard');
+    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))')
+    .filter(':contains("Stock:")').first().as('targetCard');
     cy.get('@targetCard').within(() => {
       cy.contains('Administrar producto').should('be.visible').click();
     });
@@ -47,7 +52,8 @@ describe('Panel de Productos Publicados', () => {
   });
 
   it('Muestra error si se intenta actualizar el stock con valor negativo', () => {
-    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().within(() => {
+    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))')
+    .filter(':contains("Stock:")').first().within(() => {
       cy.contains('Administrar producto').should('be.visible').click();
     });
     cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('-5');
@@ -66,6 +72,7 @@ describe('Panel de Productos Publicados', () => {
   it('Aplica una promoción a un producto', () => {
     cy.get('.product-card')
       .filter(':has(button:contains("Promoción"))')
+      .filter(':contains("Stock:")')
       .first()
       .as('targetCard');
     cy.get('@targetCard').within(() => {

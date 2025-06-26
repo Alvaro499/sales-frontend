@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { applyPromotion, getProductById, unpublishProduct, updateProduct } from '../../services/product.services';
+import { applyPromotion, getProductBypymeId, unpublishProduct, updateProduct } from '../../services/product.services';
+
 import { Product } from '../../models/Products.models';
 
 const useProductManagement = () => {
@@ -8,12 +9,12 @@ const useProductManagement = () => {
 
     const getProductsFromAPI = async () => {
         try {
-            
+ 
             // Se necesita el ID de la pyme para obtener los productos
             const userId = localStorage.getItem('userId') || '';
             // if (!userId) throw new Error('Usuario no autenticado');
 
-            const products = await getProductById("cb4a1a63-b716-4604-a2b1-c232e3abe0e6"); // Obtener ID de la pyme
+            const products = await getProductBypymeId("52b92464-90d5-485a-96bd-47c6256df231"); // Obtener ID de la pyme
             
             setProducts(products); // Actualiza el estado con los productos obtenidos
         } catch (err) {

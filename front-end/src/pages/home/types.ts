@@ -5,4 +5,5 @@ export interface UseProductsReturn {
   categories: Category[];
   loading: boolean;
   error: string | null;
+  handleProductClick: (productId: string) => void;
 }

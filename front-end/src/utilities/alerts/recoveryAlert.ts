@@ -1,11 +1,13 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { AuthService } from '../../services/auth.service';
-import { ErrorResponse} from '../../models/Api.models';
+import { ErrorResponse } from '../../models/Api.models';
 import './styles.css';
 
 const MySwal = withReactContent(Swal);
 
+// Muestra un cuadro para ingresar el correo y envía la solicitud de recuperación de contraseña,
+// mostrando mensajes de éxito o error según la respuesta.
 export const showRecoveryAlert = async () => {
   const { value: email } = await MySwal.fire({
     customClass: {
@@ -46,7 +48,6 @@ export const showRecoveryAlert = async () => {
   try {
     const response = await AuthService.recoveryRequest(email);
 
-    // Manejo de respuesta exitosa
     if ('status' in response && response.status === "OK") {
       await MySwal.fire({
         title: 'Éxito',
@@ -60,7 +61,6 @@ export const showRecoveryAlert = async () => {
       return;
     }
 
-    // Manejo de errores
     const error = response as ErrorResponse;
     await MySwal.fire({
       title: 'Error',

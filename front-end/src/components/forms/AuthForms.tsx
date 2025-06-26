@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthForm } from '../../pages/auth/hooks';
 import { AuthFormProps } from './types';
 
+// Componente de formulario de autenticación (login o registro)
 export const AuthForm: React.FC<AuthFormProps> = ({ 
   isLogin = true, 
   formTitle = 'Iniciar Sesión',
@@ -16,17 +17,19 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     apiError,
     handleChange,
     handleSubmit
-  } = useAuthForm();
+  } = useAuthForm(); // Hook personalizado para manejar lógica del formulario
 
+  // Maneja el envío del formulario
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await handleSubmit();
-    if (result && onSuccess) onSuccess(result);
+    if (result && onSuccess) onSuccess(result); // Ejecuta callback si existe
   };
 
   return (
     <div className="card shadow-sm border-0">
       <div className="card-body p-5">
+        {/* Título y subtítulo del formulario */}
         <div className="text-center mb-4">
           <h2 className="fw-bold text-primary">{formTitle}</h2>
           <p className="text-muted">
@@ -34,6 +37,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           </p>
         </div>
 
+        {/* Muestra error general si lo hay */}
         {apiError && (
           <div className="alert alert-danger alert-dismissible fade show">
             {apiError}
@@ -42,6 +46,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         )}
 
         <form onSubmit={onSubmit}>
+          {/* Campo de correo */}
           <div className="mb-3">
             <label htmlFor="email" className="form-label">Correo Electrónico</label>
             <input
@@ -57,6 +62,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             {errors.email && <div className="invalid-feedback">{errors.email}</div>}
           </div>
 
+          {/* Campo de contraseña */}
           <div className="mb-4">
             <label htmlFor="password" className="form-label">Contraseña</label>
             <input
@@ -72,6 +78,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             {errors.password && <div className="invalid-feedback">{errors.password}</div>}
           </div>
 
+          {/* Botón de enviar con spinner de carga */}
           <button 
             type="submit" 
             className="btn btn-primary w-100 py-2 mb-3 fw-bold"
@@ -85,6 +92,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             ) : isLogin ? 'Ingresar' : 'Registrarse'}
           </button>
 
+          {/* Alterna entre login y registro */}
           <div className="text-center mt-4">
             {isLogin ? (
               <>

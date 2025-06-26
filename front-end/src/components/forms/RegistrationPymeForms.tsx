@@ -1,6 +1,7 @@
 import React from 'react';
 import { RegistrationFormProps } from './types';
 
+// Componente de formulario para registrar una Pyme
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   formData,
   error,
@@ -8,15 +9,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
   onChange,
   onSubmit,
 }) => {
-  // Obtener el userId del localStorage
+  // Se obtiene el userId almacenado localmente (por ejemplo, al autenticar)
   const userId = localStorage.getItem('userId') || '';
   
-  // Modificar el onSubmit para incluir el userId
+  // Maneja el envío del formulario incluyendo el userId
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      userId: userId // Añadir el userId al objeto formData
+      userId: userId // Se agrega al payload
     });
   };
 
@@ -24,14 +25,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     <div className='card-body p-md-4'>
       <h2 className='card-title text-center mb-3 mb-md-4'>Registro de Pyme</h2>
 
+      {/* Muestra error general si lo hay */}
       {error && <div className='alert alert-danger'>{error}</div>}
 
       <form onSubmit={handleSubmit} className='needs-validation' noValidate>
-        {/* Campos del formulario con clases responsivas */}
+        {/* Campo: Nombre de la empresa */}
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='pymeName' className='form-label'>
-            Nombre de la empresa
-          </label>
+          <label htmlFor='pymeName' className='form-label'>Nombre de la empresa</label>
           <input
             id='pymeName'
             type='text'
@@ -42,15 +42,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             className='form-control'
             placeholder='Ej: Mi Empresa S.A.'
           />
-          <div className='invalid-feedback'>
-            Por favor ingresa el nombre de tu empresa
-          </div>
+          <div className='invalid-feedback'>Por favor ingresa el nombre de tu empresa</div>
         </div>
 
+        {/* Campo: Correo electrónico */}
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='email' className='form-label'>
-            Correo electrónico
-          </label>
+          <label htmlFor='email' className='form-label'>Correo electrónico</label>
           <input
             id='email'
             type='email'
@@ -61,11 +58,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
             className='form-control'
             placeholder='Ej: contacto@empresa.com'
           />
-          <div className='invalid-feedback'>
-            Por favor ingresa un correo electrónico válido
-          </div>
+          <div className='invalid-feedback'>Por favor ingresa un correo electrónico válido</div>
         </div>
 
+        {/* Campo: Teléfono (opcional) */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='phone' className='form-label'>
             Teléfono <span className='text-muted'>(opcional)</span>
@@ -81,10 +77,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           />
         </div>
 
+        {/* Campo: Dirección */}
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='address' className='form-label'>
-            Dirección
-          </label>
+          <label htmlFor='address' className='form-label'>Dirección</label>
           <input
             id='address'
             type='text'
@@ -98,10 +93,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <div className='invalid-feedback'>Por favor ingresa una dirección válida</div>
         </div>
 
+        {/* Campo: Descripción de la Pyme */}
         <div className='mb-2 mb-md-3 form-group'>
-          <label htmlFor='description' className='form-label'>
-            Descripción de la Pyme
-          </label>
+          <label htmlFor='description' className='form-label'>Descripción de la Pyme</label>
           <textarea
             id='description'
             name='description'
@@ -113,6 +107,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
           />
         </div>
 
+        {/* Botón para enviar el formulario */}
         <div className='d-grid mb-3'>
           <button
             type='submit'

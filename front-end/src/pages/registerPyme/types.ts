@@ -1,5 +1,6 @@
 import { Pyme } from '../../models/Pymes.models';
 
+// incluye estado del formulario, errores, envío, y funciones para cambiar campos y enviar datos.
 export interface RegisterPymeHook {
 	formData: Pyme;
 	error: string;

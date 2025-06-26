@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserFormProps } from './types';
 
+// Componente de formulario para registro de usuario
 export const UserForm: React.FC<UserFormProps> = ({
   formData,
   error,
@@ -12,10 +13,13 @@ export const UserForm: React.FC<UserFormProps> = ({
     <div className='card-body p-md-4'>
       <h2 className='card-title text-center mb-3 mb-md-4'>Registro de Usuario</h2>
 
+      {/* Mostrar mensaje de error general si lo hay */}
       {error && <div className='alert alert-danger'>{error}</div>}
 
       <form onSubmit={onSubmit} className='needs-validation' noValidate>
         {/* Campos del formulario con clases responsivas */}
+
+        {/* Campo: Nombre del usuario */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='name' className='form-label'>
             Nombre
@@ -35,6 +39,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           </div>
         </div>
 
+        {/* Campo: Correo electrónico */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='email' className='form-label'>
             Correo electrónico
@@ -54,6 +59,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           </div>
         </div>
 
+        {/* Campo: Contraseña */}
         <div className='mb-2 mb-md-3 form-group'>
           <label htmlFor='password' className='form-label'>
             Contraseña
@@ -74,6 +80,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           </div>
         </div>
 
+        {/* Botón de envío, muestra spinner si está enviando */}
         <div className='d-grid mb-3'>
           <button
             type='submit'

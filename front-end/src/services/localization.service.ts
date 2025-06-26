@@ -4,10 +4,12 @@ import { RawProduct, adaptProduct } from '../adapters/productAdapter';
 
 const BASE_PATH = 'api/products/search';
 
+// Servicio para buscar productos según filtros como término, categoría y rango de precio,
+// que adapta la respuesta del backend a un formato estandarizado para la aplicación.
 export const localizationService = {
   locateProducts: async (
     term?: string,
-    categoryId?: number, // Siempre número (0, 1, 2...)
+    categoryId?: number,
     minPrice?: number | null,
     maxPrice?: number | null
   ): Promise<any[] | ErrorResponse> => {
@@ -39,7 +41,7 @@ export const localizationService = {
         };
       }
 
-      // Adaptar todos los productos antes de devolverlos
+      // Adaptar productos al formato interno
       const adapted = rawProducts.map((item: RawProduct) =>
         adaptProduct({
           ...item,
@@ -59,5 +61,4 @@ export const localizationService = {
       };
     }
   },
-
 };

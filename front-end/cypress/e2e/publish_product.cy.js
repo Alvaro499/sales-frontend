@@ -11,7 +11,7 @@ describe('Publicar Producto - Escenarios de Prueba', () => {
     cy.get('input[name="price"]').clear().type('20');
     cy.get('input[name="images"]').type('https://example.com/img.jpg');
     cy.get('input[name="stock"]').clear().type('5');
-    cy.get('input[name="pyme_id"]').type('cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
+    cy.get('input[name="pyme_id"]').should('be.disabled');
     cy.get('input[type="checkbox"][class="form-check-input"]').first().check();
     cy.get('input[name="available"]').check();
     cy.get('button[type="submit"]').click();
@@ -25,7 +25,7 @@ describe('Publicar Producto - Escenarios de Prueba', () => {
     cy.get('input[name="price"]').should('have.value', ''); // El campo queda vacío si se ingresa texto no numérico
     cy.get('input[name="images"]').type('https://example.com/img.jpg');
     cy.get('input[name="stock"]').clear().type('5');
-    cy.get('input[name="pyme_id"]').type('cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
+    cy.get('input[name="pyme_id"]').should('be.disabled');
     cy.get('input[type="checkbox"][class="form-check-input"]').first().check();
     cy.get('input[name="available"]').check();
     cy.get('button[type="submit"]').click();
@@ -37,7 +37,7 @@ describe('Publicar Producto - Escenarios de Prueba', () => {
     cy.get('input[name="price"]').clear().type('20');
     cy.get('input[name="images"]').type('https://example.com/img.txt');
     cy.get('input[name="stock"]').clear().type('5');
-    cy.get('input[name="pyme_id"]').type('cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
+    cy.get('input[name="pyme_id"]').should('be.disabled');
     cy.get('input[type="checkbox"][class="form-check-input"]').first().check();
     cy.get('input[name="available"]').check();
     cy.get('button[type="submit"]').click();
@@ -51,7 +51,7 @@ describe('Publicar Producto - Escenarios de Prueba', () => {
     cy.get('input[name="images"]').type('https://example.com/img.jpg');
     cy.get('input[name="stock"]').clear().type('10');
     cy.get('input[name="promotion"]').type('10');
-    cy.get('input[name="pyme_id"]').type('cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
+    cy.get('input[name="pyme_id"]').should('be.disabled');
     cy.get('input[type="checkbox"][class="form-check-input"]').first().check();
     cy.get('input[name="available"]').check();
     cy.get('button[type="submit"]').click();

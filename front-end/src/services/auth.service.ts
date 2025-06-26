@@ -13,12 +13,18 @@ export class AuthService {
     try {
       const response = await authApi.doPost<AuthCredentials, OkResponse>(
         credentials,
-        `${this.BASE_PATH}/login`
+        `${this.BASE_PATH}/loginUser`
       );
 
       if ('token' in response && typeof response.token === 'string') {
         AuthStorage.setToken(response.token);
         AuthStorage.storeDecodedToken();
+      }
+
+      if ('pymeId' in response && typeof response.pymeId === 'string') {
+        AuthStorage.setPymeId(response.pymeId);
+      }else{
+        AuthStorage.setPymeId('');
       }
 
       return response;

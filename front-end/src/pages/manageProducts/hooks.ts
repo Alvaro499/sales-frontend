@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { applyPromotion, getProductBypymeId, unpublishProduct, updateProduct } from '../../services/product.services';
 
 import { Product } from '../../models/Products.models';
+import { AuthStorage } from '../../hooks/useLocalStorage';
 
 const useProductManagement = () => {
     const [products, setProducts] = useState<Product[]>([]); // Estado para los productos
@@ -9,12 +10,10 @@ const useProductManagement = () => {
 
     const getProductsFromAPI = async () => {
         try {
- 
-            // Se necesita el ID de la pyme para obtener los productos
-            const userId = localStorage.getItem('userId') || '';
-            // if (!userId) throw new Error('Usuario no autenticado');
+            const pymeId = AuthStorage.getPymeId();
+            if (!pymeId) throw new Error('Usuario no autenticado');
 
-            const products = await getProductBypymeId("52b92464-90d5-485a-96bd-47c6256df231"); // Obtener ID de la pyme
+            const products = await getProductBypymeId(pymeId);
             
             setProducts(products); // Actualiza el estado con los productos obtenidos
         } catch (err) {

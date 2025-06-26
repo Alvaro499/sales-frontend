@@ -166,6 +166,7 @@ const ProductPublishForm = () => {
 						id='pymeId'
 						name='pyme_id'
 						value={product.pyme_id}
+						disabled
 						onChange={handleInputChange}
 						placeholder='uuid...'
 					/>

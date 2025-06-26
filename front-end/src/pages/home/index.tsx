@@ -135,7 +135,7 @@ const Home: React.FC = () => {
 							<div className='d-flex ms-auto'>
 								<button
 									className='btn btn-outline-primary'
-									onClick={() => navigate('/cart')} // Redirige a la página de carrito
+									onClick={() => navigate('/cart')}
 								>
 									<i className='bi bi-cart'></i> Carrito
 								</button>
@@ -243,8 +243,8 @@ const Home: React.FC = () => {
 										<button
 											className='btn btn-sm btn-outline-primary'
 											onClick={e => {
-												e.stopPropagation(); // Evitar que se dispare el onClick del card
-												handleProductClick(product.id); // Llamar al handler
+												e.stopPropagation(); 
+												handleProductClick(product.id);
 											}}
 										>
 											Ver más

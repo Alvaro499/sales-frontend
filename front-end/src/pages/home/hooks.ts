@@ -22,7 +22,6 @@ export function useProducts(
 	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
 
-	// Cargar categorías
 	useEffect(() => {
 		const loadCategories = async () => {
 			try {
@@ -39,9 +38,7 @@ export function useProducts(
 		loadCategories();
 	}, []);
 
-	// Buscar productos
 	useEffect(() => {
-
 		const fetchProducts = async () => {
 			setLoading(true);
 			setError(null);
@@ -60,7 +57,6 @@ export function useProducts(
 					return;
 				}
 
-				// Aquí no se adapta, porque ya viene adaptado desde el servicio
 				setProducts(response as Product[]);
 			} catch (err) {
 				setError('Error al cargar los productos');
@@ -75,10 +71,9 @@ export function useProducts(
 
 	const handleProductClick = async (productId: string) => {
 		try {
-			// Realizamos la solicitud GET para obtener los detalles del producto
+
 			const productDetails = await getProductById(productId);
 
-			// Una vez que obtenemos el producto, lo pasamos a la página de detalles
 			navigate(`/products/${productId}`, { state: { product: productDetails } });
 		} catch (error) {
 			console.error('Error al obtener el producto', error);

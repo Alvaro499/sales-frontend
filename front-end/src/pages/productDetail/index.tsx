@@ -8,7 +8,7 @@ const ProductDetailPage: React.FC = () => {
 		productId!
 	);
 	const location = useLocation();
-	const { product: productFromState } = location.state || {}; // Accedemos a los datos del producto
+	const { product: productFromState } = location.state || {}; 
 	const productToDisplay = productFromState || product;
 	const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ const ProductDetailPage: React.FC = () => {
 					<div className='d-flex ms-auto'>
 						<button
 							className='btn btn-outline-primary'
-							onClick={() => navigate('/cart')} // Redirige a la página de carrito
+							onClick={() => navigate('/cart')}
 						>
 							<i className='bi bi-cart'></i> Carrito
 						</button>

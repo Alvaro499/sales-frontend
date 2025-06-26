@@ -8,7 +8,6 @@ export function useProductDetail(productId: string) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	// Estado y función para manejar carrito local (puedes cambiar esto a contexto, redux, etc)
 	const [quantity, setQuantity] = useState<number>(1);
 
 	useEffect(() => {
@@ -20,20 +19,16 @@ export function useProductDetail(productId: string) {
 			.finally(() => setLoading(false));
 	}, [productId]);
 
-	// Función para agregar al carrito (ejemplo local, adaptarla a tu implementación)
 	const addToCart = () => {
 		if (!product) return;
 		if (quantity < 1 || quantity > product.stock) {
 			alert('Cantidad inválida');
 			return;
 		}
-
-		// Ejemplo simple: guardamos en localStorage (puedes cambiar a contexto, redux, API, etc)
 		const cartString = localStorage.getItem('cart');
 		const cart = cartString ? JSON.parse(cartString) : [];
 		const productId = product.data.id;
 
-		// Buscar si producto ya está en carrito
 		const existingIndex = cart.findIndex((item: any) => item.product_id === productId);
 
 		if (existingIndex >= 0) {

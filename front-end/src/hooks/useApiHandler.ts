@@ -8,7 +8,9 @@ interface ApiResponse<T> {
 	message: string;
 }
 
+// Hook para manejar llamadas a la API con manejo centralizado de errores
 export const useApiHandler = () => {
+	// Maneja mutaciones (POST, PUT, DELETE)
 	const handleMutation = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
 		input: TInput
@@ -16,7 +18,7 @@ export const useApiHandler = () => {
 		try {
 			const result = await call(input);
 
-			// Verificación mejorada con type guards
+			// Verifica si la respuesta contiene un error esperado del backend
 			if (isErrorResponse(result)) {
 				return {
 					result: undefined,
@@ -34,18 +36,21 @@ export const useApiHandler = () => {
 				message: 'Operación exitosa',
 			};
 		} catch (error: unknown) {
-			// Explicitamente typed como unknown
-			// Type-safe error handling
+			// Manejo seguro del tipo de error (tipo unknown)
+
+			// Caso de error de red
 			if (error instanceof Error) {
 				if (error.message.includes('Network Error')) {
 					return networkErrorResponse();
 				}
 			}
 
+			// Caso de error controlado por Axios
 			if (error instanceof AxiosError) {
 				return axiosErrorResponse(error);
 			}
 
+			// Error genérico inesperado
 			return {
 				result: undefined,
 				isSuccess: false,
@@ -55,7 +60,7 @@ export const useApiHandler = () => {
 		}
 	};
 
-	// Helper functions para respuestas de error
+	// Helper para errores de red
 	const networkErrorResponse = (): ApiResponse<never> => ({
 		result: undefined,
 		isSuccess: false,
@@ -63,6 +68,7 @@ export const useApiHandler = () => {
 		message: 'Error de conexión',
 	});
 
+	// Helper para errores controlados por Axios
 	const axiosErrorResponse = (error: AxiosError<ErrorResponse>): ApiResponse<never> => ({
 		result: undefined,
 		isSuccess: false,
@@ -70,7 +76,7 @@ export const useApiHandler = () => {
 		message: error.response?.data?.message || 'Error en la solicitud',
 	});
 
-	// Type guard para ErrorResponse
+	// Type guard para detectar si la respuesta es un ErrorResponse
 	const isErrorResponse = (response: unknown): response is ErrorResponse => {
 		return (
 			typeof response === 'object' &&
@@ -80,6 +86,7 @@ export const useApiHandler = () => {
 		);
 	};
 
+	// Maneja queries (GET)
 	const handleQuery = async <TInput, TResult>(
 		call: (input: TInput) => Promise<TResult>,
 		input: TInput
@@ -96,6 +103,7 @@ export const useApiHandler = () => {
 				message: 'Consulta exitosa',
 			};
 		} catch (e) {
+			// Manejo de errores de Axios
 			if (e instanceof AxiosError) {
 				const axiosError = e as AxiosError<ErrorResponse>;
 				return {
@@ -104,6 +112,7 @@ export const useApiHandler = () => {
 					message: axiosError.response?.data?.message || 'Error en la consulta',
 				};
 			}
+			// Error genérico
 			return {
 				result: undefined,
 				isError: true,
@@ -112,5 +121,6 @@ export const useApiHandler = () => {
 		}
 	};
 
+	// Se retornan los métodos públicos del hook
 	return { handleMutation, handleQuery };
 };

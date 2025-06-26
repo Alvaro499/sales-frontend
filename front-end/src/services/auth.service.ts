@@ -3,10 +3,10 @@ import { AuthCredentials, PasswordResetRequest } from '../models/Auth.models';
 import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AuthStorage } from '../hooks/useLocalStorage';
 import { AxiosError } from 'axios';
-
 export class AuthService {
   private static BASE_PATH = '/api/public/auth';
 
+  /** Realiza el login con las credenciales y almacena el token si es exitoso */
   public static async login(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -20,13 +20,14 @@ export class AuthService {
         AuthStorage.setToken(response.token);
         AuthStorage.storeDecodedToken();
       }
-
+      
       return response;
     } catch (error) {
       return this.handleError(error);
     }
   }
 
+  /** Registra un nuevo usuario con las credenciales proporcionadas */
   public static async registerUser(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -50,8 +51,7 @@ export class AuthService {
     }
   }
 
-
-
+  /** Solicita el envío del correo para recuperación de contraseña */
   public static async recoveryRequest(
     email: string
   ): Promise<OkResponse | ErrorResponse> {
@@ -75,6 +75,7 @@ export class AuthService {
     }
   }
 
+  /** Realiza el cambio de contraseña con el token y la nueva contraseña */
   public static async resetPassword(
     data: PasswordResetRequest
   ): Promise<OkResponse | ErrorResponse> {
@@ -88,7 +89,7 @@ export class AuthService {
     }
   }
 
-
+  /** Maneja y normaliza los errores provenientes de axios */
   private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
 

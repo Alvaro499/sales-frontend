@@ -9,7 +9,7 @@ export const useRegisterForm = () => {
   const navigate = useNavigate();
   const { handleMutation } = useApiHandler();
 
-  // Estado del formulario - EXACTAMENTE COMO LO TENÍAS
+  // Estado para manejar los datos del formulario
   const [formData, setFormData] = useState({
     pymeName: '',
     email: '',
@@ -19,10 +19,11 @@ export const useRegisterForm = () => {
     userId: ''
   });
 
+  // Estado para errores generales y estado de envío
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // VALIDACIÓN CON SWITCH TAL CUAL LA TENÍAS
+  // Función para validar campos específicos usando un factory de validación
   const validateField = (fieldName: keyof Pyme, value: string): string | null => {
     try {
       let validatorType: string;
@@ -51,7 +52,7 @@ export const useRegisterForm = () => {
     }
   };
 
-  // MANEJADOR DE CAMBIOS ORIGINAL
+  // Manejador de cambios en los inputs, actualiza estado y limpia errores previos
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -60,9 +61,9 @@ export const useRegisterForm = () => {
     if (error) setError('');
   };
 
-  // ENVÍO DEL FORMULARIO (igual al tuyo)
+  // Envío del formulario con validación, llamada a API y manejo de respuestas
   const handleSubmit = async (formDataWithoutUserId: Omit<Pyme, 'userId'>) => {
-    // Validar campos (excepto phone)
+    // Validar todos los campos excepto phone
     const errors: Record<string, string> = {};
     Object.entries(formDataWithoutUserId).forEach(([key, value]) => {
       if (key === 'phone') return;
@@ -88,7 +89,7 @@ export const useRegisterForm = () => {
       };
 
       const response = await handleMutation(
-        pymeRegistrationService.register, 
+        pymeRegistrationService.register,
         completeFormData
       );
 
@@ -97,7 +98,7 @@ export const useRegisterForm = () => {
         return;
       }
 
-      // Manejo de errores específicos
+      // Manejo de mensajes de error específicos de la API
       switch (response.message) {
         case 'EMAIL_ALREADY_EXISTS':
           setError('El correo electrónico ya está registrado');

@@ -1,3 +1,4 @@
+// Crea instancias de API configuradas para los servicios de ventas y autenticación
 import { createApiInstance } from './http.service';
 import { createApiMethods } from './http.service';
 

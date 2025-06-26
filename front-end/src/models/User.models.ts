@@ -1,5 +1,6 @@
+// Representa un usuario con información básica para autenticación
 export interface User {
-  name: string;  
+  name: string;
   email: string;
   password: string;
 }

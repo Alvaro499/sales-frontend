@@ -5,10 +5,9 @@ import { OkResponse, ErrorResponse } from '../models/Api.models';
 import { AuthStorage } from '../hooks/useLocalStorage';
 
 export const pymeRegistrationService = {
-  // Ruta base para las peticiones relacionadas con pymes
   BASE_PATH: 'api/pymes',
 
-  // Verifica el código enviado para activar la pyme
+  // Verifica el código de activación enviado al correo
   verifyCode: async (verificationData: VerificationRequest): Promise<OkResponse | ErrorResponse> => {
     try {
       const response = await ventasApi.doPost<VerificationRequest, any>(
@@ -16,7 +15,7 @@ export const pymeRegistrationService = {
         `${pymeRegistrationService.BASE_PATH}/activate`
       );
 
-      // Maneja respuestas con código de error sin lanzar excepción
+      // Si la respuesta es un error lógico del backend y no lanza excepción
       if (response && typeof response === 'object' && response.code) {
         return {
           message: response.message || 'Error en la verificación',
@@ -27,15 +26,19 @@ export const pymeRegistrationService = {
 
       return { status: 'success' };
     } catch (error: any) {
-      // Manejo básico de errores comunes (500, conexión, otros)
-      if (error.response?.status === 500) {
+      const status = error.response?.status;
+      const data = error.response?.data;
+
+      // Error interno del servidor (500)
+      if (status === 500) {
         return {
-          message: error.response.data?.error || 'Error interno del servidor',
+          message: data?.error || 'Error interno del servidor',
           code: 500,
           params: 'SERVER_ERROR'
         };
       }
 
+      // Error de red (sin respuesta)
       if (!error.response) {
         return {
           message: 'No se pudo conectar al servidor',
@@ -44,15 +47,16 @@ export const pymeRegistrationService = {
         };
       }
 
+      // Otros errores conocidos del backend
       return {
-        message: error.response.data?.error || error.response.data?.message || `Error HTTP ${error.response.status}`,
-        code: error.response.status,
-        params: error.response.data?.params || 'HTTP_ERROR'
+        message: data?.error || data?.message || `Error HTTP ${status}`,
+        code: status,
+        params: data?.params || 'HTTP_ERROR'
       };
     }
   },
 
-  // Registra una nueva pyme y guarda el id recibido
+  // Registra una nueva pyme en el sistema
   register: async (registrationData: Pyme): Promise<OkResponse | ErrorResponse> => {
     try {
       const response = await ventasApi.doPost<Pyme, any>(
@@ -60,7 +64,6 @@ export const pymeRegistrationService = {
         `${pymeRegistrationService.BASE_PATH}/register`
       );
 
-      // Guarda el id de la pyme si está presente en la respuesta
       if ('id' in response && typeof response.id === 'string') {
         AuthStorage.setPymeId(response.id);
       } else {
@@ -76,8 +79,9 @@ export const pymeRegistrationService = {
       }
 
       return { status: 'success' };
+
     } catch (error: any) {
-      // Manejo simplificado de errores comunes
+      // Manejo similar de errores para registro
       if (error.response?.status === 500) {
         return {
           message: 'Error interno del servidor durante el registro',

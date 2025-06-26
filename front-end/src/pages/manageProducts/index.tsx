@@ -104,12 +104,15 @@ const ProductPublishPanel = () => {
     };
 
     const handlePromoSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (selectedProduct && promoForm.discountValue !== '') {
-            await applyPromotionFromAPI(selectedProduct.id, promoForm.discountValue);
-            setIsPromoModalVisible(false);
-            getProductsFromAPI();
+      e.preventDefault();
+      if (selectedProduct && promoForm.discountValue !== '') {
+        try {
+          await applyPromotionFromAPI(selectedProduct.id, promoForm.discountValue);
+          getProductsFromAPI();
+        } finally {
+          setIsPromoModalVisible(false);
         }
+      }
     };
 
     return (
@@ -161,6 +164,17 @@ const ProductPublishPanel = () => {
                                       </span>
                                     </div>
                                     ) : null}
+                                    {product.available ? (
+                                      <div className="mt-1">
+                                        <span className="text-secondary small">Stock: {product.stock}</span>
+                                      </div>
+                                    ) : (
+                                      <div className="mt-1">
+                                        <span className="badge bg-danger">
+                                          No disponible (Stock: {product.stock})
+                                        </span>
+                                      </div>
+                                    )}
                                 </div>
                                 <button
                                   className="btn btn-sm btn-outline-primary"

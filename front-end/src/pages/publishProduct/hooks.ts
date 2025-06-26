@@ -103,6 +103,15 @@ const usePublishProduct = () => {
 			setError('El precio debe ser un número positivo.');
 			return false;
 		}
+		// Validación de formato de imagen
+		const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+		const invalidImage = product.images.some(
+			url => !validExtensions.some(ext => url.toLowerCase().endsWith(ext))
+		);
+		if (invalidImage) {
+			setError('La imagen no cumple con las especificaciones.');
+			return false;
+		}
 		setError('');
 		return true;
 	};

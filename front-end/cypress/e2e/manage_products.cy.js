@@ -3,9 +3,10 @@ describe('Panel de Productos Publicados', () => {
     cy.visit('/productPublishPanel');
   });
 
-  it('Muestra la lista de productos', () => {
+  it('Muestra listado de productos con stock y disponibilidad', () => {
     cy.contains('Panel de Productos Publicados');
     cy.get('.product-card').should('have.length.at.least', 1);
+    cy.get('.product-card').first().should('contain.text', 'Stock:');
   });
 
   it('Abre y cierra el modal de Ver producto', () => {
@@ -15,11 +16,44 @@ describe('Panel de Productos Publicados', () => {
     cy.contains('Información del producto').should('not.be.visible');
   });
 
-  it('Abre y cierra el modal de Despublicar producto', () => {
-    cy.get('.product-card').contains('Despublicar').should('exist').click();
-    cy.contains('Despublicar Producto').should('be.visible');
-    cy.contains('Cancelar').click();
+  it('Actualiza el stock del producto', () => {
+    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().as('targetCard');
+    cy.get('@targetCard').within(() => {
+      cy.contains('Administrar producto').should('be.visible').click();
+    });
+    cy.contains('Actualizar Stock').should('be.visible');
+    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('10');
+    cy.get('.modal.show').contains('Confirmar').click();
     cy.contains('Información del producto').should('not.be.visible');
+    cy.wait(1000);
+    cy.get('@targetCard').should($card => {
+      expect($card.text()).to.include('Stock: 10');
+    });
+  });
+
+  it('Actualiza el stock del producto a cero y lo marca como no disponible', () => {
+    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().as('targetCard');
+    cy.get('@targetCard').within(() => {
+      cy.contains('Administrar producto').should('be.visible').click();
+    });
+    cy.contains('Actualizar Stock').should('be.visible');
+    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('0');
+    cy.get('.modal.show').contains('Confirmar').click();
+    cy.contains('Información del producto').should('not.be.visible');
+    cy.get('@targetCard').should($card => {
+      expect($card.text()).to.include('Stock: 0');
+      expect($card.text().toLowerCase()).to.include('no disponible');
+    });
+  });
+
+  it('Muestra error si se intenta actualizar el stock con valor negativo', () => {
+    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().within(() => {
+      cy.contains('Administrar producto').should('be.visible').click();
+    });
+    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('-5');
+    cy.contains('El valor ingresado no es válido.').should('be.visible');
+    cy.get('.modal.show').contains('Confirmar').should('be.disabled');
+    cy.get('.modal.show').contains('Cancelar').click();
   });
 
   it('Despublica un producto', () => {
@@ -29,35 +63,19 @@ describe('Panel de Productos Publicados', () => {
     cy.get('.modal.show', { timeout: 10000 }).should('not.exist');
   });
 
-  it('Abre y cierra el modal de Administrar producto', () => {
-    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().within(() => {
-      cy.contains('Administrar producto').should('be.visible').click();
+  it('Aplica una promoción a un producto', () => {
+    cy.get('.product-card')
+      .filter(':has(button:contains("Promoción"))')
+      .first()
+      .as('targetCard');
+    cy.get('@targetCard').within(() => {
+      cy.get('button').contains('Promoción').should('be.visible').click();
     });
-    cy.contains('Actualizar Stock').should('be.visible');
-    cy.get('.modal.show').contains('Cancelar').click();
-    cy.contains('Información del producto').should('not.be.visible');
-  });
-
- it('Actualiza el stock de un producto', () => {
-  cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().as('targetCard');
-  cy.get('@targetCard').within(() => {
-    cy.contains('Administrar producto').should('be.visible').click();
-  });
-  cy.contains('Actualizar Stock').should('be.visible');
-  cy.get('input[type="number"]').clear().type('10');
-  cy.get('.modal.show').contains('Confirmar').click();
-  cy.contains('Información del producto').should('not.be.visible');
-  // Espera a que el stock se actualice en la misma tarjeta
-  cy.get('@targetCard').should('contain', 'Stock: 10');
-});
-
-  it('No permite stock negativo', () => {
-    cy.get('.product-card').filter(':has(button:contains("Administrar producto"))').first().within(() => {
-      cy.contains('Administrar producto').should('be.visible').click();
+    cy.contains('Aplicar Promoción').should('be.visible');
+    cy.get('.modal.show input[name="discountValue"]').should('be.visible').clear().type('15');
+    cy.get('.modal.show button[type="submit"]').should('not.be.disabled').click();
+    cy.get('@targetCard').should($card => {
+      expect($card.text()).to.include('Promoción actual: 15%');
     });
-    cy.get('input[type="number"]').clear().type('-5');
-    cy.contains('El valor ingresado no es válido.').should('be.visible');
-    cy.get('.modal.show').contains('Confirmar').should('be.disabled');
-    cy.get('.modal.show').contains('Cancelar').click();
   });
 });

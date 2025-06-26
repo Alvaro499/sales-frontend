@@ -12,7 +12,7 @@ function isErrorResponse(response: any): response is ErrorResponse {
 
 export function useProducts(
 	search: string = '',
-	selectedCategory: string = 'all',
+    selectedCategory: number = 0,
 	minPrice: number | null = null,
 	maxPrice: number | null = null
 ): UseProductsReturn {
@@ -41,7 +41,6 @@ export function useProducts(
 
 	// Buscar productos
 	useEffect(() => {
-		const categoryId = selectedCategory !== 'all' ? Number(selectedCategory) : null;
 
 		const fetchProducts = async () => {
 			setLoading(true);
@@ -50,7 +49,7 @@ export function useProducts(
 			try {
 				const response = await localizationService.locateProducts(
 					search,
-					categoryId,
+                 selectedCategory !== 0 ? selectedCategory : undefined,
 					minPrice,
 					maxPrice
 				);

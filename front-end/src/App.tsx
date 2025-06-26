@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import CartPage from './pages/cart';
 import CheckoutPage from './pages/checkout';
+import ProductDetailPage from './pages/productDetail';
 
 const App = () => {
   return (
@@ -27,8 +28,9 @@ const App = () => {
           <Route path='/admin' element={<AdminHome />} />
           <Route path='/login' element={<AuthPage />} /> 
           <Route path='/registerUser' element={<RegisterUserPage />} />
+          <Route path='/products/:productId' element={<ProductDetailPage />} />
           <Route path='/cart' element={<CartPage/>} />
-          <Route path='/checkout' element={<CheckoutPage/>} />
+          <Route path='/checkout' element={<CheckoutPage/>} />         
 
         </Routes>
       </div>

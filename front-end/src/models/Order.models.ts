@@ -6,25 +6,26 @@ export interface OrderProduct {
 
 export interface PaymentMethod {
   name: string;
-  description: string;
+  desc: string;
   isActive: boolean;
 }
 
 
 export interface ShippingMethod {
   name: string;
-  description: string;
-  price: number; 
+  desc: string;
   isActive: boolean;
 }
 
 export interface CreateOrderRequest {
+  guestUserId?: string;
+  buyerType: 'CLIENT' | 'USER';
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
   shippingAddress: string;
   products: OrderProduct[];
-  paymentMethod: PaymentMethod;
-  shippingMethod: ShippingMethod;
+  shippingMethod: string;
+  paymentMethod: string;
 }

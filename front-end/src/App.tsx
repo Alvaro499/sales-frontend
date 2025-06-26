@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RegisterPymePage from './pages/registerPyme';
 import VerificationPage from './pages/verificationPyme';
-import { passwordReset } from './pages/passwordReset';
 import ProductPublishForm from './pages/publishProduct';
 import ProductPublishPanel from './pages/manageProducts';
+import PasswordReset1 from './pages/passwordReset';
 import Home from './pages/home';
 import AdminHome from './pages/admin';
 import AuthPage from './pages/auth';
@@ -22,7 +22,7 @@ const App = () => {
           <Route path='/' element={<Home />} />
           <Route path='/registerPyme' element={<RegisterPymePage />} />
           <Route path='/verification' element={<VerificationPage />} />
-          <Route path='/reset-password/:token' element={<passwordReset />} />
+          <Route path='/reset-password/:token' element={<PasswordReset1 />} />
           <Route path='/newProduct' element={<ProductPublishForm />} />
           <Route path='/productPublishPanel' element={<ProductPublishPanel />} />
           <Route path='/admin' element={<AdminHome />} />

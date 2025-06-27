@@ -1,4 +1,5 @@
 const AUTH_TOKEN_KEY = 'app_auth_token';
+const AUTH_PYMEID_KEY = 'app_auth_pymeId';
 
 export class AuthStorage {
   static setToken(token: string): void {
@@ -17,6 +18,24 @@ export class AuthStorage {
       return null;
     }
   }
+
+  static setPymeId(pymeId: string): void {
+    try {
+      localStorage.setItem(AUTH_PYMEID_KEY, pymeId);
+    } catch (error) {
+      console.error('Error al guardar el pymeId:', error);
+    }
+  }
+
+  static getPymeId(): string | null {
+    try {
+      return localStorage.getItem(AUTH_PYMEID_KEY);
+    } catch (error) {
+      console.error('Error al obtener el pymeId:', error);
+      return null;
+    }
+  }
+
 
   static clearToken(): void {
     try {

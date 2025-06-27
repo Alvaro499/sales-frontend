@@ -1,60 +1,72 @@
-// useCart.ts
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../../models/Products.models';
 
 const useCart = () => {
-	// 1. Obtener los productos del localStorage
+	// Obtiene el carrito guardado en localStorage y lo adapta al formato CartItem
 	const getCartItemsFromLocalStorage = (): CartItem[] => {
 		const storedItems = localStorage.getItem('cart');
 		const cartItems = storedItems ? JSON.parse(storedItems) : [];
 
-		// Mapear correctamente los productos desde la estructura anidada
 		return cartItems.map((item: any) => ({
-			id: item.productId, // El productId se encuentra en la propiedad productId
-			name: item.data.name, // Accedemos a item.data.name
-			price: item.data.price,
-			stock: item.data.stock,
-			quantity: item.quantity,
-			images: item.data.urlImg, // Asegúrate de que las imágenes estén correctas
+			id: item.productId,
+			name: item.data?.name || 'Producto sin nombre',
+			price: item.data?.price || 0,
+			stock: item.data?.stock || 0,
+			quantity: item.quantity || 1,
+			images: Array.isArray(item.data?.urlImg)
+				? item.data.urlImg
+				: [item.data?.urlImg || 'https://via.placeholder.com/50'],
 		}));
 	};
 
-	// 2. Estado de los productos del carrito
+	// Estado para almacenar los ítems del carrito
 	const [cartItems, setCartItems] = useState<CartItem[]>(getCartItemsFromLocalStorage);
 
+	// Al montar, carga el carrito desde localStorage
 	useEffect(() => {
-		// Actualizamos el estado cuando el componente se monta o se actualiza
 		setCartItems(getCartItemsFromLocalStorage());
 	}, []);
 
-	// 3. Función para calcular el total
+	// Calcula el total sumando precio * cantidad
 	const calculateTotal = () => {
 		return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 	};
 
-	// 4. Función para actualizar las cantidades en el carrito
-	const updateQuantity = (id: string, newQuantity: number) => {
-		const updatedCart = cartItems.map(item => {
-			if (item.id === id) {
-				return { ...item, quantity: newQuantity };
-			}
-			return item;
-		});
+	// Actualiza la cantidad de un producto en el carrito
+	const updateQuantityFromCart = (id: string, newQuantity: number) => {
+		const updatedCart = cartItems.map(item =>
+			item.id === id ? { ...item, quantity: newQuantity } : item
+		);
 		setCartItems(updatedCart);
-		localStorage.setItem('cart', JSON.stringify(updatedCart)); // Actualizamos el localStorage
+		saveToLocalStorage(updatedCart);
 	};
 
-	// 5. Función para eliminar productos del carrito
+	// Elimina un producto del carrito
 	const removeItemFromCart = (id: string) => {
 		const updatedCart = cartItems.filter(item => item.id !== id);
 		setCartItems(updatedCart);
-		localStorage.setItem('cart', JSON.stringify(updatedCart)); // Actualizamos el localStorage
+		saveToLocalStorage(updatedCart);
 	};
 
-	// 6. Función para redirigir al checkout
+	// Guarda el carrito en localStorage con el formato original
+	const saveToLocalStorage = (items: CartItem[]) => {
+		const storedFormat = items.map(item => ({
+			productId: item.id,
+			quantity: item.quantity,
+			data: {
+				name: item.name,
+				price: item.price,
+				stock: item.stock,
+				urlImg: item.images,
+			},
+		}));
+		localStorage.setItem('cart', JSON.stringify(storedFormat));
+	};
 
 	const navigate = useNavigate();
+
+	// Función para redirigir al checkout
 	const goToCheckout = () => {
 		navigate('/checkout');
 	};
@@ -62,7 +74,7 @@ const useCart = () => {
 	return {
 		cartItems,
 		calculateTotal,
-		updateQuantity,
+		updateQuantityFromCart,
 		removeItemFromCart,
 		goToCheckout,
 	};

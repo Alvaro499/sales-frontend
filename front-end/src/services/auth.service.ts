@@ -7,18 +7,25 @@ import { AxiosError } from 'axios';
 export class AuthService {
   private static BASE_PATH = '/api/public/auth';
 
+  // Inicia sesión con credenciales y guarda token/pymeId si es válido
   public static async login(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
     try {
       const response = await authApi.doPost<AuthCredentials, OkResponse>(
         credentials,
-        `${this.BASE_PATH}/login`
+        `${this.BASE_PATH}/loginUser`
       );
 
       if ('token' in response && typeof response.token === 'string') {
         AuthStorage.setToken(response.token);
         AuthStorage.storeDecodedToken();
+      }
+
+      if ('pymeId' in response && typeof response.pymeId === 'string') {
+        AuthStorage.setPymeId(response.pymeId);
+      }else{
+        AuthStorage.setPymeId('');
       }
 
       return response;
@@ -27,6 +34,7 @@ export class AuthService {
     }
   }
 
+  // Registra un nuevo usuario con email y contraseña
   public static async registerUser(
     credentials: AuthCredentials
   ): Promise<OkResponse | ErrorResponse> {
@@ -50,8 +58,7 @@ export class AuthService {
     }
   }
 
-
-
+  // Solicita recuperación de contraseña enviando el email
   public static async recoveryRequest(
     email: string
   ): Promise<OkResponse | ErrorResponse> {
@@ -75,6 +82,7 @@ export class AuthService {
     }
   }
 
+  // Restablece la contraseña con token y nueva contraseña
   public static async resetPassword(
     data: PasswordResetRequest
   ): Promise<OkResponse | ErrorResponse> {
@@ -88,7 +96,7 @@ export class AuthService {
     }
   }
 
-
+  // Maneja errores de red o del backend y los normaliza
   private static handleError(error: unknown): ErrorResponse {
     const axiosError = error as AxiosError<ErrorResponse>;
 

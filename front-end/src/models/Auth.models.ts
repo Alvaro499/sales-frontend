@@ -1,10 +1,9 @@
 export interface PasswordResetRequest {
-  token: string;
-  newPassword: string;
+  token: string;       // Token para verificar el cambio de contraseña
+  newPassword: string; // Nueva contraseña del usuario
 }
 
 export interface AuthCredentials {
-  email: string;
-  password: string;
+  email: string;    // Correo electrónico del usuario
+  password: string; // Contraseña del usuario
 }
-

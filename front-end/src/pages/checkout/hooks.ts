@@ -1,8 +1,8 @@
-// useCheckout.ts
 import { useState, useEffect } from 'react';
 import { CreateOrderRequest } from '../../models/Order.models';
 import { createOrder } from '../../services/checkout.services';
 import { showPurchaseSuccessAlert } from '../../utilities/alerts/purcharseComplete';
+import { useNavigate } from 'react-router-dom';
 
 const useCheckout = () => {
 	// Estado para almacenar los métodos de pago y envío disponibles
@@ -26,40 +26,33 @@ const useCheckout = () => {
 	});
 
 	useEffect(() => {
-		// Datos de métodos de pago
 		const paymentData = ['EFECTIVO', 'SINPE', 'DEBITO'];
 		setPaymentMethods(paymentData);
 
-		// Establecer el primer método de pago como valor predeterminado
 		setOrder(prevState => ({
 			...prevState,
-			paymentMethod: paymentData[0], // Establecer el primer método de pago
+			paymentMethod: '',
 		}));
 
-		// Datos de métodos de envío
 		const shippingData = ['ENTREGA_LOCAL', 'CORREOS_CR', 'ENVIOS_EXPRESS'];
 		setShippingMethods(shippingData);
 
-		// Establecer el primer método de envío como valor predeterminado
 		setOrder(prevState => ({
 			...prevState,
-			shippingMethod: shippingData[0], // Establecer el primer método de envío
+			shippingMethod: '',
 		}));
 	}, []);
 
-	// Este useEffect se ejecuta al inicio para configurar los valores correctos
 	useEffect(() => {
-		// Obtener el userId desde localStorage
 		const userId = localStorage.getItem('userId');
 
 		// Si el userId existe, lo agregamos al order y cambiamos el buyerType a USER
 		setOrder(prevState => ({
 			...prevState,
-			guestUserId: userId ?? '', // Si no existe, se usa cadena vacía o null
-			buyerType: userId ? 'USER' : 'CLIENT', // BuyerType es USER si existe el userId, CLIENT si no
+			guestUserId: userId ?? '', 
+			buyerType: userId ? 'USER' : 'CLIENT', 
 		}));
 
-		// Obtener los productos del carrito y agregarlo al estado
 		const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
 		const mappedProducts = storedCart.map((item: any) => ({
 			productId: item.productId,
@@ -72,10 +65,8 @@ const useCheckout = () => {
 	}, []);
 
 	useEffect(() => {
-		// Obtener el carrito desde localStorage
 		const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-		// Mapear productos, asegurando que cada uno tenga productId y quantity
 		const mappedProducts = storedCart.map((item: any) => {
 			return {
 				productId: item.productId, // Esto debe existir
@@ -83,7 +74,6 @@ const useCheckout = () => {
 			};
 		});
 
-		// Actualizar el estado de la orden con los productos mapeados
 		setOrder(prevState => ({
 			...prevState,
 			products: mappedProducts,
@@ -115,7 +105,6 @@ const useCheckout = () => {
 		return true;
 	};
 
-	// Función para manejar el envío del formulario
 	const handleSubmit = async () => {
 		if (!validateForm()) return;
 		setIsProcessing(true);
@@ -124,7 +113,6 @@ const useCheckout = () => {
 			const response = await createOrder(order);
 
 			if (response && response.userId) {
-				// Eliminar el carrito de localStorage después de la compra exitosa
 				localStorage.removeItem('cart');
 				showPurchaseSuccessAlert();
 				setOrder({
@@ -145,15 +133,20 @@ const useCheckout = () => {
 		} finally {
 			// Rehabilitar el botón después de que termine el proceso
 			setIsProcessing(false);
+			navigate('/');
 		}
 	};
 
-	// Función para actualizar el estado del formulario
 	const updateOrder = (key: keyof CreateOrderRequest, value: any) => {
 		setOrder(prevState => ({
 			...prevState,
 			[key]: value,
 		}));
+	};
+
+	const navigate = useNavigate();
+	const formatMethodName = (name: string) => {
+		return name.replace(/_/g, ' '); 
 	};
 
 	return {
@@ -164,6 +157,8 @@ const useCheckout = () => {
 		updateOrder,
 		handleSubmit,
 		isProcessing,
+		navigate,
+		formatMethodName
 	};
 };
 

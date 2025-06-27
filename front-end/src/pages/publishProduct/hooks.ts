@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import { Product } from '../../models/Products.models';
 import { createProduct, getCategories } from '../../services/product.services';
 import { showProductSuccessAlert, showProductErrorAlert } from '../../utilities/alerts/productAlerts';
+import { AuthStorage } from '../../hooks/useLocalStorage';
 
 const usePublishProduct = () => {
+	
+	const pymeId = AuthStorage.getPymeId();
 	const [product, setProduct] = useState<Product>({
 		id: '',
-		pyme_id: '',
+		pyme_id: pymeId || '',
 		name: '',
 		description: '',
 		price: 0,
@@ -116,7 +119,6 @@ const usePublishProduct = () => {
 		return true;
 	};
 
-	// Publicar producto
 	const handlePublish = async () => {
 		if (!validateForm()) return;
 

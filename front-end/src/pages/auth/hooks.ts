@@ -2,15 +2,21 @@ import { useState } from 'react';
 import { AuthService } from '../../services/auth.service';
 import { AuthCredentials } from '../../models/Auth.models';
 
+// Hook que maneja el formulario de autenticación
 export const useAuthForm = () => {
+  // Estado para los datos del formulario
   const [formData, setFormData] = useState<AuthCredentials>({
     email: '',
     password: ''
   });
+  // Estado para los errores de validación
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  // Estado para indicar si el formulario está en envío
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Estado para errores devueltos por la API
   const [apiError, setApiError] = useState<string | null>(null);
 
+  // Función para validar los campos del formulario
   const validateField = (name: string, value: string) => {
     if (name === 'email') {
       if (!value) return 'El correo es requerido';
@@ -25,6 +31,7 @@ export const useAuthForm = () => {
     return '';
   };
 
+  // Maneja el cambio en los inputs del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -33,6 +40,7 @@ export const useAuthForm = () => {
     setErrors(prev => ({ ...prev, [name]: error || undefined }));
   };
 
+  // Maneja el envío del formulario
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setApiError(null);
@@ -66,6 +74,7 @@ export const useAuthForm = () => {
     }
   };
 
+  // Devuelve los estados y funciones para usar en el componente
   return {
     formData,
     errors,

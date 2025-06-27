@@ -3,7 +3,7 @@ import useCart from './hooks';
 import { useNavigate } from 'react-router-dom';
 
 const CartPage: React.FC = () => {
-	const { cartItems, calculateTotal, updateQuantity, removeItemFromCart, goToCheckout } =
+	const { cartItems, calculateTotal, updateQuantityFromCart, removeItemFromCart, goToCheckout } =
 		useCart();
 	const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const CartPage: React.FC = () => {
 					<div className='d-flex ms-auto'>
 						<button
 							className='btn btn-outline-primary'
-							onClick={() => navigate('/')} // Redirige a la página de carrito
+							onClick={() => navigate('/')} 
 						>
 							<i className='bi bi-house-door'></i> Home
 						</button>
@@ -64,7 +64,7 @@ const CartPage: React.FC = () => {
 									min='1'
 									max={item.stock}
 									onChange={e =>
-										updateQuantity(item.id, parseInt(e.target.value))
+										updateQuantityFromCart(item.id, parseInt(e.target.value))
 									}
 									className='form-control'
 								/>

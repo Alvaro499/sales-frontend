@@ -81,7 +81,7 @@ const ProductPublishForm = () => {
 					</label>
 					<div>
 						{categories.length === 0 ? (
-							<p>No se encontraron categorías.</p> // Muestra un mensaje si no hay categorías
+							<p>No se encontraron categorías.</p> 
 						) : (
 							categories.map(cat => (
 								<div key={cat.id} className='form-check'>
@@ -115,7 +115,7 @@ const ProductPublishForm = () => {
 						className='form-control'
 						id='images'
 						name='images'
-						value={product.images.join(', ')} // Une las URLs con comas para mostrarlas
+						value={product.images.join(', ')}
 						onChange={handleImageUrlChange}
 						placeholder='https://example.com/image1.jpg, https://example.com/image2.jpg'
 					/>
@@ -166,6 +166,7 @@ const ProductPublishForm = () => {
 						id='pymeId'
 						name='pyme_id'
 						value={product.pyme_id}
+						disabled
 						onChange={handleInputChange}
 						placeholder='uuid...'
 					/>

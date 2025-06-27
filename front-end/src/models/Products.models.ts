@@ -1,9 +1,10 @@
+// Representa un producto con sus detalles principales
 export interface Product {
 	id: string;
 	name: string;
 	description: string;
 	price: number;
-	category: string[]; 
+	category: string[];
 	images: string[];
 	available: boolean;
 	promotion?: string | null;
@@ -12,18 +13,21 @@ export interface Product {
 	active?: boolean;
 }
 
+// Representa una categoría de productos
 export interface Category {
 	category_id: number;
 	name: string;
 	description: string;
 }
 
+// Relación entre productos y categorías
 export interface ProductCategory {
 	product_category_id: number;
 	product_id: string;
 	category_id: number;
 }
 
+// Extiende Product para representar un producto en el carrito con cantidad
 export interface CartItem extends Product {
-  quantity: number;  // Añadir el campo quantity
+  quantity: number;
 }

@@ -31,7 +31,7 @@ const useCheckout = () => {
 
 		setOrder(prevState => ({
 			...prevState,
-			paymentMethod: paymentData[0],
+			paymentMethod: '',
 		}));
 
 		const shippingData = ['ENTREGA_LOCAL', 'CORREOS_CR', 'ENVIOS_EXPRESS'];
@@ -39,7 +39,7 @@ const useCheckout = () => {
 
 		setOrder(prevState => ({
 			...prevState,
-			shippingMethod: shippingData[0],
+			shippingMethod: '',
 		}));
 	}, []);
 

@@ -1,6 +1,6 @@
 describe('Panel de Productos Publicados', () => {
   beforeEach(() => {
-    window.localStorage.setItem('app_auth_pymeId', 'cb4a1a63-b716-4604-a2b1-c232e3abe0e6');
+    window.localStorage.setItem('app_auth_pymeId', '320dd455-81eb-41bb-9612-5b2fa066be61');
     cy.visit('/productPublishPanel');
   });
 
@@ -25,8 +25,13 @@ describe('Panel de Productos Publicados', () => {
     cy.get('@targetCard').within(() => {
       cy.contains('Administrar producto').should('be.visible').click();
     });
+
     cy.contains('Actualizar Stock').should('be.visible');
-    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('10');
+    cy.get('.modal.show input[name="stock"]')
+      .should('have.attr', 'type', 'number')
+      .and('have.attr', 'min', '0')
+      .and('be.visible').clear()
+      .type('10');
     cy.get('.modal.show').contains('Confirmar').click();
     cy.contains('Información del producto').should('not.be.visible');
     cy.wait(1000);
@@ -42,7 +47,8 @@ describe('Panel de Productos Publicados', () => {
       cy.contains('Administrar producto').should('be.visible').click();
     });
     cy.contains('Actualizar Stock').should('be.visible');
-    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('0');
+    cy.get('.modal.show input[name="stock"]')
+      .should('have.attr', 'type', 'number').should('be.visible').clear().type('0');
     cy.get('.modal.show').contains('Confirmar').click();
     cy.contains('Información del producto').should('not.be.visible');
     cy.get('@targetCard').should($card => {
@@ -56,17 +62,11 @@ describe('Panel de Productos Publicados', () => {
     .filter(':contains("Stock:")').first().within(() => {
       cy.contains('Administrar producto').should('be.visible').click();
     });
-    cy.get('.modal.show input[type="number"]').should('be.visible').clear().type('-5');
+    cy.get('.modal.show input[name="stock"]')
+      .should('have.attr', 'type', 'number').should('be.visible').clear().type('-5');
     cy.contains('El valor ingresado no es válido.').should('be.visible');
     cy.get('.modal.show').contains('Confirmar').should('be.disabled');
     cy.get('.modal.show').contains('Cancelar').click();
-  });
-
-  it('Despublica un producto', () => {
-    cy.get('.product-card').contains('Despublicar').should('exist').click();
-    cy.contains('Despublicar Producto').should('be.visible');
-    cy.get('.modal.show .btn-primary').contains('Confirmar').click();
-    cy.get('.modal.show', { timeout: 10000 }).should('not.exist');
   });
 
   it('Aplica una promoción a un producto', () => {
@@ -84,5 +84,12 @@ describe('Panel de Productos Publicados', () => {
     cy.get('@targetCard').should($card => {
       expect($card.text()).to.include('Promoción actual: 15%');
     });
+  });
+
+  it('Despublica un producto', () => {
+    cy.get('.product-card').contains('Despublicar').should('exist').click();
+    cy.contains('Despublicar Producto').should('be.visible');
+    cy.get('.modal.show .btn-primary').contains('Confirmar').click();
+    cy.get('.modal.show', { timeout: 10000 }).should('not.exist');
   });
 });

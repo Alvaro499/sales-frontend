@@ -1,5 +1,6 @@
 describe('Publicar Producto - Escenarios de Prueba', () => {
   beforeEach(() => {
+    window.localStorage.setItem('app_auth_pymeId', '320dd455-81eb-41bb-9612-5b2fa066be61');
     cy.visit('/newProduct');
   });
 

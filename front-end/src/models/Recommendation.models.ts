@@ -1,5 +1,5 @@
 export interface Recommendation {
-  product_id: number;
+  product_id: string;              // <-- Este es el ID del producto
   name: string;
   score: number;
 }

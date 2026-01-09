@@ -29,12 +29,12 @@ export function useProductDetail(productId: string) {
 		const cart = cartString ? JSON.parse(cartString) : [];
 		const productId = product.data.id;
 
-		const existingIndex = cart.findIndex((item: any) => item.product_id === productId);
+		const existingIndex = cart.findIndex((item: any) => item.productId === productId);
 
 		if (existingIndex >= 0) {
 			cart[existingIndex].quantity += quantity;
 		} else {
-			cart.push({ ...product, productId, quantity });
+			cart.push({ productId, quantity });
 		}
 
 		localStorage.setItem('cart', JSON.stringify(cart));

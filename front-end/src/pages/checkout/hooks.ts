@@ -13,7 +13,7 @@ const useCheckout = () => {
 
 	// Estado para la orden
 	const [order, setOrder] = useState<CreateOrderRequest>({
-		guestUserId: '',
+		guestUserId: null,
 		buyerType: 'CLIENT',
 		email: '',
 		firstName: '',
@@ -49,7 +49,7 @@ const useCheckout = () => {
 		// Si el userId existe, lo agregamos al order y cambiamos el buyerType a USER
 		setOrder(prevState => ({
 			...prevState,
-			guestUserId: userId ?? '', 
+			guestUserId: userId || null, 
 			buyerType: userId ? 'USER' : 'CLIENT', 
 		}));
 
@@ -116,7 +116,7 @@ const useCheckout = () => {
 				localStorage.removeItem('cart');
 				showPurchaseSuccessAlert();
 				setOrder({
-					guestUserId: '',
+					guestUserId: null,
 					buyerType: 'CLIENT',
 					email: '',
 					firstName: '',

@@ -20,7 +20,7 @@ export interface ShippingMethod {
 
 // Datos necesarios para crear un pedido
 export interface CreateOrderRequest {
-  guestUserId?: string;
+  guestUserId: string | null;
   buyerType: 'CLIENT' | 'USER';
   email: string;
   firstName: string;
